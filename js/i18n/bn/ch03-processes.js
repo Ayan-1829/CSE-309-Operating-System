@@ -52,6 +52,8 @@ I18N_BN_ADD({
 "Accounting information – CPU used, clock time elapsed since start, time limits": "Accounting তথ্য – ব্যবহৃত CPU, শুরু থেকে পেরোনো clock time, সময়সীমা",
 "I/O status information – I/O devices allocated to process, list of open files": "I/O status তথ্য – process-কে বরাদ্দ করা I/O ডিভাইস, খোলা ফাইলের তালিকা",
 "Process control block.": "Process control block।",
+"Explore further": "আরও দেখুন",
+"Registers": "Register",
 "Threads": "Thread",
 "So far, process has a single thread of execution": "এ পর্যন্ত একটি process-এ execution-এর একটি মাত্র thread",
 "Consider having multiple program counters per process": "প্রতি process-এ একাধিক program counter থাকার কথা ভাবুন",

@@ -77,7 +77,7 @@
 <p class="kicker">Demand paging</p><h2>Demand paging</h2><ul><li>Could bring entire process into memory at load time</li><li>Or bring a page into memory only when it is needed<ul><li>Less I/O needed, no unnecessary I/O</li><li>Less memory needed</li><li>Faster response</li><li>More users</li></ul></li><li>Similar to paging system with swapping (diagram on right)</li><li>Page is needed → reference to it<ul><li>invalid reference → abort</li><li>not-in-memory → bring to memory</li></ul></li><li><b>Lazy swapper</b> – never swaps a page into memory unless page will be needed<ul><li>Swapper that deals with pages is a <b>pager</b></li></ul></li></ul>
 </div></section>
 <section class="slide " data-title="Demand paging (cont.)" aria-label="Demand paging (cont.)" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Demand paging</p><h2>Demand paging (cont.)</h2><figure class="fig" data-fig="demand-pt"><figcaption>Page table when some pages are not in main memory: only A, C and F are loaded (valid); a reference to any other page causes a page fault.</figcaption></figure>
+<p class="kicker">Demand paging</p><h2>Demand paging (cont.)</h2><figure class="fig" data-fig="demand-pt"><figcaption>Page table when some pages are not in main memory: only A, C and F are loaded (valid); a reference to any other page causes a page fault.</figcaption></figure><div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/ssd.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">SSD</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/hdd.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Hard drive</span></a></div>
 </div></section>
 <section class="slide " data-title="Handling a page fault, step by step" aria-label="Handling a page fault, step by step" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Animated</p><h2>Handling a page fault, step by step</h2><div data-demo="flow" data-anim="pagefault"></div>
@@ -215,7 +215,7 @@ LRU : 12 page faults</pre></div><p class="co-note">The same 20-reference string 
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 41</span>
+  <span class="counter" id="counter">1 / 29</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>

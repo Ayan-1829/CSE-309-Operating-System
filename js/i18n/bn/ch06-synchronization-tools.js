@@ -98,6 +98,7 @@ I18N_BN_ADD({
 "The compare_and_swap instruction": "compare_and_swap instruction",
 "Returns the original value of passed parameter <code>value</code>": "পাঠানো parameter <code>value</code>-এর মূল মান ফেরত দেয়",
 "Set the variable <code>value</code> the value of the passed parameter <code>new_value</code> but only if <code>*value == expected</code> is true. That is, the swap takes place only under this condition.": "<code>value</code> variable-কে পাঠানো parameter <code>new_value</code>-এর মান দেয়, তবে কেবল যদি <code>*value == expected</code> সত্য হয়। অর্থাৎ swap কেবল এই শর্তেই ঘটে।",
+"Explore further": "আরও দেখুন",
 "Atomic variables": "Atomic variable",
 "Typically, instructions such as compare-and-swap are used as building blocks for other synchronization tools.": "সাধারণত compare-and-swap-এর মতো instruction অন্যান্য synchronization উপকরণ তৈরির ভিত্তি হিসেবে ব্যবহৃত হয়।",
 "One tool is an <b>atomic variable</b> that provides atomic (uninterruptible) updates on basic data types such as integers and booleans.": "এমন একটি উপকরণ হলো <b>atomic variable</b>, যা integer ও boolean-এর মতো মৌলিক data type-এ atomic (বিনা বাধায়) হালনাগাদ দেয়।",

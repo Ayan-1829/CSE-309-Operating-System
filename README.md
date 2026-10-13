@@ -8,7 +8,7 @@
 
 <a href="https://ayan-1829.github.io/CSE-309-Operating-System/"><img alt="Live site: open" src="https://img.shields.io/badge/Live_site-open-3446A8?style=for-the-badge&logo=githubpages&logoColor=white"></a>
 <img alt="Chapters: 9" src="https://img.shields.io/badge/Chapters-9-555555?style=for-the-badge">
-<img alt="Slides: 482" src="https://img.shields.io/badge/Slides-482-555555?style=for-the-badge">
+<img alt="Slides: 483" src="https://img.shields.io/badge/Slides-483-555555?style=for-the-badge">
 <img alt="Build step: none" src="https://img.shields.io/badge/Build_step-none-555555?style=for-the-badge&logo=html5&logoColor=white">
 
 ### [🌐 Open the live site →](https://ayan-1829.github.io/CSE-309-Operating-System/)
@@ -28,14 +28,14 @@
 
 ## 📚 Chapters
 
-9 decks · 482 slides. Each title opens the live deck.
+9 decks · 483 slides. Each title opens the live deck.
 
 | Ch | Chapter | Syllabus | Slides |
 |:--:|---|:--:|:--:|
 | **1** | [Introduction](https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch01-introduction.html) | Midterm | 51 |
 | **2** | [Operating-System Services](https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch02-operating-system-services.html) | Midterm | 62 |
 | **3** | [Processes](https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch03-processes.html) | Midterm | 63 |
-| **9** | [Main Memory](https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch09-main-memory.html) | Midterm | 63 |
+| **9** | [Main Memory](https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch09-main-memory.html) | Midterm | 64 |
 | **10** | [Virtual Memory](https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch10-virtual-memory.html) | Midterm | 41 |
 | **4** | [Threads & Concurrency](https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch04-threads-and-concurrency.html) | Final | 51 |
 | **5** | [CPU Scheduling](https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch05-cpu-scheduling.html) | Final | 51 |

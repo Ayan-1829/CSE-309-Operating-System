@@ -89,7 +89,7 @@
 <p class="kicker">Process concept</p><h2>Process control block (PCB)</h2><p>Information associated with each process (also called <b>task control block</b>):</p><ul><li>Process state – running, waiting, etc.</li><li>Program counter – location of instruction to next execute</li><li>CPU registers – contents of all process-centric registers</li><li>CPU scheduling information – priorities, scheduling queue pointers</li><li>Memory-management information – memory allocated to the process</li><li>Accounting information – CPU used, clock time elapsed since start, time limits</li><li>I/O status information – I/O devices allocated to process, list of open files</li></ul>
 </div></section>
 <section class="slide " data-title="Process control block (PCB) (cont.)" aria-label="Process control block (PCB) (cont.)" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Process concept</p><h2>Process control block (PCB) (cont.)</h2><figure class="fig" data-fig="pcb"><figcaption>Process control block.</figcaption></figure>
+<p class="kicker">Process concept</p><h2>Process control block (PCB) (cont.)</h2><figure class="fig" data-fig="pcb"><figcaption>Process control block.</figcaption></figure><div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/registers.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Registers</span></a></div>
 </div></section>
 <section class="slide " data-title="Threads" aria-label="Threads" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Process concept</p><h2>Threads</h2><ul><li>So far, process has a single thread of execution</li><li>Consider having multiple program counters per process<ul><li>Multiple locations can execute at once<ul><li>Multiple threads of control → <b>threads</b></li></ul></li></ul></li><li>Must then have storage for thread details, multiple program counters in PCB</li><li>Explore in detail in Chapter 4</li></ul>
@@ -108,6 +108,8 @@
 </div></section>
 <section class="slide " data-title="Context switch" aria-label="Context switch" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Process scheduling</p><h2>Context switch</h2><ul><li>When CPU switches to another process, the system must <b>save the state</b> of the old process and load the <b>saved state</b> for the new process via a <b>context switch</b></li><li><b>Context</b> of a process represented in the PCB</li><li>Context-switch time is pure overhead; the system does no useful work while switching<ul><li>The more complex the OS and the PCB → the longer the context switch</li></ul></li><li>Time dependent on hardware support<ul><li>Some hardware provides multiple sets of registers per CPU → multiple contexts loaded at once</li></ul></li></ul>
+
+<div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/registers.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Registers</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/i8086.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Intel 8086 simulator</span></a></div>
 </div></section>
 <section class="slide " data-title="A context switch, animated" aria-label="A context switch, animated" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Animated</p><h2>A context switch, animated</h2><div data-demo="flow" data-anim="ctx"></div>
@@ -357,7 +359,7 @@ child read 9 bytes: Greetings</pre></div>
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 63</span>
+  <span class="counter" id="counter">1 / 47</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>

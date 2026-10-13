@@ -80,13 +80,13 @@
 <p class="kicker">Multicore programming</p><h2>Multicore programming</h2><ul><li><b>Multicore</b> or <b>multiprocessor</b> systems putting pressure on programmers, challenges include:<ul><li>Dividing activities</li><li>Balance</li><li>Data splitting</li><li>Data dependency</li><li>Testing and debugging</li></ul></li><li><b>Parallelism</b> implies a system can perform more than one task simultaneously</li><li><b>Concurrency</b> supports more than one task making progress<ul><li>Single processor / core, scheduler providing concurrency</li></ul></li></ul>
 </div></section>
 <section class="slide " data-title="Multicore programming (cont.)" aria-label="Multicore programming (cont.)" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Multicore programming</p><h2>Multicore programming (cont.)</h2><figure class="fig" data-fig="conc-par"><figcaption>Concurrent execution on a single-core system and parallelism on a multi-core system.</figcaption></figure>
+<p class="kicker">Multicore programming</p><h2>Multicore programming (cont.)</h2><figure class="fig" data-fig="conc-par"><figcaption>Concurrent execution on a single-core system and parallelism on a multi-core system.</figcaption></figure><div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/cpu.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">CPU</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/cache-l3.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">L3 cache</span></a></div>
 </div></section>
 <section class="slide " data-title="Types of parallelism" aria-label="Types of parallelism" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Multicore programming</p><h2>Types of parallelism</h2><ul><li>Types of parallelism<ul><li><b>Data parallelism</b> – distributes subsets of the same data across multiple cores, same operation on each</li><li><b>Task parallelism</b> – distributing threads across cores, each thread performing unique operation</li></ul></li></ul>
 </div></section>
 <section class="slide " data-title="Types of parallelism (cont.)" aria-label="Types of parallelism (cont.)" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Multicore programming</p><h2>Types of parallelism (cont.)</h2><figure class="fig" data-fig="data-task"><figcaption>Data and task parallelism.</figcaption></figure>
+<p class="kicker">Multicore programming</p><h2>Types of parallelism (cont.)</h2><figure class="fig" data-fig="data-task"><figcaption>Data and task parallelism.</figcaption></figure><div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/gpu.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">GPU</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/compute-units.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">GPU compute units</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/sm-scheduler.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">GPU warp scheduler</span></a></div>
 </div></section>
 <section class="slide " data-title="Amdahl’s law" aria-label="Amdahl’s law" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Multicore programming</p><h2>Amdahl’s law</h2><ul><li>Identifies performance gains from adding additional cores to an application that has both serial and parallel components</li><li><i>S</i> is serial portion</li><li><i>N</i> processing cores</li></ul><div class="formula">speedup ≤ 1 / ( S + (1 − S) / N )</div><ul><li>That is, if application is 75% parallel / 25% serial, moving from 1 to 2 cores results in speedup of 1.6 times</li><li>As <i>N</i> approaches infinity, speedup approaches 1 / <i>S</i></li></ul><div class="callout">Serial portion of an application has disproportionate effect on performance gained by adding additional cores.</div>
@@ -321,7 +321,7 @@ pthread_join(tid,NULL);</pre></div></div>
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 51</span>
+  <span class="counter" id="counter">1 / 40</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>

@@ -185,7 +185,7 @@ with lock:   counter = 2000000 (expected 2000000)</pre></div><p class="co-note">
     if (*value == expected)
         *value = new_value;
     return temp;
-}</pre><ul><li>Executed atomically</li><li>Returns the original value of passed parameter <code>value</code></li><li>Set the variable <code>value</code> the value of the passed parameter <code>new_value</code> but only if <code>*value == expected</code> is true. That is, the swap takes place only under this condition.</li></ul>
+}</pre><ul><li>Executed atomically</li><li>Returns the original value of passed parameter <code>value</code></li><li>Set the variable <code>value</code> the value of the passed parameter <code>new_value</code> but only if <code>*value == expected</code> is true. That is, the swap takes place only under this condition.</li></ul><div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/x86-data.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">8086 data transfer (XCHG)</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/x86-proc.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">8086 processor control (LOCK)</span></a></div>
 </div></section>
 <section class="slide " data-title="Atomic variables" aria-label="Atomic variables" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Hardware support for synchronization</p><h2>Atomic variables</h2><ul><li>Typically, instructions such as compare-and-swap are used as building blocks for other synchronization tools.</li><li>One tool is an <b>atomic variable</b> that provides atomic (uninterruptible) updates on basic data types such as integers and booleans.</li><li>For example:<ul><li>Let <code>sequence</code> be an atomic variable</li><li>Let <code>increment()</code> be operation on the atomic variable <code>sequence</code></li><li>The command <code>increment(&amp;sequence);</code> ensures <code>sequence</code> is incremented without interruption</li></ul></li></ul>
@@ -366,7 +366,7 @@ signal(mutex);</pre><ul><li>Mutual exclusion within a monitor is ensured</li></u
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 45</span>
+  <span class="counter" id="counter">1 / 35</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>

@@ -69,6 +69,8 @@
 </div></section>
 <section class="slide " data-title="Background" aria-label="Background" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Background</p><h2>Background</h2><ul><li>Program must be brought (from disk) into memory and placed within a process for it to be run</li><li>Main memory and registers are only storage CPU can access directly</li><li>Memory unit only sees a stream of:<ul><li>addresses + read requests, or</li><li>address + data and write requests</li></ul></li><li>Register access is done in one CPU clock (or less)</li><li>Main memory can take many cycles, causing a <b>stall</b></li><li><b>Cache</b> sits between main memory and CPU registers</li><li>Protection of memory required to ensure correct operation</li></ul>
+
+<div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/registers.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Registers</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/cache.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Cache</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/ram.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">RAM</span></a></div>
 </div></section>
 <section class="slide " data-title="Protection" aria-label="Protection" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Background</p><h2>Protection</h2><ul><li>Need to ensure that a process can access only those addresses in its address space.</li><li>We can provide this protection by using a pair of <b>base</b> and <b>limit registers</b> that define the logical address space of a process</li></ul>
@@ -77,7 +79,10 @@
 <p class="kicker">Background</p><h2>Protection (cont.)</h2><figure class="fig" data-fig="base-limit"><figcaption>A base and a limit register define a logical address space.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="Hardware address protection" aria-label="Hardware address protection" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Background</p><h2>Hardware address protection</h2><figure class="fig" data-fig="hw-protect"><figcaption>Hardware address protection with base and limit registers.</figcaption></figure><ul><li>CPU must check every memory access generated in user mode to be sure it is between base and limit for that user</li><li>The instructions to load the base and limit registers are privileged</li></ul>
+<p class="kicker">Background</p><h2>Hardware address protection</h2><figure class="fig" data-fig="hw-protect"><figcaption>Hardware address protection with base and limit registers.</figcaption></figure>
+</div></section>
+<section class="slide " data-title="Hardware address protection (cont.)" aria-label="Hardware address protection (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Background</p><h2>Hardware address protection (cont.)</h2><ul><li>CPU must check every memory access generated in user mode to be sure it is between base and limit for that user</li><li>The instructions to load the base and limit registers are privileged</li></ul><div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/comparator.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Comparator</span></a></div>
 </div></section>
 <section class="slide " data-title="Check an address" aria-label="Check an address" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Interactive</p><h2>Check an address</h2><div data-demo="base-limit"></div>
@@ -166,7 +171,7 @@ int main(void)
 <p class="kicker">Paging</p><h2>Translation look-aside buffer</h2><ul><li>Some TLBs store <b>address-space identifiers (ASIDs)</b> in each TLB entry – uniquely identifies each process to provide address-space protection for that process<ul><li>Otherwise need to flush at every context switch</li></ul></li><li>TLBs typically small (64 to 1,024 entries)</li><li>On a TLB miss, value is loaded into the TLB for faster access next time<ul><li>Replacement policies must be considered</li><li>Some entries can be <b>wired down</b> for permanent fast access</li></ul></li></ul>
 </div></section>
 <section class="slide " data-title="Translation look-aside buffer (cont.)" aria-label="Translation look-aside buffer (cont.)" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Paging</p><h2>Translation look-aside buffer (cont.)</h2><figure class="fig" data-fig="tlb"><figcaption>Paging hardware with TLB.</figcaption></figure>
+<p class="kicker">Paging</p><h2>Translation look-aside buffer (cont.)</h2><figure class="fig" data-fig="tlb"><figcaption>Paging hardware with TLB.</figcaption></figure><div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/cache-tags.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Cache tags and lines</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/cache.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Cache</span></a></div>
 </div></section>
 <section class="slide " data-title="Effective access time" aria-label="Effective access time" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Paging</p><h2>Effective access time</h2><ul><li><b>Hit ratio</b> – percentage of times that a page number is found in the TLB</li><li>An 80% hit ratio means that we find the desired page number in the TLB 80% of the time.</li><li>Suppose that 10 nanoseconds to access memory.<ul><li>If we find the desired page in TLB then a mapped-memory access takes 10 ns</li><li>Otherwise we need two memory accesses so it is 20 ns</li></ul></li></ul><div class="formula">EAT = 0.80 × 10 + 0.20 × 20 = 12 ns</div><p>implying 20% slowdown in access time. Consider a more realistic hit ratio of 99%:</p><div class="formula">EAT = 0.99 × 10 + 0.01 × 20 = 10.1 ns</div>
@@ -230,6 +235,8 @@ int main(void)
 </div></section>
 <section class="slide " data-title="Swapping" aria-label="Swapping" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Swapping</p><h2>Swapping</h2><ul><li>A process can be <b>swapped</b> temporarily out of memory to a backing store, and then brought back into memory for continued execution<ul><li>Total physical memory space of processes can exceed physical memory</li></ul></li><li><b>Backing store</b> – fast disk large enough to accommodate copies of all memory images for all users; must provide direct access to these memory images</li><li><b>Roll out, roll in</b> – swapping variant used for priority-based scheduling algorithms; lower-priority process is swapped out so higher-priority process can be loaded and executed</li><li>Major part of swap time is transfer time; total transfer time is directly proportional to the amount of memory swapped</li><li>System maintains a <b>ready queue</b> of ready-to-run processes which have memory images on disk</li></ul>
+
+<div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/storage.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Storage</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/ssd.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">SSD</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/hdd.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Hard drive</span></a></div>
 </div></section>
 <section class="slide " data-title="Swapping (cont.)" aria-label="Swapping (cont.)" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Swapping</p><h2>Swapping (cont.)</h2><ul><li>Does the swapped out process need to swap back in to same physical addresses?</li><li>Depends on address binding method<ul><li>Plus consider pending I/O to / from process memory space</li></ul></li><li>Modified versions of swapping are found on many systems (i.e., UNIX, Linux, and Windows)<ul><li>Swapping normally disabled</li><li>Started if more than threshold amount of memory allocated</li><li>Disabled again once memory demand reduced below threshold</li></ul></li></ul>
@@ -248,6 +255,8 @@ int main(void)
 </div></section>
 <section class="slide " data-title="Swapping on mobile systems" aria-label="Swapping on mobile systems" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Swapping</p><h2>Swapping on mobile systems</h2><ul><li>Not typically supported<ul><li>Flash memory based<ul><li>Small amount of space</li><li>Limited number of write cycles</li><li>Poor throughput between flash memory and CPU on mobile platform</li></ul></li></ul></li><li>Instead use other methods to free memory if low<ul><li>iOS <b>asks</b> apps to voluntarily relinquish allocated memory<ul><li>Read-only data thrown out and reloaded from flash if needed</li><li>Failure to free can result in termination</li></ul></li><li>Android terminates apps if low free memory, but first writes <b>application state</b> to flash for fast restart</li><li>Both OSes support paging as discussed below</li></ul></li></ul>
+
+<div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/nand-flash.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">NAND flash memory</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/nand-block.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">NAND erase blocks</span></a></div>
 </div></section>
 <section class="slide " data-title="Swapping with paging" aria-label="Swapping with paging" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Swapping</p><h2>Swapping with paging</h2><figure class="fig" data-fig="swap-paging"><figcaption>Swapping with paging.</figcaption></figure>
@@ -279,7 +288,7 @@ int main(void)
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 63</span>
+  <span class="counter" id="counter">1 / 48</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>

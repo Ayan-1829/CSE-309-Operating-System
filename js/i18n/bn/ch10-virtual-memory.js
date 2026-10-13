@@ -40,6 +40,7 @@ I18N_BN_ADD({
 "<b>Lazy swapper</b> – never swaps a page into memory unless page will be needed": "<b>Lazy swapper</b> – page দরকার না হলে কখনো তাকে মেমরিতে swap করে না",
 "Swapper that deals with pages is a <b>pager</b>": "Page নিয়ে কাজ করা swapper হলো <b>pager</b>",
 "Page table when some pages are not in main memory: only A, C and F are loaded (valid); a reference to any other page causes a page fault.": "কিছু page main memory-তে না থাকলে page table: কেবল A, C ও F লোড করা (valid); অন্য যেকোনো page-এ reference করলে page fault হয়।",
+"Explore further": "আরও দেখুন",
 "Animated": "অ্যানিমেশন",
 "Handling a page fault, step by step": "ধাপে ধাপে page fault সামলানো",
 "Handling a page fault": "Page fault সামলানো",

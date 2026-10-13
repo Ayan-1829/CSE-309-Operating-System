@@ -94,6 +94,8 @@ $ echo $SHELL
 </div></section>
 <section class="slide " data-title="System calls" aria-label="System calls" tabindex="-1"><div class="slide-inner">
 <p class="kicker">System calls</p><h2>System calls</h2><ul><li>Programming interface to the services provided by the OS</li><li>Typically written in a high-level language (C or C++)</li><li>Mostly accessed by programs via a high-level <b>Application Programming Interface (API)</b> rather than direct system call use</li><li>Three most common APIs are Win32 API for Windows, POSIX API for POSIX-based systems (including virtually all versions of UNIX, Linux, and Mac OS X), and Java API for the Java virtual machine (JVM)</li><li>Note that the system-call names used throughout this text are generic</li></ul>
+
+<div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/x86-control.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">8086 control transfer (CALL, INT)</span></a></div>
 </div></section>
 <section class="slide " data-title="Example of system calls" aria-label="Example of system calls" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Interactive</p><h2>Example of system calls</h2><p>System call sequence to copy the contents of one file to another file:</p>
@@ -255,6 +257,8 @@ $ sudo make install</pre></div></div></div>
 </div></section>
 <section class="slide " data-title="System boot" aria-label="System boot" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Building and booting an operating system</p><h2>System boot</h2><ul><li>When power initialized on system, execution starts at a fixed memory location</li><li>Operating system must be made available to hardware so hardware can start it<ul><li>Small piece of code – <b>bootstrap loader</b>, <b>BIOS</b>, stored in <b>ROM</b> or <b>EEPROM</b> locates the kernel, loads it into memory, and starts it</li><li>Sometimes two-step process where <b>boot block</b> at fixed location loaded by ROM code, which loads bootstrap loader from disk</li><li>Modern systems replace BIOS with <b>Unified Extensible Firmware Interface (UEFI)</b></li></ul></li><li>Common bootstrap loader, <b>GRUB</b>, allows selection of kernel from multiple disks, versions, kernel options</li><li>Kernel loads and system is then <b>running</b></li><li>Boot loaders frequently allow various boot states, such as single user mode</li></ul><div class="flow"><span>power on</span><i>→</i><span>BIOS / UEFI</span><i>→</i><span>boot block</span><i>→</i><span>GRUB</span><i>→</i><span>kernel</span><i>→</i><span>running</span></div>
+
+<div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/bios.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">BIOS chip</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/ic-w25q128.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">W25Q128 chip (flash)</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/storage.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Storage</span></a></div>
 </div></section>
 <section class="slide " data-title="System boot, animated" aria-label="System boot, animated" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Animated</p><h2>System boot, animated</h2><div data-demo="flow" data-anim="boot"></div>
@@ -303,7 +307,7 @@ close(3)                               = 0</pre></div>
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 62</span>
+  <span class="counter" id="counter">1 / 51</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>

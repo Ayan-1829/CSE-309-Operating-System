@@ -67,6 +67,7 @@ I18N_BN_ADD({
 "Mostly accessed by programs via a high-level <b>Application Programming Interface (API)</b> rather than direct system call use": "প্রোগ্রাম সাধারণত সরাসরি system call ব্যবহার না করে একটি high-level <b>Application Programming Interface (API)</b>-এর মাধ্যমে access করে",
 "Three most common APIs are Win32 API for Windows, POSIX API for POSIX-based systems (including virtually all versions of UNIX, Linux, and Mac OS X), and Java API for the Java virtual machine (JVM)": "সবচেয়ে প্রচলিত তিনটি API হলো Windows-এর জন্য Win32 API, POSIX-ভিত্তিক সিস্টেমের জন্য POSIX API (UNIX, Linux ও Mac OS X-এর প্রায় সব সংস্করণসহ), এবং Java virtual machine (JVM)-এর জন্য Java API",
 "Note that the system-call names used throughout this text are generic": "লক্ষ করুন, এই বইজুড়ে ব্যবহৃত system call-এর নামগুলো সাধারণ (generic)",
+"Explore further": "আরও দেখুন",
 "Example of system calls": "System call-এর উদাহরণ",
 "System call sequence to copy the contents of one file to another file:": "একটি ফাইলের বিষয়বস্তু আরেকটি ফাইলে কপি করার system call ক্রম:",
 "System calls to copy one file": "একটি ফাইল কপি করার system call",
