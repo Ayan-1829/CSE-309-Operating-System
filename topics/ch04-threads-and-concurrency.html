@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Threads &amp;amp; Concurrency – Chapter 4 | CSE 309 Operating System</title>
+<meta name="description" content="Why applications use threads, concurrency versus parallelism, Amdahl’s law, user and kernel threads, the many-to-one, one-to-one, many-to-many and two-level models, Pthreads, implicit threading, threading issues and Windows and Linux threads. Interactive slides, diagrams, simulators and a quiz for chapter 4 of the CSE 309 Operating System course.">
+<meta name="keywords" content="threads, multithreading, concurrency vs parallelism, data parallelism, task parallelism, Amdahl law, user threads, kernel threads, many-to-one, one-to-one, many-to-many, two-level model, Pthreads, thread pool, fork-join, OpenMP, Grand Central Dispatch, TBB, signal handling, thread cancellation, clone, CSE 309">
+<meta name="author" content="Operating System Notes">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#3446A8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B0E1A" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch04-threads-and-concurrency.html">
+<link rel="icon" type="image/svg+xml" href="../img/logo-mark.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../img/favicon-16.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Operating System (CSE 309)">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Threads &amp;amp; Concurrency – Chapter 4 | CSE 309 Operating System">
+<meta property="og:description" content="Why applications use threads, concurrency versus parallelism, Amdahl’s law, user and kernel threads, the many-to-one, one-to-one, many-to-many and two-level models, Pthreads, implicit threading, threading issues and Windows and Linux threads. Interactive slides, diagrams, simulators and a quiz for chapter 4 of the CSE 309 Operating System course.">
+<meta property="og:url" content="https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch04-threads-and-concurrency.html">
+<meta property="og:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch04-threads-and-concurrency.png?v=1">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Threads &amp;amp; Concurrency – Chapter 4 | CSE 309 Operating System">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Threads &amp;amp; Concurrency – Chapter 4 | CSE 309 Operating System">
+<meta name="twitter:description" content="Why applications use threads, concurrency versus parallelism, Amdahl’s law, user and kernel threads, the many-to-one, one-to-one, many-to-many and two-level models, Pthreads, implicit threading, threading issues and Windows and Linux threads. Interactive slides, diagrams, simulators and a quiz for chapter 4 of the CSE 309 Operating System course.">
+<meta name="twitter:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch04-threads-and-concurrency.png?v=1">
+<meta name="twitter:image:alt" content="Threads &amp;amp; Concurrency – Chapter 4 | CSE 309 Operating System">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Threads &amp; Concurrency", "description": "Why applications use threads, concurrency versus parallelism, Amdahl’s law, user and kernel threads, the many-to-one, one-to-one, many-to-many and two-level models, Pthreads, implicit threading, threading issues and Windows and Linux threads.", "position": 6, "educationalLevel": "Undergraduate", "learningResourceType": "Lecture slides", "inLanguage": "en", "isAccessibleForFree": true, "teaches": ["A thread is a unit of CPU use with its own registers, PC and stack, sharing code, data and files with the other threads of its process.", "Benefits: responsiveness, resource sharing, economy, scalability; concurrency is progress, parallelism is simultaneous execution.", "Amdahl’s law: speedup ≤ 1 / (S + (1 − S)/N), limited to 1/S by the serial part.", "User threads map to kernel threads many-to-one, one-to-one (Windows, Linux), many-to-many or two-level.", "Libraries (Pthreads, Windows, Java) and implicit threading (thread pools, fork-join, OpenMP, GCD, TBB) create and manage threads.", "Issues: fork/exec semantics, signal delivery, asynchronous vs deferred cancellation; Windows uses ETHREAD/KTHREAD/TEB and Linux uses clone() tasks."], "keywords": "threads, multithreading, concurrency vs parallelism, data parallelism, task parallelism, Amdahl law, user threads, kernel threads, many-to-one, one-to-one, many-to-many, two-level model, Pthreads, thread pool, fork-join, OpenMP, Grand Central Dispatch, TBB, signal handling, thread cancellation, clone, CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch04-threads-and-concurrency.html", "image": "https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch04-threads-and-concurrency.png", "isPartOf": {"@type": "Course", "name": "Operating System", "courseCode": "CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Operating System", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/"}, {"@type": "ListItem", "position": 2, "name": "Chapter 4: Threads &amp; Concurrency", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch04-threads-and-concurrency.html"}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="deck-page">
+<div class="sr-only" id="live" aria-live="polite"></div>
+<header class="deck-bar">
+  <a class="home-link" href="../index.html" aria-label="Home: all chapters"><img src="../img/logo-mark.svg" alt="" width="26" height="26"><span>Home</span></a>
+  <div class="deck-title"><span class="badge">4</span><span>Threads &amp; Concurrency</span></div>
+  <div class="deck-actions">
+    <button type="button" class="btn sm" id="btn-menu" aria-expanded="false" aria-controls="slide-menu" aria-label="Slides"><svg class="btn-ic" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><rect x="3" y="4.5" width="18" height="3" rx="1"></rect><rect x="3" y="10.5" width="18" height="3" rx="1"></rect><rect x="3" y="16.5" width="18" height="3" rx="1"></rect></svg><span>Slides</span></button>
+    <button type="button" class="btn sm" id="btn-theme" aria-pressed="false" aria-label="Toggle dark mode"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path></svg><span>Dark mode</span></button>
+    <button type="button" class="btn sm" id="btn-fs" aria-pressed="false" aria-label="Full screen"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"></path></svg><span>Full screen</span></button>
+  </div>
+</header>
+<div class="deck-progress"><i id="progress-fill"></i></div>
+<main class="deck" id="deck">
+<section class="slide title-slide" data-title="Threads &amp;amp; Concurrency" aria-label="Threads &amp;amp; Concurrency" tabindex="-1"><div class="slide-inner">
+<span class="topic-art" data-art="6" aria-hidden="true"></span>
+<span class="badge big">4</span>
+<p class="kicker">Chapter 4 · Final syllabus · Lecture 14</p>
+<h1>Threads &amp; Concurrency</h1>
+<p class="lead">Why applications use threads, concurrency versus parallelism, Amdahl’s law, user and kernel threads, the many-to-one, one-to-one, many-to-many and two-level models, Pthreads, implicit threading, threading issues and Windows and Linux threads.</p>
+<div class="row"><a class="btn pri" href="#s=2">Start</a><a class="btn" href="../index.html">All chapters</a></div>
+<p class="hint"><kbd>←</kbd> <kbd>→</kbd> move between slides · <kbd>F</kbd> full screen · <kbd>M</kbd> slide list</p>
+</div></section>
+<section class="slide " data-title="Why this matters" aria-label="Why this matters" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Before we start</p><h2>Why this matters</h2><div class="hook"><p class="q">Your phone has eight cores, but a single-threaded program can only ever use one of them.</p><p>Threads let one process do several things at once — and, on a multicore CPU, truly in parallel.</p><p>This chapter explains how threads are mapped onto the kernel, how much speedup to expect, and what changes when a process has many threads.</p></div>
+</div></section>
+<section class="slide " data-title="Outline" aria-label="Outline" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Chapter 4 · Lecture 14</p><h2>Outline</h2><p class="muted">Select a topic to jump to the slide that explains it.</p><ol class="outline-list"><li><a href="#s=4">Overview</a></li><li><a href="#s=7">Multicore programming</a></li><li><a href="#s=10">Multithreading models</a></li><li><a href="#s=17">Thread libraries</a></li><li><a href="#s=19">Implicit threading</a></li><li><a href="#s=25">Threading issues</a></li><li><a href="#s=29">Operating system examples</a></li></ol>
+</div></section>
+<section class="slide " data-title="Motivation" aria-label="Motivation" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Overview</p><h2>Motivation</h2><div class="cols "><div><ul><li>Most modern applications are multithreaded</li><li>Threads run within application</li><li>Multiple tasks with the application can be implemented by separate threads<ul><li>Update display</li><li>Fetch data</li><li>Spell checking</li><li>Answer a network request</li></ul></li><li>Process creation is heavy-weight while thread creation is light-weight</li><li>Can simplify code, increase efficiency</li><li>Kernels are generally multithreaded</li></ul></div><div><div class="callout">A word processor might use one thread to show what you type, one to check spelling and one to save in the background — all sharing the same document in memory.</div></div></div>
+</div></section>
+<section class="slide " data-title="Single and multithreaded processes" aria-label="Single and multithreaded processes" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Overview</p><h2>Single and multithreaded processes</h2><figure class="fig" data-fig="threads-single-multi"><figcaption>Threads share code, data and files; each has its own registers, program counter and stack.</figcaption></figure>
+</div></section>
+<section class="slide " data-title="Benefits" aria-label="Benefits" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Overview</p><h2>Benefits</h2><ul><li><b>Responsiveness</b> – may allow continued execution if part of process is blocked, especially important for user interfaces</li><li><b>Resource sharing</b> – threads share resources of process, easier than shared memory or message passing</li><li><b>Economy</b> – cheaper than process creation, thread switching lower overhead than context switching</li><li><b>Scalability</b> – process can take advantage of multicore architectures</li></ul>
+</div></section>
+<section class="slide " data-title="Multicore programming" aria-label="Multicore programming" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Multicore programming</p><h2>Multicore programming</h2><div class="cols fw"><div><ul><li><b>Multicore</b> or <b>multiprocessor</b> systems putting pressure on programmers, challenges include:<ul><li>Dividing activities</li><li>Balance</li><li>Data splitting</li><li>Data dependency</li><li>Testing and debugging</li></ul></li><li><b>Parallelism</b> implies a system can perform more than one task simultaneously</li><li><b>Concurrency</b> supports more than one task making progress<ul><li>Single processor / core, scheduler providing concurrency</li></ul></li></ul></div><div><figure class="fig" data-fig="conc-par"><figcaption>Concurrent execution on a single-core system and parallelism on a multi-core system.</figcaption></figure></div></div>
+</div></section>
+<section class="slide " data-title="Types of parallelism" aria-label="Types of parallelism" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Multicore programming</p><h2>Types of parallelism</h2><div class="cols fw"><div><ul><li>Types of parallelism<ul><li><b>Data parallelism</b> – distributes subsets of the same data across multiple cores, same operation on each</li><li><b>Task parallelism</b> – distributing threads across cores, each thread performing unique operation</li></ul></li></ul></div><div><figure class="fig" data-fig="data-task"><figcaption>Data and task parallelism.</figcaption></figure></div></div>
+</div></section>
+<section class="slide " data-title="Amdahl’s law" aria-label="Amdahl’s law" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Multicore programming</p><h2>Amdahl’s law</h2><div class="cols "><div><ul><li>Identifies performance gains from adding additional cores to an application that has both serial and parallel components</li><li><i>S</i> is serial portion</li><li><i>N</i> processing cores</li></ul><div class="formula">speedup ≤ 1 / ( S + (1 − S) / N )</div><ul><li>That is, if application is 75% parallel / 25% serial, moving from 1 to 2 cores results in speedup of 1.6 times</li><li>As <i>N</i> approaches infinity, speedup approaches 1 / <i>S</i></li></ul><div class="callout">Serial portion of an application has disproportionate effect on performance gained by adding additional cores.</div></div><div><div data-demo="amdahl"></div></div></div>
+</div></section>
+<section class="slide " data-title="User threads and kernel threads" aria-label="User threads and kernel threads" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Multithreading models</p><h2>User threads and kernel threads</h2><div class="cols fw"><div><ul><li><b>User threads</b> – management done by user-level threads library<ul><li>Three primary thread libraries:</li><li>POSIX Pthreads</li><li>Windows threads</li><li>Java threads</li></ul></li><li><b>Kernel threads</b> – supported by the kernel<ul><li>Examples – virtually all general-purpose operating systems, including: Windows, Linux, Mac OS X, iOS, Android</li></ul></li></ul></div><div><figure class="fig" data-fig="user-kernel-threads"><figcaption>User and kernel threads.</figcaption></figure></div></div>
+</div></section>
+<section class="slide " data-title="Multithreading models" aria-label="Multithreading models" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Multithreading models</p><h2>Multithreading models</h2><div class="fig2"><figure class="fig" data-fig="m2o"><figcaption><b>Many-to-one</b></figcaption></figure><figure class="fig" data-fig="o2o"><figcaption><b>One-to-one</b></figcaption></figure><figure class="fig" data-fig="m2m"><figcaption><b>Many-to-many</b></figcaption></figure></div>
+</div></section>
+<section class="slide " data-title="Many-to-one" aria-label="Many-to-one" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Multithreading models</p><h2>Many-to-one</h2><div class="cols fw"><div><ul><li>Many user-level threads mapped to single kernel thread</li><li>One thread blocking causes all to block</li><li>Multiple threads may not run in parallel on multicore system because only one may be in kernel at a time</li><li>Few systems currently use this model</li><li>Examples:<ul><li>Solaris Green Threads</li><li>GNU Portable Threads</li></ul></li></ul></div><div><figure class="fig" data-fig="m2o"><figcaption>Many-to-one model.</figcaption></figure></div></div>
+</div></section>
+<section class="slide " data-title="One-to-one" aria-label="One-to-one" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Multithreading models</p><h2>One-to-one</h2><div class="cols fw"><div><ul><li>Each user-level thread maps to kernel thread</li><li>Creating a user-level thread creates a kernel thread</li><li>More concurrency than many-to-one</li><li>Number of threads per process sometimes restricted due to overhead</li><li>Examples<ul><li>Windows</li><li>Linux</li></ul></li></ul></div><div><figure class="fig" data-fig="o2o"><figcaption>One-to-one model.</figcaption></figure></div></div>
+</div></section>
+<section class="slide " data-title="Many-to-many model" aria-label="Many-to-many model" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Multithreading models</p><h2>Many-to-many model</h2><div class="cols fw"><div><ul><li>Allows many user level threads to be mapped to many kernel threads</li><li>Allows the operating system to create a sufficient number of kernel threads</li><li>Windows with the <i>ThreadFiber</i> package</li><li>Otherwise not very common</li></ul></div><div><figure class="fig" data-fig="m2m"><figcaption>Many-to-many model.</figcaption></figure></div></div>
+</div></section>
+<section class="slide " data-title="Two-level model" aria-label="Two-level model" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Multithreading models</p><h2>Two-level model</h2><div class="cols fw"><div><ul><li>Similar to M:M, except that it allows a user thread to be <b>bound</b> to kernel thread</li></ul></div><div><figure class="fig" data-fig="two-level-model"><figcaption>Two-level model.</figcaption></figure></div></div>
+</div></section>
+<section class="slide " data-title="Compare the models" aria-label="Compare the models" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Interactive</p><h2>Compare the models</h2><div data-demo="thread-models"></div>
+</div></section>
+<section class="slide " data-title="Thread libraries" aria-label="Thread libraries" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Thread libraries</p><h2>Thread libraries</h2><ul><li><b>Thread library</b> provides programmer with API for creating and managing threads</li><li>Two primary ways of implementing<ul><li>Library entirely in user space</li><li>Kernel-level library supported by the OS</li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="Pthreads" aria-label="Pthreads" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Thread libraries</p><h2>Pthreads</h2><div class="cols "><div><ul><li>May be provided either as user-level or kernel-level</li><li>A POSIX standard (IEEE 1003.1c) API for thread creation and synchronization</li><li><i>Specification</i>, not <i>implementation</i></li><li>API specifies behavior of the thread library, implementation is up to development of the library</li><li>Common in UNIX operating systems (Linux &amp; Mac OS X)</li></ul></div><div><pre class="code small-code">#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+
+void *runner(void *param)
+{
+    printf(&quot;hello from a thread\n&quot;);
+    pthread_exit(0);
+}
+
+int main()
+{
+    pthread_t tid;
+    pthread_create(&amp;tid, NULL, runner, NULL);
+    pthread_join(tid, NULL);
+    return 0;
+}</pre></div></div>
+</div></section>
+<section class="slide " data-title="Implicit threading" aria-label="Implicit threading" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Implicit threading</p><h2>Implicit threading</h2><ul><li>Growing in popularity as numbers of threads increase, program correctness more difficult with explicit threads</li><li>Creation and management of threads done by compilers and run-time libraries rather than programmers</li><li>Five methods explored<ul><li>Thread pools</li><li>Fork-join</li><li>OpenMP</li><li>Grand Central Dispatch</li><li>Intel Threading Building Blocks</li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="Thread pools" aria-label="Thread pools" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Implicit threading</p><h2>Thread pools</h2><div class="cols "><div><ul><li>Create a number of threads in a pool where they await work</li><li>Advantages:<ul><li>Usually slightly faster to service a request with an existing thread than create a new thread</li><li>Allows the number of threads in the application(s) to be bound to the size of the pool</li><li>Separating task to be performed from mechanics of creating task allows different strategies for running task<ul><li>i.e., tasks could be scheduled to run periodically</li></ul></li></ul></li></ul></div><div><p>Windows API supports thread pools:</p><pre class="code">DWORD WINAPI PoolFunction(PVOID Param) {
+   /*
+    * this function runs as a separate thread.
+    */
+}</pre></div></div>
+</div></section>
+<section class="slide " data-title="Fork-join parallelism" aria-label="Fork-join parallelism" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Implicit threading</p><h2>Fork-join parallelism</h2><p>Multiple threads (tasks) are <b>forked</b>, and then <b>joined</b>.</p><figure class="fig" data-fig="fork-join"><figcaption>Fork-join parallelism.</figcaption></figure><div class="cols fw"><div><p>General algorithm for fork-join strategy:</p><pre class="code small-code">Task(problem)
+   if problem is small enough
+      solve the problem directly
+   else
+      subtask1 = fork(new Task(subset of problem))
+      subtask2 = fork(new Task(subset of problem))
+
+      result1 = join(subtask1)
+      result2 = join(subtask2)
+
+      return combined results</pre></div><div><figure class="fig" data-fig="fork-join-tree"><figcaption>Fork-join in Java: recursively summing an array.</figcaption></figure></div></div>
+</div></section>
+<section class="slide " data-title="OpenMP" aria-label="OpenMP" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Implicit threading</p><h2>OpenMP</h2><div class="cols "><div><ul><li>Set of compiler directives and an API for C, C++, FORTRAN</li><li>Provides support for parallel programming in shared-memory environments</li><li>Identifies <b>parallel regions</b> – blocks of code that can run in parallel</li><li><code>#pragma omp parallel</code></li><li>Create as many threads as there are cores</li></ul><p>Run the for loop in parallel:</p><pre class="code">#pragma omp parallel for
+for (i = 0; i &lt; N; i++) {
+   c[i] = a[i] + b[i];
+}</pre></div><div><pre class="code small-code">#include &lt;omp.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char *argv[])
+{
+   /* sequential code */
+
+   #pragma omp parallel
+   {
+      printf(&quot;I am a parallel region.&quot;);
+   }
+
+   /* sequential code */
+
+   return 0;
+}</pre></div></div>
+</div></section>
+<section class="slide " data-title="Grand Central Dispatch" aria-label="Grand Central Dispatch" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Implicit threading</p><h2>Grand Central Dispatch</h2><ul><li>Apple technology for macOS and iOS operating systems</li><li>Extensions to C, C++ and Objective-C languages, API, and run-time library</li><li>Allows identification of parallel sections</li><li>Manages most of the details of threading</li><li>Block is in “^{ }”: <code>^{ printf("I am a block"); }</code></li><li>Blocks placed in <b>dispatch queue</b><ul><li>Assigned to available thread in thread pool when removed from queue</li></ul></li><li>Two types of dispatch queues:<ul><li><b>serial</b> – blocks removed in FIFO order, queue is per process, called <b>main queue</b><ul><li>Programmers can create additional serial queues within program</li></ul></li><li><b>concurrent</b> – removed in FIFO order but several may be removed at a time<ul><li>Four system wide queues divided by quality of service: <code>QOS_CLASS_USER_INTERACTIVE</code>, <code>QOS_CLASS_USER_INITIATED</code>, <code>QOS_CLASS_USER_UTILITY</code>, <code>QOS_CLASS_USER_BACKGROUND</code></li></ul></li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="Intel Threading Building Blocks (TBB)" aria-label="Intel Threading Building Blocks (TBB)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Implicit threading</p><h2>Intel Threading Building Blocks (TBB)</h2><ul><li>Template library for designing parallel C++ programs</li></ul><div class="cols "><div><p>A serial version of a simple for loop:</p><pre class="code">for (int i = 0; i &lt; n; i++) {
+   apply(v[i]);
+}</pre></div><div><p>The same for loop written using TBB with <code>parallel_for</code> statement:</p><pre class="code">parallel_for (size_t(0), n, [=](size_t i) {apply(v[i]);});</pre></div></div>
+</div></section>
+<section class="slide " data-title="Threading issues" aria-label="Threading issues" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Threading issues</p><h2>Threading issues</h2><ul><li>Semantics of <code>fork()</code> and <code>exec()</code> system calls</li><li>Signal handling<ul><li>Synchronous and asynchronous</li></ul></li><li>Thread cancellation of target thread<ul><li>Asynchronous or deferred</li></ul></li><li>Thread-local storage</li><li>Scheduler activations</li></ul>
+</div></section>
+<section class="slide " data-title="Semantics of fork( ) and exec( )" aria-label="Semantics of fork( ) and exec( )" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Threading issues</p><h2>Semantics of fork( ) and exec( )</h2><ul><li>Does <code>fork()</code> duplicate only the calling thread or all threads?<ul><li>Some UNIXes have two versions of fork</li></ul></li><li><code>exec()</code> usually works as normal – replace the running process including all threads</li></ul><div class="callout">If a thread calls exec() immediately after fork(), duplicating all threads is wasted work, because exec() replaces them all anyway.</div>
+</div></section>
+<section class="slide " data-title="Signal handling" aria-label="Signal handling" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Threading issues</p><h2>Signal handling</h2><div class="cols "><div><ul><li><b>Signals</b> are used in UNIX systems to notify a process that a particular event has occurred.</li><li>A <b>signal handler</b> is used to process signals<ul><li>Signal is generated by particular event</li><li>Signal is delivered to a process</li><li>Signal is handled by one of two signal handlers:<ul><li>default</li><li>user-defined</li></ul></li></ul></li><li>Every signal has <b>default handler</b> that kernel runs when handling signal<ul><li><b>User-defined signal handler</b> can override default</li><li>For single-threaded, signal delivered to process</li></ul></li></ul></div><div><ul><li>Where should a signal be delivered for multi-threaded?<ul><li>Deliver the signal to the thread to which the signal applies</li><li>Deliver the signal to every thread in the process</li><li>Deliver the signal to certain threads in the process</li><li>Assign a specific thread to receive all signals for the process</li></ul></li></ul></div></div>
+</div></section>
+<section class="slide " data-title="Thread cancellation" aria-label="Thread cancellation" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Threading issues</p><h2>Thread cancellation</h2><div class="cols "><div><ul><li>Terminating a thread before it has finished</li><li>Thread to be canceled is <b>target thread</b></li><li>Two general approaches:<ul><li><b>Asynchronous cancellation</b> terminates the target thread immediately</li><li><b>Deferred cancellation</b> allows the target thread to periodically check if it should be cancelled</li></ul></li></ul></div><div><p>Pthread code to create and cancel a thread:</p><pre class="code">pthread_t tid;
+
+/* create the thread */
+pthread_create(&amp;tid, 0, worker, NULL);
+
+. . .
+
+/* cancel the thread */
+pthread_cancel(tid);
+
+/* wait for the thread to terminate */
+pthread_join(tid,NULL);</pre></div></div>
+</div></section>
+<section class="slide " data-title="Operating system examples" aria-label="Operating system examples" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Operating system examples</p><h2>Operating system examples</h2><div class="tgrid"><div class="tcard"><h4>Windows threads</h4>one-to-one, kernel-level; ETHREAD, KTHREAD and TEB</div><div class="tcard"><h4>Linux threads</h4>called tasks; created with clone()</div></div>
+</div></section>
+<section class="slide " data-title="Windows threads" aria-label="Windows threads" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Operating system examples</p><h2>Windows threads</h2><div class="cols fw"><div><ul><li>Windows API – primary API for Windows applications</li><li>Implements the one-to-one mapping, kernel-level</li><li>Each thread contains<ul><li>A thread id</li><li>Register set representing state of processor</li><li>Separate user and kernel stacks for when thread runs in user mode or kernel mode</li><li>Private data storage area used by run-time libraries and dynamic link libraries (DLLs)</li></ul></li><li>The register set, stacks, and private storage area are known as the <b>context</b> of the thread</li><li>The primary data structures of a thread include:<ul><li>ETHREAD (executive thread block) – includes pointer to process to which thread belongs and to KTHREAD, in kernel space</li><li>KTHREAD (kernel thread block) – scheduling and synchronization info, kernel-mode stack, pointer to TEB, in kernel space</li><li>TEB (thread environment block) – thread id, user-mode stack, thread-local storage, in user space</li></ul></li></ul></div><div><figure class="fig" data-fig="win-thread-ds"><figcaption>Windows threads data structures.</figcaption></figure></div></div>
+</div></section>
+<section class="slide " data-title="Linux threads" aria-label="Linux threads" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Operating system examples</p><h2>Linux threads</h2><div class="cols "><div><ul><li>Linux refers to them as <b>tasks</b> rather than threads</li><li>Thread creation is done through <code>clone()</code> system call</li><li><code>clone()</code> allows a child task to share the address space of the parent task (process)<ul><li>Flags control behavior</li></ul></li><li><code>struct task_struct</code> points to process data structures (shared or unique)</li></ul></div><div><div class="scrollx"><table class="doc"><thead><tr><th>flag</th><th>meaning</th></tr></thead><tbody><tr><td><code>CLONE_FS</code></td><td>File-system information is shared.</td></tr><tr><td><code>CLONE_VM</code></td><td>The same memory space is shared.</td></tr><tr><td><code>CLONE_SIGHAND</code></td><td>Signal handlers are shared.</td></tr><tr><td><code>CLONE_FILES</code></td><td>The set of open files is shared.</td></tr></tbody></table></div></div></div>
+</div></section>
+<section class="slide " data-title="Worked example 1" aria-label="Worked example 1" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Worked example 1 of 2</p><h2>Worked example 1</h2><div class="ex"><div class="qq">An application is 80% parallel. What speedup does Amdahl’s law give on 4 cores and on 8 cores? What is the limit?</div><details class="reveal"><summary>Show the solution</summary><div class="ans"><div class="formula">S = 0.2:  N = 4 → 1 / (0.2 + 0.8/4) = 2.5×;  N = 8 → 1 / (0.2 + 0.8/8) = 3.33×;  limit = 1 / 0.2 = 5×</div><p>Doubling the cores from 4 to 8 gives only 33% more speed; the serial 20% dominates.</p></div></details></div>
+</div></section>
+<section class="slide " data-title="Worked example 2" aria-label="Worked example 2" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Worked example 2 of 2</p><h2>Worked example 2</h2><div class="ex"><div class="qq">Four user threads run on the many-to-one model and thread T2 makes a blocking read(). Which threads can run? What changes with one-to-one?</div><details class="reveal"><summary>Show the solution</summary><div class="ans"><p>Many-to-one: the single kernel thread blocks in the system call, so <b>all four</b> user threads are blocked until the read completes.</p><p>One-to-one: only T2’s kernel thread blocks; T1, T3 and T4 keep running, and on a multicore system several can run in parallel.</p></div></details></div>
+</div></section>
+<section class="slide " data-title="Practice (1 of 2)" aria-label="Practice (1 of 2)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Practice</p><h2>Practice (1 of 2)</h2><p class="muted">Try each one on paper first, then check your answer.</p><div class="ex"><div class="qq">1. Give the four benefits of multithreading.</div><details class="reveal"><summary>Show the answer</summary><div class="ans">Responsiveness, resource sharing, economy and scalability.</div></details></div><div class="ex"><div class="qq">2. Distinguish concurrency from parallelism.</div><details class="reveal"><summary>Show the answer</summary><div class="ans">Concurrency: more than one task makes progress (possible on one core by interleaving). Parallelism: more than one task runs at the same instant, which needs multiple cores.</div></details></div><div class="ex"><div class="qq">3. Using Amdahl’s law, show that 75% parallel code on 2 cores gives a speedup of 1.6.</div><details class="reveal"><summary>Show the answer</summary><div class="ans">1 / (0.25 + 0.75 / 2) = 1 / 0.625 = 1.6.</div></details></div>
+</div></section>
+<section class="slide " data-title="Practice (2 of 2)" aria-label="Practice (2 of 2)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Practice</p><h2>Practice (2 of 2)</h2><p class="muted">Try each one on paper first, then check your answer.</p><div class="ex"><div class="qq">4. Which model allows a user thread to be bound to a kernel thread?</div><details class="reveal"><summary>Show the answer</summary><div class="ans">The two-level model (a variation of many-to-many).</div></details></div><div class="ex"><div class="qq">5. Compare asynchronous and deferred cancellation.</div><details class="reveal"><summary>Show the answer</summary><div class="ans">Asynchronous cancellation terminates the target thread immediately; deferred cancellation lets the target check periodically whether it should be cancelled, so it can stop at a safe point.</div></details></div><div class="ex"><div class="qq">6. What does CLONE_VM do in Linux clone()?</div><details class="reveal"><summary>Show the answer</summary><div class="ans">The child task shares the same memory space as the parent, which makes it behave like a thread.</div></details></div>
+</div></section>
+<section class="slide " data-title="Quiz" aria-label="Quiz" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Check yourself</p><h2>Quiz</h2><div><div class="quiz-host" data-quiz-key="6"></div><script type="application/json" class="quiz-json">[{"q": "Which is shared by all threads of a process?", "o": ["registers", "stack", "program counter", "code and data"], "a": 3, "w": "Each thread has its own registers, PC and stack."}, {"q": "Running one task’s operation on different subsets of the same data on each core is…", "o": ["task parallelism", "data parallelism", "concurrency", "pipelining"], "a": 1, "w": "Same operation, different data."}, {"q": "As N → ∞, Amdahl’s speedup approaches…", "o": ["N", "1 / S", "S", "infinity"], "a": 1, "w": "The serial part limits it."}, {"q": "In the many-to-one model, if one thread blocks…", "o": ["only that thread blocks", "all threads block", "a new kernel thread is created", "the process terminates"], "a": 1, "w": "They share one kernel thread."}, {"q": "Windows and Linux use the…", "o": ["many-to-one model", "one-to-one model", "many-to-many model", "two-level model"], "a": 1, "w": "One kernel thread per user thread."}, {"q": "#pragma omp parallel is part of…", "o": ["Pthreads", "OpenMP", "Grand Central Dispatch", "TBB"], "a": 1, "w": "An OpenMP compiler directive."}, {"q": "The Windows structure that holds the user-mode stack and thread-local storage is…", "o": ["ETHREAD", "KTHREAD", "TEB", "PCB"], "a": 2, "w": "The thread environment block lives in user space."}, {"q": "Linux creates threads with…", "o": ["fork()", "exec()", "clone()", "spawn()"], "a": 2, "w": "Flags decide what is shared."}]</script></div>
+</div></section>
+<section class="slide " data-title="Further learning" aria-label="Further learning" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Resources</p><h2>Further learning</h2><p class="muted">Free material to go deeper. Links open in a new tab.</p><div class="res-grid"><a class="res" href="https://pages.cs.wisc.edu/~remzi/OSTEP/threads-intro.pdf" target="_blank" rel="noopener noreferrer"><small>Free book</small><b>OSTEP: Concurrency: An Introduction ↗</b><span>What a thread is, and why shared data is a problem.</span></a><a class="res" href="https://pages.cs.wisc.edu/~remzi/OSTEP/threads-api.pdf" target="_blank" rel="noopener noreferrer"><small>Free book</small><b>OSTEP: Thread API ↗</b><span>pthread_create, pthread_join and friends.</span></a><a class="res" href="https://man7.org/linux/man-pages/man7/pthreads.7.html" target="_blank" rel="noopener noreferrer"><small>Reference</small><b>pthreads(7) ↗</b><span>POSIX threads on Linux.</span></a><a class="res" href="https://man7.org/linux/man-pages/man2/clone.2.html" target="_blank" rel="noopener noreferrer"><small>Reference</small><b>clone(2) ↗</b><span>The Linux system call behind threads, with all flags.</span></a><a class="res" href="https://en.wikipedia.org/wiki/Amdahl%27s_law" target="_blank" rel="noopener noreferrer"><small>Article</small><b>Amdahl’s law ↗</b><span>The formula, graphs and its limits.</span></a><a class="res" href="https://www.openmp.org/" target="_blank" rel="noopener noreferrer"><small>Reference</small><b>OpenMP ↗</b><span>Specifications and tutorials for #pragma omp.</span></a></div>
+</div></section>
+<section class="slide " data-title="Summary" aria-label="Summary" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Summary · End of Chapter 4</p><h2>Summary</h2><ul class="sumlist"><li>A thread is a unit of CPU use with its own registers, PC and stack, sharing code, data and files with the other threads of its process.</li><li>Benefits: responsiveness, resource sharing, economy, scalability; concurrency is progress, parallelism is simultaneous execution.</li><li>Amdahl’s law: speedup ≤ 1 / (S + (1 − S)/N), limited to 1/S by the serial part.</li><li>User threads map to kernel threads many-to-one, one-to-one (Windows, Linux), many-to-many or two-level.</li><li>Libraries (Pthreads, Windows, Java) and implicit threading (thread pools, fork-join, OpenMP, GCD, TBB) create and manage threads.</li><li>Issues: fork/exec semantics, signal delivery, asynchronous vs deferred cancellation; Windows uses ETHREAD/KTHREAD/TEB and Linux uses clone() tasks.</li></ul><div class="nextcard"><a class="btn pri" href="ch05-cpu-scheduling.html">Next: Chapter 5 · CPU Scheduling</a><a class="btn" href="../practice.html#t6">More practice</a><a class="btn" href="../index.html">All chapters</a></div>
+</div></section>
+</main>
+<footer class="deck-foot">
+  <button type="button" class="btn" id="prev">Previous</button>
+  <span class="counter" id="counter">1 / 38</span>
+  <button type="button" class="btn pri" id="next">Next</button>
+</footer>
+<aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>
+<noscript><p style="padding:20px">This lesson needs JavaScript for the slides and the interactive examples.</p></noscript>
+<script src="../js/core.js"></script>
+<script src="../js/diagram.js"></script>
+<script src="../js/clang.js"></script>
+<script src="../js/figs-mid.js"></script>
+<script src="../js/figs-final.js"></script>
+<script src="../js/demos-mid.js"></script>
+<script src="../js/demos-final.js"></script>
+<script src="../js/art.js"></script>
+<script src="../js/quiz.js"></script>
+<script src="../js/page.js"></script>
+<script>window.OS_TOPIC = {"id": 6, "prev": "ch10-virtual-memory.html", "next": "ch05-cpu-scheduling.html", "nextLabel": "Next chapter"};</script>
+<script>mountPage();</script>
+<script src="../js/slides.js"></script>
+<script src="../js/annotate.js"></script>
+<script src="../js/lang.js"></script>
+<script src="../js/analytics.js"
+        data-endpoint="https://analytics-proxy.ayansarkar1829.workers.dev"
+        data-project="CSE-309 Operating System"></script>
+<script src="../js/course-events.js"></script>
+</body>
+</html>

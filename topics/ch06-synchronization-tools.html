@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Synchronization Tools – Chapter 6 | CSE 309 Operating System</title>
+<meta name="description" content="Race conditions, the critical-section problem and its three requirements, interrupt-based and software solutions, Peterson’s solution, test_and_set and compare_and_swap, atomic variables, mutex locks, semaphores and monitors with condition variables. Interactive slides, diagrams, simulators and a quiz for chapter 6 of the CSE 309 Operating System course.">
+<meta name="keywords" content="process synchronization, race condition, critical section, mutual exclusion, progress, bounded waiting, Peterson solution, test and set, compare and swap, atomic variable, mutex lock, spinlock, busy waiting, semaphore wait signal, counting semaphore, binary semaphore, monitor, condition variable, CSE 309">
+<meta name="author" content="Operating System Notes">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#3446A8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B0E1A" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch06-synchronization-tools.html">
+<link rel="icon" type="image/svg+xml" href="../img/logo-mark.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../img/favicon-16.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Operating System (CSE 309)">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Synchronization Tools – Chapter 6 | CSE 309 Operating System">
+<meta property="og:description" content="Race conditions, the critical-section problem and its three requirements, interrupt-based and software solutions, Peterson’s solution, test_and_set and compare_and_swap, atomic variables, mutex locks, semaphores and monitors with condition variables. Interactive slides, diagrams, simulators and a quiz for chapter 6 of the CSE 309 Operating System course.">
+<meta property="og:url" content="https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch06-synchronization-tools.html">
+<meta property="og:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch06-synchronization-tools.png?v=1">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Synchronization Tools – Chapter 6 | CSE 309 Operating System">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Synchronization Tools – Chapter 6 | CSE 309 Operating System">
+<meta name="twitter:description" content="Race conditions, the critical-section problem and its three requirements, interrupt-based and software solutions, Peterson’s solution, test_and_set and compare_and_swap, atomic variables, mutex locks, semaphores and monitors with condition variables. Interactive slides, diagrams, simulators and a quiz for chapter 6 of the CSE 309 Operating System course.">
+<meta name="twitter:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch06-synchronization-tools.png?v=1">
+<meta name="twitter:image:alt" content="Synchronization Tools – Chapter 6 | CSE 309 Operating System">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Synchronization Tools", "description": "Race conditions, the critical-section problem and its three requirements, interrupt-based and software solutions, Peterson’s solution, test_and_set and compare_and_swap, atomic variables, mutex locks, semaphores and monitors with condition variables.", "position": 8, "educationalLevel": "Undergraduate", "learningResourceType": "Lecture slides", "inLanguage": "en", "isAccessibleForFree": true, "teaches": ["Concurrent access to shared data can leave it inconsistent; a race condition is when the result depends on the order of access.", "A critical-section solution needs mutual exclusion, progress and bounded waiting.", "Disabling interrupts fails on multiprocessors; the shared-turn algorithm breaks progress; Peterson’s solution (turn + flag[2]) meets all three.", "Hardware offers atomic test_and_set and compare_and_swap, used to build atomic variables and mutex locks (spinlocks).", "Semaphores (counting or binary) use atomic wait() and signal(); a waiting queue with block and wakeup avoids busy waiting.", "Monitors allow one active process at a time; condition variables provide x.wait() and x.signal(), with x.wait(c) for priority."], "keywords": "process synchronization, race condition, critical section, mutual exclusion, progress, bounded waiting, Peterson solution, test and set, compare and swap, atomic variable, mutex lock, spinlock, busy waiting, semaphore wait signal, counting semaphore, binary semaphore, monitor, condition variable, CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch06-synchronization-tools.html", "image": "https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch06-synchronization-tools.png", "isPartOf": {"@type": "Course", "name": "Operating System", "courseCode": "CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Operating System", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/"}, {"@type": "ListItem", "position": 2, "name": "Chapter 6: Synchronization Tools", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch06-synchronization-tools.html"}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="deck-page">
+<div class="sr-only" id="live" aria-live="polite"></div>
+<header class="deck-bar">
+  <a class="home-link" href="../index.html" aria-label="Home: all chapters"><img src="../img/logo-mark.svg" alt="" width="26" height="26"><span>Home</span></a>
+  <div class="deck-title"><span class="badge">6</span><span>Synchronization Tools</span></div>
+  <div class="deck-actions">
+    <button type="button" class="btn sm" id="btn-menu" aria-expanded="false" aria-controls="slide-menu" aria-label="Slides"><svg class="btn-ic" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><rect x="3" y="4.5" width="18" height="3" rx="1"></rect><rect x="3" y="10.5" width="18" height="3" rx="1"></rect><rect x="3" y="16.5" width="18" height="3" rx="1"></rect></svg><span>Slides</span></button>
+    <button type="button" class="btn sm" id="btn-theme" aria-pressed="false" aria-label="Toggle dark mode"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path></svg><span>Dark mode</span></button>
+    <button type="button" class="btn sm" id="btn-fs" aria-pressed="false" aria-label="Full screen"><svg class="btn-ic" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"></path></svg><span>Full screen</span></button>
+  </div>
+</header>
+<div class="deck-progress"><i id="progress-fill"></i></div>
+<main class="deck" id="deck">
+<section class="slide title-slide" data-title="Synchronization Tools" aria-label="Synchronization Tools" tabindex="-1"><div class="slide-inner">
+<span class="topic-art" data-art="8" aria-hidden="true"></span>
+<span class="badge big">6</span>
+<p class="kicker">Chapter 6 · Final syllabus · Lectures 18–20</p>
+<h1>Synchronization Tools</h1>
+<p class="lead">Race conditions, the critical-section problem and its three requirements, interrupt-based and software solutions, Peterson’s solution, test_and_set and compare_and_swap, atomic variables, mutex locks, semaphores and monitors with condition variables.</p>
+<div class="row"><a class="btn pri" href="#s=2">Start</a><a class="btn" href="../index.html">All chapters</a></div>
+<p class="hint"><kbd>←</kbd> <kbd>→</kbd> move between slides · <kbd>F</kbd> full screen · <kbd>M</kbd> slide list</p>
+</div></section>
+<section class="slide " data-title="Why this matters" aria-label="Why this matters" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Before we start</p><h2>Why this matters</h2><div class="hook"><p class="q">Two processes add one to the same counter. Sometimes the counter goes up by one, not two.</p><p>When cooperating processes share data, the order of their instructions matters — and preemption can interleave them at the worst moment.</p><p>This chapter defines what a correct solution must guarantee and builds the tools for it, from Peterson’s algorithm to semaphores and monitors.</p></div>
+</div></section>
+<section class="slide " data-title="Outline" aria-label="Outline" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Chapter 6 · Lectures 18–20</p><h2>Outline</h2><p class="muted">Select a topic to jump to the slide that explains it.</p><ol class="outline-list"><li><a href="#s=4">Background</a></li><li><a href="#s=7">The critical-section problem</a></li><li><a href="#s=10">Peterson’s solution</a></li><li><a href="#s=14">Hardware support for synchronization</a></li><li><a href="#s=17">Mutex locks</a></li><li><a href="#s=18">Semaphores</a></li><li><a href="#s=21">Monitors</a></li></ol>
+</div></section>
+<section class="slide " data-title="Background" aria-label="Background" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Background</p><h2>Background</h2><ul><li>Processes can execute concurrently<ul><li>May be interrupted at any time, partially completing execution</li></ul></li><li>Concurrent access to shared data may result in data inconsistency</li><li>Maintaining data consistency requires mechanisms to ensure the orderly execution of cooperating processes</li></ul>
+</div></section>
+<section class="slide " data-title="Race condition" aria-label="Race condition" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Background</p><h2>Race condition</h2><div class="cols "><div><ul><li>Processes P0 and P1 are creating child processes using the <code>fork()</code> system call</li><li>Race condition on kernel variable <code>next_available_pid</code> which represents the next available process identifier (pid)</li><li>Unless there is a mechanism to prevent P0 and P1 from accessing the variable <code>next_available_pid</code> the same pid could be assigned to two different processes!</li></ul></div><div><div class="callout">A <b>race condition</b> is when the outcome depends on the particular order in which the accesses take place. Try it on the next slide.</div></div></div>
+</div></section>
+<section class="slide " data-title="Race on next_available_pid" aria-label="Race on next_available_pid" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Interactive</p><h2>Race on next_available_pid</h2><div data-demo="race-pid"></div>
+</div></section>
+<section class="slide " data-title="Critical section problem" aria-label="Critical section problem" tabindex="-1"><div class="slide-inner">
+<p class="kicker">The critical-section problem</p><h2>Critical section problem</h2><div class="cols "><div><ul><li>Consider system of <i>n</i> processes {p<sub>0</sub>, p<sub>1</sub>, … p<sub>n−1</sub>}</li><li>Each process has <b>critical section</b> segment of code<ul><li>Process may be changing common variables, updating table, writing file, etc.</li><li>When one process in critical section, no other may be in its critical section</li></ul></li><li><i>Critical section problem</i> is to design protocol to solve this</li><li>Each process must ask permission to enter critical section in <b>entry section</b>, may follow critical section with <b>exit section</b>, then <b>remainder section</b></li></ul></div><div><p>General structure of process P<sub>i</sub>:</p><pre class="code">while (true) {
+
+    entry section
+
+        critical section
+
+    exit section
+
+        remainder section
+}</pre></div></div>
+</div></section>
+<section class="slide " data-title="Critical-section problem (cont.)" aria-label="Critical-section problem (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">The critical-section problem</p><h2>Critical-section problem (cont.)</h2><p>Requirements for solution to critical-section problem:</p><ol><li><b>Mutual exclusion</b> – if process P<sub>i</sub> is executing in its critical section, then no other processes can be executing in their critical sections</li><li><b>Progress</b> – if no process is executing in its critical section and there exist some processes that wish to enter their critical section, then the selection of the process that will enter the critical section next cannot be postponed indefinitely</li><li><b>Bounded waiting</b> – a bound must exist on the number of times that other processes are allowed to enter their critical sections after a process has made a request to enter its critical section and before that request is granted<ul><li>Assume that each process executes at a nonzero speed</li><li>No assumption concerning <b>relative speed</b> of the <i>n</i> processes</li></ul></li></ol>
+</div></section>
+<section class="slide " data-title="Interrupt-based solution" aria-label="Interrupt-based solution" tabindex="-1"><div class="slide-inner">
+<p class="kicker">The critical-section problem</p><h2>Interrupt-based solution</h2><div class="cols "><div><ul><li>Entry section: disable interrupts</li><li>Exit section: enable interrupts</li><li>Will this solve the problem?<ul><li>What if the critical section is code that runs for an hour?</li><li>Can some processes starve – never enter their critical section.</li><li>What if there are two CPUs?</li></ul></li></ul></div><div><div class="callout warn">Disabling interrupts only stops preemption on <b>one</b> CPU. On a multiprocessor, a process on another CPU can still enter the critical section, and turning interrupts off on every CPU is too slow.</div></div></div>
+</div></section>
+<section class="slide " data-title="Software solution" aria-label="Software solution" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Peterson’s solution</p><h2>Software solution</h2><div class="cols "><div><ul><li>Two process solution</li><li>Assume that the <b>load</b> and <b>store</b> machine-language instructions are atomic; that is, cannot be interrupted</li><li>The two processes share one variable:<ul><li><code>int turn;</code></li></ul></li><li>The variable <code>turn</code> indicates whose turn it is to enter the critical section</li><li>initially, the value of <code>turn</code> is set to <i>i</i></li></ul></div><div><p>Algorithm for process P<sub>i</sub>:</p><pre class="code">while (true) {
+    while (turn == j);
+
+    /* critical section */
+
+    turn = j;
+
+    /* remainder section */
+}</pre><h3>Correctness of the software solution</h3><ul><li>Mutual exclusion is preserved: P<sub>i</sub> enters critical section only if <code>turn = i</code>, and <code>turn</code> cannot be both 0 and 1 at the same time</li><li>But <b>progress</b> fails: the processes must strictly alternate. If P<sub>j</sub> stays in its remainder section, P<sub>i</sub> cannot enter twice in a row.</li></ul></div></div>
+</div></section>
+<section class="slide " data-title="Peterson’s solution" aria-label="Peterson’s solution" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Peterson’s solution</p><h2>Peterson’s solution</h2><div class="cols "><div><ul><li>Two process solution</li><li>Assume that the <b>load</b> and <b>store</b> machine-language instructions are atomic; that is, cannot be interrupted</li><li>The two processes share two variables:<ul><li><code>int turn;</code></li><li><code>boolean flag[2]</code></li></ul></li><li>The variable <code>turn</code> indicates whose turn it is to enter the critical section</li><li>The <code>flag</code> array is used to indicate if a process is ready to enter the critical section.<ul><li><code>flag[i] = true</code> implies that process P<sub>i</sub> is ready!</li></ul></li></ul></div><div><p>Algorithm for process P<sub>i</sub>:</p><pre class="code">while (true) {
+    flag[i] = true;
+    turn = j;
+    while (flag[j] &amp;&amp; turn == j)
+        ;
+
+    /* critical section */
+
+    flag[i] = false;
+
+    /* remainder section */
+}</pre></div></div>
+</div></section>
+<section class="slide " data-title="Correctness of Peterson’s solution" aria-label="Correctness of Peterson’s solution" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Peterson’s solution</p><h2>Correctness of Peterson’s solution</h2><div class="cols "><div><p>Provable that the three CS requirements are met:</p><ol><li><b>Mutual exclusion</b> is preserved: P<sub>i</sub> enters CS only if either <code>flag[j] = false</code> or <code>turn = i</code></li><li><b>Progress</b> requirement is satisfied</li><li><b>Bounded-waiting</b> requirement is met</li></ol></div><div><div class="callout">If both processes want to enter, both set their flag; <code>turn</code> can only hold one value, the one written <b>last</b>, so exactly one of them waits. A process that is not interested has its flag false and never blocks the other.</div></div></div>
+</div></section>
+<section class="slide " data-title="Step through both algorithms" aria-label="Step through both algorithms" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Interactive</p><h2>Step through both algorithms</h2><div data-demo="peterson"></div>
+</div></section>
+<section class="slide " data-title="Synchronization hardware" aria-label="Synchronization hardware" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Hardware support for synchronization</p><h2>Synchronization hardware</h2><ul><li>Many systems provide hardware support for implementing the critical section code.</li><li>Uniprocessors – could disable interrupts<ul><li>Currently running code would execute without preemption</li><li>Generally too inefficient on multiprocessor systems<ul><li>Operating systems using this not broadly scalable</li></ul></li></ul></li><li>We will look at two forms of hardware support:<ul><li>1. Hardware instructions</li><li>2. Atomic variables</li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="Hardware instructions" aria-label="Hardware instructions" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Hardware support for synchronization</p><h2>Hardware instructions</h2><p>Special hardware instructions that allow us to either <b>test-and-modify</b> the content of a word, or to <b>swap</b> the contents of two words atomically (uninterruptedly):</p><div class="cols "><div><h3>The test_and_set instruction</h3><pre class="code">boolean test_and_set (boolean *target)
+{
+    boolean rv = *target;
+    *target = true;
+    return rv;
+}</pre><ul><li>Executed atomically</li><li>Returns the original value of passed parameter</li><li>Set the new value of passed parameter to <code>true</code></li></ul></div><div><h3>The compare_and_swap instruction</h3><pre class="code">int compare_and_swap(int *value, int expected, int new_value)
+{
+    int temp = *value;
+    if (*value == expected)
+        *value = new_value;
+    return temp;
+}</pre><ul><li>Executed atomically</li><li>Returns the original value of passed parameter <code>value</code></li><li>Set the variable <code>value</code> the value of the passed parameter <code>new_value</code> but only if <code>*value == expected</code> is true. That is, the swap takes place only under this condition.</li></ul></div></div>
+</div></section>
+<section class="slide " data-title="Atomic variables" aria-label="Atomic variables" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Hardware support for synchronization</p><h2>Atomic variables</h2><div class="cols "><div><ul><li>Typically, instructions such as compare-and-swap are used as building blocks for other synchronization tools.</li><li>One tool is an <b>atomic variable</b> that provides atomic (uninterruptible) updates on basic data types such as integers and booleans.</li><li>For example:<ul><li>Let <code>sequence</code> be an atomic variable</li><li>Let <code>increment()</code> be operation on the atomic variable <code>sequence</code></li><li>The command <code>increment(&amp;sequence);</code> ensures <code>sequence</code> is incremented without interruption</li></ul></li></ul></div><div><p>The <code>increment()</code> function can be implemented as follows:</p><pre class="code">void increment(atomic_int *v)
+{
+    int temp;
+
+    do {
+        temp = *v;
+    }
+    while (temp != compare_and_swap(v, temp, temp+1));
+}</pre><div class="callout">If another thread changed <code>*v</code> between the read and the swap, compare_and_swap fails (returns a different value) and the loop simply tries again.</div></div></div>
+</div></section>
+<section class="slide " data-title="Mutex locks" aria-label="Mutex locks" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Mutex locks</p><h2>Mutex locks</h2><div class="cols "><div><ul><li>Previous solutions are complicated and generally inaccessible to application programmers</li><li>OS designers build software tools to solve critical section problem</li><li>Simplest is mutex lock<ul><li>Boolean variable indicating if lock is available or not</li></ul></li><li>Protect a critical section by<ul><li>First <code>acquire()</code> a lock</li><li>Then <code>release()</code> the lock</li></ul></li><li>Calls to <code>acquire()</code> and <code>release()</code> must be <b>atomic</b><ul><li>Usually implemented via hardware atomic instructions such as compare-and-swap.</li></ul></li><li>But this solution requires <b>busy waiting</b><ul><li>This lock therefore called a <b>spinlock</b></li></ul></li></ul></div><div><h3>Solution to CS problem using mutex locks</h3><pre class="code">while (true) {
+    acquire lock
+
+        critical section
+
+    release lock
+
+        remainder section
+}</pre></div></div>
+</div></section>
+<section class="slide " data-title="Semaphore" aria-label="Semaphore" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Semaphores</p><h2>Semaphore</h2><div class="cols "><div><ul><li>Synchronization tool that provides more sophisticated ways (than mutex locks) for processes to synchronize their activities.</li><li>Semaphore <b>S</b> – integer variable</li><li>Can only be accessed via two indivisible (atomic) operations<ul><li><code>wait()</code> and <code>signal()</code></li><li>Originally called <code>P()</code> and <code>V()</code></li></ul></li></ul></div><div><p>Definition of the <code>wait()</code> operation:</p><pre class="code">wait(S) {
+    while (S &lt;= 0)
+        ; // busy wait
+    S--;
+}</pre><p>Definition of the <code>signal()</code> operation:</p><pre class="code">signal(S) {
+    S++;
+}</pre></div></div>
+</div></section>
+<section class="slide " data-title="Semaphore (cont.)" aria-label="Semaphore (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Semaphores</p><h2>Semaphore (cont.)</h2><ul><li><b>Counting semaphore</b> – integer value can range over an unrestricted domain</li><li><b>Binary semaphore</b> – integer value can range only between 0 and 1<ul><li>Same as a mutex lock</li></ul></li><li>Can implement a counting semaphore S as a binary semaphore</li><li>With semaphores we can solve various synchronization problems</li></ul><div data-demo="semaphore"></div>
+</div></section>
+<section class="slide " data-title="Semaphore implementation" aria-label="Semaphore implementation" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Semaphores</p><h2>Semaphore implementation</h2><div class="cols "><div><ul><li>Must guarantee that no two processes can execute the <code>wait()</code> and <code>signal()</code> on the same semaphore at the same time</li><li>Thus, the implementation becomes the critical section problem where the <code>wait</code> and <code>signal</code> code are placed in the critical section</li><li>Could now have <b>busy waiting</b> in critical section implementation<ul><li>But implementation code is short</li><li>Little busy waiting if critical section rarely occupied</li></ul></li><li>Note that applications may spend lots of time in critical sections and therefore this is not a good solution</li></ul></div><div><h3>Semaphore implementation with no busy waiting</h3><ul><li>With each semaphore there is an associated waiting queue</li><li>Each entry in a waiting queue has two data items:<ul><li>Value (of type integer)</li><li>Pointer to next record in the list</li></ul></li><li>Two operations:<ul><li><b>block</b> – place the process invoking the operation on the appropriate waiting queue</li><li><b>wakeup</b> – remove one of processes in the waiting queue and place it in the ready queue</li></ul></li></ul><pre class="code small-code">typedef struct {
+    int value;
+    struct process *list;
+} semaphore;</pre></div></div>
+</div></section>
+<section class="slide " data-title="Monitors" aria-label="Monitors" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Monitors</p><h2>Monitors</h2><div class="cols fw"><div><ul><li>A high-level abstraction that provides a convenient and effective mechanism for process synchronization</li><li><i>Abstract data type</i>, internal variables only accessible by code within the procedure</li><li>Only one process may be active within the monitor at a time</li><li>Pseudocode syntax of a monitor:</li></ul><pre class="code small-code">monitor monitor-name
+{
+    // shared variable declarations
+    procedure P1 (...) { .... }
+
+    procedure P2 (...) { .... }
+
+    procedure Pn (...) { ...... }
+
+    initialization code (...) { ... }
+}</pre></div><div><figure class="fig" data-fig="monitor"><figcaption>Schematic view of a monitor.</figcaption></figure></div></div>
+</div></section>
+<section class="slide " data-title="Monitor implementation using semaphores" aria-label="Monitor implementation using semaphores" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Monitors</p><h2>Monitor implementation using semaphores</h2><div class="cols "><div><ul><li>Variables<ul><li><code>semaphore mutex</code></li><li><code>mutex = 1</code></li></ul></li><li>Each procedure P is replaced by</li></ul><pre class="code">wait(mutex);
+    ...
+    body of P;
+    ...
+signal(mutex);</pre><ul><li>Mutual exclusion within a monitor is ensured</li></ul></div><div><h3>Condition variables</h3><pre class="code">condition x, y;</pre><ul><li>Two operations are allowed on a condition variable:<ul><li><code>x.wait()</code> – a process that invokes the operation is suspended until <code>x.signal()</code></li><li><code>x.signal()</code> – resumes one of processes (if any) that invoked <code>x.wait()</code><ul><li>If no <code>x.wait()</code> on the variable, then it has no effect on the variable</li></ul></li></ul></li></ul></div></div>
+</div></section>
+<section class="slide " data-title="Monitor with condition variables" aria-label="Monitor with condition variables" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Monitors</p><h2>Monitor with condition variables</h2><figure class="fig" data-fig="monitor-cv"><figcaption>Monitor with condition variables.</figcaption></figure>
+</div></section>
+<section class="slide " data-title="Resuming processes within a monitor" aria-label="Resuming processes within a monitor" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Monitors</p><h2>Resuming processes within a monitor</h2><ul><li>If several processes queued on condition variable x, and <code>x.signal()</code> is executed, which process should be resumed?</li><li>FCFS frequently not adequate</li><li>Use the <b>conditional-wait</b> construct of the form <code>x.wait(c)</code></li><li>where:<ul><li>c is an integer (called the <b>priority number</b>)</li><li>The process with lowest number (highest priority) is scheduled next</li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="Worked example 1" aria-label="Worked example 1" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Worked example 1 of 3</p><h2>Worked example 1</h2><div class="ex"><div class="qq">Show an interleaving in which P0 and P1 both get pid 2615 from next_available_pid = 2615.</div><details class="reveal"><summary>Show the solution</summary><div class="ans"><ol><li>P0 reads next_available_pid (2615) into its register.</li><li>P0 is preempted; P1 reads next_available_pid (still 2615).</li><li>P1 writes 2616 and gives its child pid 2615.</li><li>P0 resumes, writes 2616, and also gives its child pid 2615.</li></ol><p>Both children get 2615 and the counter only went up by one. The read-update-use sequence must be a critical section.</p></div></details></div>
+</div></section>
+<section class="slide " data-title="Worked example 2" aria-label="Worked example 2" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Worked example 2 of 3</p><h2>Worked example 2</h2><div class="ex"><div class="qq">In Peterson’s solution, both processes set their flag at the same time; P0 then writes turn = 1 and P1 writes turn = 0. Who enters?</div><details class="reveal"><summary>Show the solution</summary><div class="ans"><p>turn ends as 0 (P1 wrote last). P0 tests <code>flag[1] &amp;&amp; turn == 1</code>: turn is 0, so the test is false and <b>P0 enters</b>. P1 tests <code>flag[0] &amp;&amp; turn == 0</code>: true, so P1 waits until P0 sets flag[0] = false.</p><p>The process that writes turn last lets the other go first.</p></div></details></div>
+</div></section>
+<section class="slide " data-title="Worked example 3" aria-label="Worked example 3" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Worked example 3 of 3</p><h2>Worked example 3</h2><div class="ex"><div class="qq">A counting semaphore S = 2 guards two printers. P1, P2 and P3 call wait(S) in order, then P1 calls signal(S). Trace S with the waiting-queue implementation.</div><details class="reveal"><summary>Show the solution</summary><div class="ans"><p>P1: S = 1, enters. P2: S = 0, enters. P3: S = −1 &lt; 0, blocked on the queue. P1 signal: S = 0; since S ≤ 0, wake up P3, which now uses the printer.</p><p>A negative value −k means k processes are waiting.</p></div></details></div>
+</div></section>
+<section class="slide " data-title="Practice (1 of 2)" aria-label="Practice (1 of 2)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Practice</p><h2>Practice (1 of 2)</h2><p class="muted">Try each one on paper first, then check your answer.</p><div class="ex"><div class="qq">1. State the three requirements of a solution to the critical-section problem.</div><details class="reveal"><summary>Show the answer</summary><div class="ans">Mutual exclusion, progress and bounded waiting.</div></details></div><div class="ex"><div class="qq">2. Why is disabling interrupts not a good solution on multiprocessors?</div><details class="reveal"><summary>Show the answer</summary><div class="ans">It only prevents preemption on the CPU where it is done; processes on other CPUs can still enter. Disabling on all CPUs is slow, and long critical sections would block everything and starve others.</div></details></div><div class="ex"><div class="qq">3. Which requirement does the shared-turn-only algorithm violate? Explain.</div><details class="reveal"><summary>Show the answer</summary><div class="ans">Progress: the processes must strictly alternate. If Pj stays in its remainder section with turn = j, Pi cannot enter even though nobody is in the critical section.</div></details></div>
+</div></section>
+<section class="slide " data-title="Practice (2 of 2)" aria-label="Practice (2 of 2)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Practice</p><h2>Practice (2 of 2)</h2><p class="muted">Try each one on paper first, then check your answer.</p><div class="ex"><div class="qq">4. What does test_and_set return and what does it store?</div><details class="reveal"><summary>Show the answer</summary><div class="ans">It atomically returns the original value of *target and sets *target to true. A lock is acquired when it returns false.</div></details></div><div class="ex"><div class="qq">5. What is the difference between a binary semaphore and a counting semaphore?</div><details class="reveal"><summary>Show the answer</summary><div class="ans">A binary semaphore ranges only between 0 and 1 (like a mutex lock); a counting semaphore can range over an unrestricted domain, e.g. the number of identical resources.</div></details></div><div class="ex"><div class="qq">6. Why does a monitor guarantee mutual exclusion?</div><details class="reveal"><summary>Show the answer</summary><div class="ans">Only one process may be active within the monitor at a time; implemented with a semaphore mutex = 1, each procedure is wrapped in wait(mutex) … signal(mutex).</div></details></div>
+</div></section>
+<section class="slide " data-title="Quiz" aria-label="Quiz" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Check yourself</p><h2>Quiz</h2><div><div class="quiz-host" data-quiz-key="8"></div><script type="application/json" class="quiz-json">[{"q": "When the outcome depends on the order of access to shared data, we have a…", "o": ["deadlock", "race condition", "convoy effect", "page fault"], "a": 1, "w": "A race condition."}, {"q": "A process asks permission to enter its critical section in the…", "o": ["entry section", "exit section", "remainder section", "kernel section"], "a": 0, "w": "Then the critical section, the exit section and the remainder section."}, {"q": "Peterson’s solution uses which shared variables?", "o": ["turn only", "flag[2] only", "turn and flag[2]", "a semaphore"], "a": 2, "w": "int turn; boolean flag[2]."}, {"q": "P_i enters its critical section in Peterson’s solution only if…", "o": ["flag[j] == true", "flag[j] == false or turn == i", "turn == j", "flag[i] == false"], "a": 1, "w": "Otherwise it spins."}, {"q": "compare_and_swap(&v, expected, new) changes v only if…", "o": ["v == new", "v == expected", "v is zero", "always"], "a": 1, "w": "And it always returns the original value."}, {"q": "A mutex lock that busy-waits is called a…", "o": ["monitor", "spinlock", "condition variable", "binary tree"], "a": 1, "w": "It spins while waiting."}, {"q": "wait() and signal() were originally called…", "o": ["lock() and unlock()", "P() and V()", "up() and down()", "acquire() and release()"], "a": 1, "w": "From the Dutch words used by Dijkstra."}, {"q": "x.signal() when no process is waiting on x…", "o": ["increments x", "has no effect", "blocks the caller", "causes an error"], "a": 1, "w": "Unlike a semaphore’s signal()."}]</script></div>
+</div></section>
+<section class="slide " data-title="Further learning" aria-label="Further learning" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Resources</p><h2>Further learning</h2><p class="muted">Free material to go deeper. Links open in a new tab.</p><div class="res-grid"><a class="res" href="https://pages.cs.wisc.edu/~remzi/OSTEP/threads-locks.pdf" target="_blank" rel="noopener noreferrer"><small>Free book</small><b>OSTEP: Locks ↗</b><span>test-and-set, compare-and-swap, spin locks and Peterson’s algorithm.</span></a><a class="res" href="https://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf" target="_blank" rel="noopener noreferrer"><small>Free book</small><b>OSTEP: Semaphores ↗</b><span>Semaphores as locks and condition variables, with the producer–consumer problem.</span></a><a class="res" href="https://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf" target="_blank" rel="noopener noreferrer"><small>Free book</small><b>OSTEP: Condition Variables ↗</b><span>wait and signal, the building blocks of monitors.</span></a><a class="res" href="https://en.wikipedia.org/wiki/Peterson%27s_algorithm" target="_blank" rel="noopener noreferrer"><small>Article</small><b>Peterson’s algorithm ↗</b><span>The proof of the three requirements.</span></a><a class="res" href="https://man7.org/linux/man-pages/man7/sem_overview.7.html" target="_blank" rel="noopener noreferrer"><small>Reference</small><b>sem_overview(7) ↗</b><span>POSIX semaphores on Linux.</span></a><a class="res" href="https://en.wikipedia.org/wiki/Compare-and-swap" target="_blank" rel="noopener noreferrer"><small>Article</small><b>Compare-and-swap ↗</b><span>The atomic instruction and lock-free updates.</span></a></div>
+</div></section>
+<section class="slide " data-title="Summary" aria-label="Summary" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Summary · End of Chapter 6</p><h2>Summary</h2><ul class="sumlist"><li>Concurrent access to shared data can leave it inconsistent; a race condition is when the result depends on the order of access.</li><li>A critical-section solution needs mutual exclusion, progress and bounded waiting.</li><li>Disabling interrupts fails on multiprocessors; the shared-turn algorithm breaks progress; Peterson’s solution (turn + flag[2]) meets all three.</li><li>Hardware offers atomic test_and_set and compare_and_swap, used to build atomic variables and mutex locks (spinlocks).</li><li>Semaphores (counting or binary) use atomic wait() and signal(); a waiting queue with block and wakeup avoids busy waiting.</li><li>Monitors allow one active process at a time; condition variables provide x.wait() and x.signal(), with x.wait(c) for priority.</li></ul><div class="nextcard"><a class="btn pri" href="ch08-deadlocks.html">Next: Chapter 8 · Deadlocks</a><a class="btn" href="../practice.html#t8">More practice</a><a class="btn" href="../index.html">All chapters</a></div>
+</div></section>
+</main>
+<footer class="deck-foot">
+  <button type="button" class="btn" id="prev">Previous</button>
+  <span class="counter" id="counter">1 / 32</span>
+  <button type="button" class="btn pri" id="next">Next</button>
+</footer>
+<aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>
+<noscript><p style="padding:20px">This lesson needs JavaScript for the slides and the interactive examples.</p></noscript>
+<script src="../js/core.js"></script>
+<script src="../js/diagram.js"></script>
+<script src="../js/clang.js"></script>
+<script src="../js/figs-mid.js"></script>
+<script src="../js/figs-final.js"></script>
+<script src="../js/demos-mid.js"></script>
+<script src="../js/demos-final.js"></script>
+<script src="../js/art.js"></script>
+<script src="../js/quiz.js"></script>
+<script src="../js/page.js"></script>
+<script>window.OS_TOPIC = {"id": 8, "prev": "ch05-cpu-scheduling.html", "next": "ch08-deadlocks.html", "nextLabel": "Next chapter"};</script>
+<script>mountPage();</script>
+<script src="../js/slides.js"></script>
+<script src="../js/annotate.js"></script>
+<script src="../js/lang.js"></script>
+<script src="../js/analytics.js"
+        data-endpoint="https://analytics-proxy.ayansarkar1829.workers.dev"
+        data-project="CSE-309 Operating System"></script>
+<script src="../js/course-events.js"></script>
+</body>
+</html>
