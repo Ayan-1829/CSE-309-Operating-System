@@ -69,7 +69,7 @@ FIGS['user-kernel-threads'] = () => {
 
 FIGS['fork-join'] = () => {
   const k = [R(10, 70, 90, 40, 'main\nthread', { cls: 'dg-fill1', tcls: 'dg-t2' }), C(150, 90, 22, 'fork', { cls: 'dg-fill2', tcls: 'dg-s' }), arrow([[100, 90], [128, 90]])];
-  [20, 70, 120, 160].forEach((y, i) => { k.push(arrow([[172, 90], [240, y + 12]], { cls: 'dg-thin' }), R(240, y, 140, 26, 'task ' + (i + 1), { cls: 'dg-fill3', tcls: 'dg-s' }), arrow([[380, y + 13], [456, 90]], { cls: 'dg-thin' })); });
+  [20, 70, 120, 160].forEach((y, i) => { k.push(arrow([[172, 90], [240, y + 12]], { cls: 'dg-thin', packet: true, pcls: 'ac', dur: 1.6 }), R(240, y, 140, 26, 'task ' + (i + 1), { cls: 'dg-fill3', tcls: 'dg-s' }), arrow([[380, y + 13], [456, 90]], { cls: 'dg-thin', packet: true, pcls: 'ok', dur: 1.6, delay: 0.8 })); });
   k.push(C(478, 90, 22, 'join', { cls: 'dg-fill2', tcls: 'dg-s' }), arrow([[500, 90], [540, 90]]), R(540, 70, 90, 40, 'main\nthread', { cls: 'dg-fill1', tcls: 'dg-t2' }));
   return D.svg(640, 196, 'Fork-join parallelism: tasks are forked and then joined', k);
 };

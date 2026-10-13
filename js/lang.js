@@ -21,7 +21,14 @@
   window.I18N_BN_ADD = (o) => { for (const k in o) DICT[k] = o[k]; };
   /* for text with changing numbers: I18N_BN_PATTERNS([[/^Step (\d+) of (\d+)$/, 'ধাপ $1 / $2'], ...]) */
   window.I18N_BN_PATTERNS = (list) => { list.forEach((p) => PATTERNS.push(p)); };
-  const look = (k) => { if (DICT[k] != null) return DICT[k]; for (const [re, to] of PATTERNS) if (re.test(k)) return k.replace(re, to); return null; };
+  const look = (k) => {
+    if (DICT[k] != null) return DICT[k];
+    for (const [re, to] of PATTERNS) if (re.test(k)) return k.replace(re, to);
+    /* a slide split by the layout pass is titled "… (cont.)": translate the title, then the suffix */
+    const c = / \(cont\.\)$/.exec(k);
+    if (c) { const base = look(k.slice(0, c.index)); if (base != null) return base + ' (চলমান)'; }
+    return null;
+  };
 
   const INLINE = new Set(['A', 'ABBR', 'B', 'BR', 'CODE', 'EM', 'I', 'KBD', 'MARK', 'Q', 'S', 'SAMP', 'SMALL', 'SPAN', 'STRONG', 'SUB', 'SUP', 'U', 'VAR', 'WBR', 'TIME', 'LABEL']);
   const BLOCKISH = 'div,p,ul,ol,li,table,section,figure,pre,svg,h1,h2,h3,h4,h5,h6,details,button,input,select,textarea';
@@ -121,8 +128,18 @@
     });
     return out;
   }
+  /* step-by-step animations (demos-anim.js) show one step at a time: their texts are keys too */
+  function animKeys() {
+    const out = [];
+    const add = (x) => { if (typeof x === 'string') { const k = norm(x); if (hasWords(k)) out.push(k); } };
+    if (window.ANIM) Object.keys(window.ANIM).forEach((id) => {
+      const a = window.ANIM[id]; add(a.title); add(a.sub);
+      (a.steps || []).forEach((st) => { add(st.text); Object.keys(st.vars || {}).forEach((k) => { add(esc(k)); add(esc(String(st.vars[k]))); }); });
+    });
+    return out;
+  }
   /* used by the extraction tool (_tools/i18n): every key on this page */
-  window.I18N = { collect: () => { const set = new Set(); roots().forEach((r) => collect(r).forEach((x) => set.add(x.key))); quizKeys().forEach((k) => set.add(k)); return Array.from(set); }, dict: DICT };
+  window.I18N = { collect: () => { const set = new Set(); roots().forEach((r) => collect(r).forEach((x) => set.add(x.key))); quizKeys().forEach((k) => set.add(k)); animKeys().forEach((k) => set.add(k)); return Array.from(set); }, dict: DICT };
 
   /* translate what the slides' tools draw later (demos re-render, the quiz moves on) */
   let lang = 'en', busy = false, pending = new Set(), raf = 0;

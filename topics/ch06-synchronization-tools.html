@@ -65,7 +65,7 @@
 <p class="kicker">Before we start</p><h2>Why this matters</h2><div class="hook"><p class="q">Two processes add one to the same counter. Sometimes the counter goes up by one, not two.</p><p>When cooperating processes share data, the order of their instructions matters — and preemption can interleave them at the worst moment.</p><p>This chapter defines what a correct solution must guarantee and builds the tools for it, from Peterson’s algorithm to semaphores and monitors.</p></div>
 </div></section>
 <section class="slide " data-title="Outline" aria-label="Outline" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Chapter 6 · Lectures 18–20</p><h2>Outline</h2><p class="muted">Select a topic to jump to the slide that explains it.</p><ol class="outline-list"><li><a href="#s=4">Background</a></li><li><a href="#s=7">The critical-section problem</a></li><li><a href="#s=10">Peterson’s solution</a></li><li><a href="#s=14">Hardware support for synchronization</a></li><li><a href="#s=17">Mutex locks</a></li><li><a href="#s=18">Semaphores</a></li><li><a href="#s=21">Monitors</a></li></ol>
+<p class="kicker">Chapter 6 · Lectures 18–20</p><h2>Outline</h2><p class="muted">Select a topic to jump to the slide that explains it.</p><ol class="outline-list"><li><a href="#s=4">Background</a></li><li><a href="#s=8">The critical-section problem</a></li><li><a href="#s=11">Peterson’s solution</a></li><li><a href="#s=15">Hardware support for synchronization</a></li><li><a href="#s=18">Mutex locks</a></li><li><a href="#s=19">Semaphores</a></li><li><a href="#s=24">Monitors</a></li></ol>
 </div></section>
 <section class="slide " data-title="Background" aria-label="Background" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Background</p><h2>Background</h2><ul><li>Processes can execute concurrently<ul><li>May be interrupted at any time, partially completing execution</li></ul></li><li>Concurrent access to shared data may result in data inconsistency</li><li>Maintaining data consistency requires mechanisms to ensure the orderly execution of cooperating processes</li></ul>
@@ -75,6 +75,47 @@
 </div></section>
 <section class="slide " data-title="Race on next_available_pid" aria-label="Race on next_available_pid" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Interactive</p><h2>Race on next_available_pid</h2><div data-demo="race-pid"></div>
+</div></section>
+<section class="slide " data-title="A real race condition" aria-label="A real race condition" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>A real race condition</h2><div class="co-h"><span>race.c — two threads, one counter</span></div><pre class="code small-code">#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+
+#define N 1000000
+long counter = 0;                       /* shared data */
+pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+int use_lock;
+
+void *work(void *arg)
+{
+    for (int i = 0; i &lt; N; i++) {
+        if (use_lock) pthread_mutex_lock(&amp;lock);    /* entry section */
+        counter++;                                  /* critical section */</pre>
+</div></section>
+<section class="slide " data-title="A real race condition (cont.)" aria-label="A real race condition (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>A real race condition (cont.)</h2><pre data-start="14" class="code small-code">        if (use_lock) pthread_mutex_unlock(&amp;lock);  /* exit section */
+    }
+    return NULL;
+}
+
+int main(void)
+{
+    for (use_lock = 0; use_lock &lt;= 1; use_lock++) {
+        pthread_t a, b;
+        counter = 0;
+        pthread_create(&amp;a, NULL, work, NULL);
+        pthread_create(&amp;b, NULL, work, NULL);
+        pthread_join(a, NULL);
+        pthread_join(b, NULL);</pre>
+</div></section>
+<section class="slide " data-title="A real race condition (cont.)" aria-label="A real race condition (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>A real race condition (cont.)</h2><pre data-start="28" class="code small-code">        printf(&quot;%-12s counter = %ld (expected %d)\n&quot;,
+               use_lock ? &quot;with lock:&quot; : &quot;no lock:&quot;, counter, 2 * N);
+    }
+    return 0;
+}</pre><div class="co-h"><span>Output</span></div><div class="console runnable" data-cmd="gcc race.c -o race -pthread &amp;&amp; ./race" data-out="no lock:     counter = 1032343 (expected 2000000)
+with lock:   counter = 2000000 (expected 2000000)"><div class="console-h"><span>Terminal</span><button type="button" class="run-btn">▶ Run</button></div><pre class="console-body">$ gcc race.c -o race -pthread &amp;&amp; ./race
+no lock:     counter = 1032343 (expected 2000000)
+with lock:   counter = 2000000 (expected 2000000)</pre></div><p class="co-note"><code>counter++</code> is three machine steps (load, add, store). Without the lock the threads overwrite each other’s updates, so the total is wrong and different on every run. With the mutex around the critical section it is always 2,000,000.</p>
 </div></section>
 <section class="slide " data-title="Critical section problem" aria-label="Critical section problem" tabindex="-1"><div class="slide-inner">
 <p class="kicker">The critical-section problem</p><h2>Critical section problem</h2><div class="cols "><div><ul><li>Consider system of <i>n</i> processes {p<sub>0</sub>, p<sub>1</sub>, … p<sub>n−1</sub>}</li><li>Each process has <b>critical section</b> segment of code<ul><li>Process may be changing common variables, updating table, writing file, etc.</li><li>When one process in critical section, no other may be in its critical section</li></ul></li><li><i>Critical section problem</i> is to design protocol to solve this</li><li>Each process must ask permission to enter critical section in <b>entry section</b>, may follow critical section with <b>exit section</b>, then <b>remainder section</b></li></ul></div><div><p>General structure of process P<sub>i</sub>:</p><pre class="code">while (true) {
@@ -95,15 +136,16 @@
 <p class="kicker">The critical-section problem</p><h2>Interrupt-based solution</h2><div class="cols "><div><ul><li>Entry section: disable interrupts</li><li>Exit section: enable interrupts</li><li>Will this solve the problem?<ul><li>What if the critical section is code that runs for an hour?</li><li>Can some processes starve – never enter their critical section.</li><li>What if there are two CPUs?</li></ul></li></ul></div><div><div class="callout warn">Disabling interrupts only stops preemption on <b>one</b> CPU. On a multiprocessor, a process on another CPU can still enter the critical section, and turning interrupts off on every CPU is too slow.</div></div></div>
 </div></section>
 <section class="slide " data-title="Software solution" aria-label="Software solution" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Peterson’s solution</p><h2>Software solution</h2><div class="cols "><div><ul><li>Two process solution</li><li>Assume that the <b>load</b> and <b>store</b> machine-language instructions are atomic; that is, cannot be interrupted</li><li>The two processes share one variable:<ul><li><code>int turn;</code></li></ul></li><li>The variable <code>turn</code> indicates whose turn it is to enter the critical section</li><li>initially, the value of <code>turn</code> is set to <i>i</i></li></ul></div><div><p>Algorithm for process P<sub>i</sub>:</p><pre class="code">while (true) {
-    while (turn == j);
-
-    /* critical section */
+<p class="kicker">Peterson’s solution</p><h2>Software solution</h2><ul><li>Two process solution</li><li>Assume that the <b>load</b> and <b>store</b> machine-language instructions are atomic; that is, cannot be interrupted</li><li>The two processes share one variable:<ul><li><code>int turn;</code></li></ul></li><li>The variable <code>turn</code> indicates whose turn it is to enter the critical section</li><li>initially, the value of <code>turn</code> is set to <i>i</i></li></ul><p>Algorithm for process P<sub>i</sub>:</p><pre class="code">while (true) {
+    while (turn == j);</pre>
+</div></section>
+<section class="slide " data-title="Software solution (cont.)" aria-label="Software solution (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Peterson’s solution</p><h2>Software solution (cont.)</h2><pre data-start="4" class="code">    /* critical section */
 
     turn = j;
 
     /* remainder section */
-}</pre><h3>Correctness of the software solution</h3><ul><li>Mutual exclusion is preserved: P<sub>i</sub> enters critical section only if <code>turn = i</code>, and <code>turn</code> cannot be both 0 and 1 at the same time</li><li>But <b>progress</b> fails: the processes must strictly alternate. If P<sub>j</sub> stays in its remainder section, P<sub>i</sub> cannot enter twice in a row.</li></ul></div></div>
+}</pre><h3>Correctness of the software solution</h3><ul><li>Mutual exclusion is preserved: P<sub>i</sub> enters critical section only if <code>turn = i</code>, and <code>turn</code> cannot be both 0 and 1 at the same time</li><li>But <b>progress</b> fails: the processes must strictly alternate. If P<sub>j</sub> stays in its remainder section, P<sub>i</sub> cannot enter twice in a row.</li></ul>
 </div></section>
 <section class="slide " data-title="Peterson’s solution" aria-label="Peterson’s solution" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Peterson’s solution</p><h2>Peterson’s solution</h2><div class="cols "><div><ul><li>Two process solution</li><li>Assume that the <b>load</b> and <b>store</b> machine-language instructions are atomic; that is, cannot be interrupted</li><li>The two processes share two variables:<ul><li><code>int turn;</code></li><li><code>boolean flag[2]</code></li></ul></li><li>The variable <code>turn</code> indicates whose turn it is to enter the critical section</li><li>The <code>flag</code> array is used to indicate if a process is ready to enter the critical section.<ul><li><code>flag[i] = true</code> implies that process P<sub>i</sub> is ready!</li></ul></li></ul></div><div><p>Algorithm for process P<sub>i</sub>:</p><pre class="code">while (true) {
@@ -129,21 +171,27 @@
 <p class="kicker">Hardware support for synchronization</p><h2>Synchronization hardware</h2><ul><li>Many systems provide hardware support for implementing the critical section code.</li><li>Uniprocessors – could disable interrupts<ul><li>Currently running code would execute without preemption</li><li>Generally too inefficient on multiprocessor systems<ul><li>Operating systems using this not broadly scalable</li></ul></li></ul></li><li>We will look at two forms of hardware support:<ul><li>1. Hardware instructions</li><li>2. Atomic variables</li></ul></li></ul>
 </div></section>
 <section class="slide " data-title="Hardware instructions" aria-label="Hardware instructions" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Hardware support for synchronization</p><h2>Hardware instructions</h2><p>Special hardware instructions that allow us to either <b>test-and-modify</b> the content of a word, or to <b>swap</b> the contents of two words atomically (uninterruptedly):</p><div class="cols "><div><h3>The test_and_set instruction</h3><pre class="code">boolean test_and_set (boolean *target)
+<p class="kicker">Hardware support for synchronization</p><h2>Hardware instructions</h2><p>Special hardware instructions that allow us to either <b>test-and-modify</b> the content of a word, or to <b>swap</b> the contents of two words atomically (uninterruptedly):</p><h3>The test_and_set instruction</h3><pre class="code">boolean test_and_set (boolean *target)
 {
     boolean rv = *target;
     *target = true;
     return rv;
-}</pre><ul><li>Executed atomically</li><li>Returns the original value of passed parameter</li><li>Set the new value of passed parameter to <code>true</code></li></ul></div><div><h3>The compare_and_swap instruction</h3><pre class="code">int compare_and_swap(int *value, int expected, int new_value)
+}</pre><ul><li>Executed atomically</li><li>Returns the original value of passed parameter</li><li>Set the new value of passed parameter to <code>true</code></li></ul>
+</div></section>
+<section class="slide " data-title="Hardware instructions (cont.)" aria-label="Hardware instructions (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Hardware support for synchronization</p><h2>Hardware instructions (cont.)</h2><h3>The compare_and_swap instruction</h3><pre class="code">int compare_and_swap(int *value, int expected, int new_value)
 {
     int temp = *value;
     if (*value == expected)
         *value = new_value;
     return temp;
-}</pre><ul><li>Executed atomically</li><li>Returns the original value of passed parameter <code>value</code></li><li>Set the variable <code>value</code> the value of the passed parameter <code>new_value</code> but only if <code>*value == expected</code> is true. That is, the swap takes place only under this condition.</li></ul></div></div>
+}</pre><ul><li>Executed atomically</li><li>Returns the original value of passed parameter <code>value</code></li><li>Set the variable <code>value</code> the value of the passed parameter <code>new_value</code> but only if <code>*value == expected</code> is true. That is, the swap takes place only under this condition.</li></ul>
 </div></section>
 <section class="slide " data-title="Atomic variables" aria-label="Atomic variables" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Hardware support for synchronization</p><h2>Atomic variables</h2><div class="cols "><div><ul><li>Typically, instructions such as compare-and-swap are used as building blocks for other synchronization tools.</li><li>One tool is an <b>atomic variable</b> that provides atomic (uninterruptible) updates on basic data types such as integers and booleans.</li><li>For example:<ul><li>Let <code>sequence</code> be an atomic variable</li><li>Let <code>increment()</code> be operation on the atomic variable <code>sequence</code></li><li>The command <code>increment(&amp;sequence);</code> ensures <code>sequence</code> is incremented without interruption</li></ul></li></ul></div><div><p>The <code>increment()</code> function can be implemented as follows:</p><pre class="code">void increment(atomic_int *v)
+<p class="kicker">Hardware support for synchronization</p><h2>Atomic variables</h2><ul><li>Typically, instructions such as compare-and-swap are used as building blocks for other synchronization tools.</li><li>One tool is an <b>atomic variable</b> that provides atomic (uninterruptible) updates on basic data types such as integers and booleans.</li><li>For example:<ul><li>Let <code>sequence</code> be an atomic variable</li><li>Let <code>increment()</code> be operation on the atomic variable <code>sequence</code></li><li>The command <code>increment(&amp;sequence);</code> ensures <code>sequence</code> is incremented without interruption</li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="Atomic variables (cont.)" aria-label="Atomic variables (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Hardware support for synchronization</p><h2>Atomic variables (cont.)</h2><p>The <code>increment()</code> function can be implemented as follows:</p><pre class="code">void increment(atomic_int *v)
 {
     int temp;
 
@@ -151,10 +199,13 @@
         temp = *v;
     }
     while (temp != compare_and_swap(v, temp, temp+1));
-}</pre><div class="callout">If another thread changed <code>*v</code> between the read and the swap, compare_and_swap fails (returns a different value) and the loop simply tries again.</div></div></div>
+}</pre><div class="callout">If another thread changed <code>*v</code> between the read and the swap, compare_and_swap fails (returns a different value) and the loop simply tries again.</div>
 </div></section>
 <section class="slide " data-title="Mutex locks" aria-label="Mutex locks" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Mutex locks</p><h2>Mutex locks</h2><div class="cols "><div><ul><li>Previous solutions are complicated and generally inaccessible to application programmers</li><li>OS designers build software tools to solve critical section problem</li><li>Simplest is mutex lock<ul><li>Boolean variable indicating if lock is available or not</li></ul></li><li>Protect a critical section by<ul><li>First <code>acquire()</code> a lock</li><li>Then <code>release()</code> the lock</li></ul></li><li>Calls to <code>acquire()</code> and <code>release()</code> must be <b>atomic</b><ul><li>Usually implemented via hardware atomic instructions such as compare-and-swap.</li></ul></li><li>But this solution requires <b>busy waiting</b><ul><li>This lock therefore called a <b>spinlock</b></li></ul></li></ul></div><div><h3>Solution to CS problem using mutex locks</h3><pre class="code">while (true) {
+<p class="kicker">Mutex locks</p><h2>Mutex locks</h2><ul><li>Previous solutions are complicated and generally inaccessible to application programmers</li><li>OS designers build software tools to solve critical section problem</li><li>Simplest is mutex lock<ul><li>Boolean variable indicating if lock is available or not</li></ul></li><li>Protect a critical section by<ul><li>First <code>acquire()</code> a lock</li><li>Then <code>release()</code> the lock</li></ul></li><li>Calls to <code>acquire()</code> and <code>release()</code> must be <b>atomic</b><ul><li>Usually implemented via hardware atomic instructions such as compare-and-swap.</li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="Mutex locks (cont.)" aria-label="Mutex locks (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Mutex locks</p><h2>Mutex locks (cont.)</h2><ul><li>But this solution requires <b>busy waiting</b><ul><li>This lock therefore called a <b>spinlock</b></li></ul></li></ul><h3>Solution to CS problem using mutex locks</h3><pre class="code">while (true) {
     acquire lock
 
         critical section
@@ -162,7 +213,7 @@
     release lock
 
         remainder section
-}</pre></div></div>
+}</pre>
 </div></section>
 <section class="slide " data-title="Semaphore" aria-label="Semaphore" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Semaphores</p><h2>Semaphore</h2><div class="cols "><div><ul><li>Synchronization tool that provides more sophisticated ways (than mutex locks) for processes to synchronize their activities.</li><li>Semaphore <b>S</b> – integer variable</li><li>Can only be accessed via two indivisible (atomic) operations<ul><li><code>wait()</code> and <code>signal()</code></li><li>Originally called <code>P()</code> and <code>V()</code></li></ul></li></ul></div><div><p>Definition of the <code>wait()</code> operation:</p><pre class="code">wait(S) {
@@ -176,14 +227,91 @@
 <section class="slide " data-title="Semaphore (cont.)" aria-label="Semaphore (cont.)" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Semaphores</p><h2>Semaphore (cont.)</h2><ul><li><b>Counting semaphore</b> – integer value can range over an unrestricted domain</li><li><b>Binary semaphore</b> – integer value can range only between 0 and 1<ul><li>Same as a mutex lock</li></ul></li><li>Can implement a counting semaphore S as a binary semaphore</li><li>With semaphores we can solve various synchronization problems</li></ul><div data-demo="semaphore"></div>
 </div></section>
+<section class="slide " data-title="Bounded buffer with semaphores" aria-label="Bounded buffer with semaphores" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Interactive</p><h2>Bounded buffer with semaphores</h2><div data-demo="pc-sem"></div>
+</div></section>
+<section class="slide " data-title="Bounded buffer in C" aria-label="Bounded buffer in C" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>Bounded buffer in C</h2><div class="co-h"><span>boundedbuf.c</span></div><pre class="code small-code">#include &lt;pthread.h&gt;
+#include &lt;semaphore.h&gt;
+#include &lt;stdio.h&gt;
+
+#define BUFFER_SIZE 3
+int buffer[BUFFER_SIZE], in = 0, out = 0;
+sem_t empty, full;                 /* counting semaphores */
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void *producer(void *arg)
+{
+    for (int item = 1; item &lt;= 5; item++) {
+        sem_wait(&amp;empty);              /* wait for a free slot   */
+        pthread_mutex_lock(&amp;mutex);
+        buffer[in] = item; in = (in + 1) % BUFFER_SIZE;
+        printf(&quot;produced %d\n&quot;, item);
+        pthread_mutex_unlock(&amp;mutex);</pre>
+</div></section>
+<section class="slide " data-title="Bounded buffer in C (cont.)" aria-label="Bounded buffer in C (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>Bounded buffer in C (cont.)</h2><pre data-start="18" class="code small-code">        sem_post(&amp;full);               /* one more full slot     */
+    }
+    return NULL;
+}
+
+void *consumer(void *arg)
+{
+    for (int k = 0; k &lt; 5; k++) {
+        sem_wait(&amp;full);               /* wait for an item       */
+        pthread_mutex_lock(&amp;mutex);
+        int item = buffer[out]; out = (out + 1) % BUFFER_SIZE;
+        printf(&quot;        consumed %d\n&quot;, item);
+        pthread_mutex_unlock(&amp;mutex);
+        sem_post(&amp;empty);              /* one more free slot     */
+    }
+    return NULL;
+}
+
+int main(void)</pre>
+</div></section>
+<section class="slide " data-title="Bounded buffer in C (cont.)" aria-label="Bounded buffer in C (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>Bounded buffer in C (cont.)</h2><pre data-start="37" class="code small-code">{
+    pthread_t p, c;
+    sem_init(&amp;empty, 0, BUFFER_SIZE);  /* all slots free */
+    sem_init(&amp;full, 0, 0);             /* no items yet   */
+    pthread_create(&amp;p, NULL, producer, NULL);
+    pthread_create(&amp;c, NULL, consumer, NULL);
+    pthread_join(p, NULL);
+    pthread_join(c, NULL);
+    return 0;
+}</pre><div class="co-h"><span>Output</span></div><div class="console runnable" data-cmd="gcc boundedbuf.c -o boundedbuf -pthread &amp;&amp; ./boundedbuf" data-out="produced 1
+produced 2
+produced 3
+        consumed 1
+        consumed 2
+        consumed 3
+produced 4
+produced 5
+        consumed 4
+        consumed 5"><div class="console-h"><span>Terminal · sample run on Linux</span><button type="button" class="run-btn">▶ Run</button></div><pre class="console-body">$ gcc boundedbuf.c -o boundedbuf -pthread &amp;&amp; ./boundedbuf
+produced 1
+produced 2
+produced 3
+        consumed 1
+        consumed 2
+        consumed 3
+produced 4
+produced 5
+        consumed 4
+        consumed 5</pre></div><p class="co-note">One possible order: the producer fills all 3 slots, then must wait on <code>empty</code> until the consumer frees one. The order changes from run to run, but the buffer never overflows.</p>
+</div></section>
 <section class="slide " data-title="Semaphore implementation" aria-label="Semaphore implementation" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Semaphores</p><h2>Semaphore implementation</h2><div class="cols "><div><ul><li>Must guarantee that no two processes can execute the <code>wait()</code> and <code>signal()</code> on the same semaphore at the same time</li><li>Thus, the implementation becomes the critical section problem where the <code>wait</code> and <code>signal</code> code are placed in the critical section</li><li>Could now have <b>busy waiting</b> in critical section implementation<ul><li>But implementation code is short</li><li>Little busy waiting if critical section rarely occupied</li></ul></li><li>Note that applications may spend lots of time in critical sections and therefore this is not a good solution</li></ul></div><div><h3>Semaphore implementation with no busy waiting</h3><ul><li>With each semaphore there is an associated waiting queue</li><li>Each entry in a waiting queue has two data items:<ul><li>Value (of type integer)</li><li>Pointer to next record in the list</li></ul></li><li>Two operations:<ul><li><b>block</b> – place the process invoking the operation on the appropriate waiting queue</li><li><b>wakeup</b> – remove one of processes in the waiting queue and place it in the ready queue</li></ul></li></ul><pre class="code small-code">typedef struct {
+<p class="kicker">Semaphores</p><h2>Semaphore implementation</h2><ul><li>Must guarantee that no two processes can execute the <code>wait()</code> and <code>signal()</code> on the same semaphore at the same time</li><li>Thus, the implementation becomes the critical section problem where the <code>wait</code> and <code>signal</code> code are placed in the critical section</li><li>Could now have <b>busy waiting</b> in critical section implementation<ul><li>But implementation code is short</li><li>Little busy waiting if critical section rarely occupied</li></ul></li><li>Note that applications may spend lots of time in critical sections and therefore this is not a good solution</li></ul>
+</div></section>
+<section class="slide " data-title="Semaphore implementation (cont.)" aria-label="Semaphore implementation (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Semaphores</p><h2>Semaphore implementation (cont.)</h2><h3>Semaphore implementation with no busy waiting</h3><ul><li>With each semaphore there is an associated waiting queue</li><li>Each entry in a waiting queue has two data items:<ul><li>Value (of type integer)</li><li>Pointer to next record in the list</li></ul></li><li>Two operations:<ul><li><b>block</b> – place the process invoking the operation on the appropriate waiting queue</li><li><b>wakeup</b> – remove one of processes in the waiting queue and place it in the ready queue</li></ul></li></ul><pre class="code small-code">typedef struct {
     int value;
     struct process *list;
-} semaphore;</pre></div></div>
+} semaphore;</pre>
 </div></section>
 <section class="slide " data-title="Monitors" aria-label="Monitors" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Monitors</p><h2>Monitors</h2><div class="cols fw"><div><ul><li>A high-level abstraction that provides a convenient and effective mechanism for process synchronization</li><li><i>Abstract data type</i>, internal variables only accessible by code within the procedure</li><li>Only one process may be active within the monitor at a time</li><li>Pseudocode syntax of a monitor:</li></ul><pre class="code small-code">monitor monitor-name
+<p class="kicker">Monitors</p><h2>Monitors</h2><ul><li>A high-level abstraction that provides a convenient and effective mechanism for process synchronization</li><li><i>Abstract data type</i>, internal variables only accessible by code within the procedure</li><li>Only one process may be active within the monitor at a time</li><li>Pseudocode syntax of a monitor:</li></ul><pre class="code small-code">monitor monitor-name
 {
     // shared variable declarations
     procedure P1 (...) { .... }
@@ -193,7 +321,10 @@
     procedure Pn (...) { ...... }
 
     initialization code (...) { ... }
-}</pre></div><div><figure class="fig" data-fig="monitor"><figcaption>Schematic view of a monitor.</figcaption></figure></div></div>
+}</pre>
+</div></section>
+<section class="slide " data-title="Monitors (cont.)" aria-label="Monitors (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Monitors</p><h2>Monitors (cont.)</h2><figure class="fig" data-fig="monitor"><figcaption>Schematic view of a monitor.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="Monitor implementation using semaphores" aria-label="Monitor implementation using semaphores" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Monitors</p><h2>Monitor implementation using semaphores</h2><div class="cols "><div><ul><li>Variables<ul><li><code>semaphore mutex</code></li><li><code>mutex = 1</code></li></ul></li><li>Each procedure P is replaced by</li></ul><pre class="code">wait(mutex);
@@ -235,7 +366,7 @@ signal(mutex);</pre><ul><li>Mutual exclusion within a monitor is ensured</li></u
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 32</span>
+  <span class="counter" id="counter">1 / 45</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>
@@ -247,6 +378,7 @@ signal(mutex);</pre><ul><li>Mutual exclusion within a monitor is ensured</li></u
 <script src="../js/figs-final.js"></script>
 <script src="../js/demos-mid.js"></script>
 <script src="../js/demos-final.js"></script>
+<script src="../js/demos-anim.js"></script>
 <script src="../js/art.js"></script>
 <script src="../js/quiz.js"></script>
 <script src="../js/page.js"></script>

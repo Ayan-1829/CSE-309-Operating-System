@@ -65,7 +65,7 @@
 <p class="kicker">Before we start</p><h2>Why this matters</h2><div class="hook"><p class="q">Two threads each hold one lock and wait for the other’s. Nothing crashes — everything just stops, forever.</p><p>A deadlock needs four conditions at once. Break any one and it cannot happen; or check every request so the system never gets close; or let it happen and clean up.</p><p>This chapter covers all three strategies, including the Banker’s algorithm you can run step by step.</p></div>
 </div></section>
 <section class="slide " data-title="Outline" aria-label="Outline" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Chapter 8 · Lectures 21–25</p><h2>Outline</h2><p class="muted">Select a topic to jump to the slide that explains it.</p><ol class="outline-list"><li><a href="#s=4">System model</a></li><li><a href="#s=5">Deadlock characterization</a></li><li><a href="#s=10">Methods for handling deadlocks</a></li><li><a href="#s=11">Deadlock prevention</a></li><li><a href="#s=14">Deadlock avoidance</a></li><li><a href="#s=18">Banker’s algorithm</a></li><li><a href="#s=23">Deadlock detection</a></li><li><a href="#s=29">Recovery from deadlock</a></li></ol>
+<p class="kicker">Chapter 8 · Lectures 21–25</p><h2>Outline</h2><p class="muted">Select a topic to jump to the slide that explains it.</p><ol class="outline-list"><li><a href="#s=4">System model</a></li><li><a href="#s=5">Deadlock characterization</a></li><li><a href="#s=10">Methods for handling deadlocks</a></li><li><a href="#s=11">Deadlock prevention</a></li><li><a href="#s=16">Deadlock avoidance</a></li><li><a href="#s=20">Banker’s algorithm</a></li><li><a href="#s=26">Deadlock detection</a></li><li><a href="#s=32">Recovery from deadlock</a></li></ol>
 </div></section>
 <section class="slide " data-title="System model" aria-label="System model" tabindex="-1"><div class="slide-inner">
 <p class="kicker">System model</p><h2>System model</h2><div class="cols "><div><ul><li>System consists of resources</li><li>Resource types R<sub>1</sub>, R<sub>2</sub>, . . ., R<sub>m</sub><ul><li>CPU cycles, memory space, I/O devices</li></ul></li><li>Each resource type R<sub>i</sub> has W<sub>i</sub> instances.</li><li>Each process utilizes a resource as follows:<ul><li>request</li><li>use</li><li>release</li></ul></li></ul></div><div><div class="flow"><span>request</span><i>→</i><span>use</span><i>→</i><span>release</span></div></div></div>
@@ -77,13 +77,19 @@
 <p class="kicker">Deadlock characterization</p><h2>Resource-allocation graph</h2><div class="cols "><div><ul><li>A set of vertices <i>V</i> and a set of edges <i>E</i>.</li><li><i>V</i> is partitioned into two types:<ul><li>P = {P<sub>1</sub>, P<sub>2</sub>, …, P<sub>n</sub>}, the set consisting of all the processes in the system</li><li>R = {R<sub>1</sub>, R<sub>2</sub>, …, R<sub>m</sub>}, the set consisting of all resource types in the system</li></ul></li><li><b>request edge</b> – directed edge P<sub>i</sub> → R<sub>j</sub></li><li><b>assignment edge</b> – directed edge R<sub>j</sub> → P<sub>i</sub></li></ul></div><div><div class="scrollx"><table class="doc"><thead><tr><th>Symbol</th><th>Meaning</th></tr></thead><tbody><tr><td>circle</td><td>process</td></tr><tr><td>rectangle with dots</td><td>resource type with one dot per instance</td></tr><tr><td>P<sub>i</sub> → R<sub>j</sub></td><td>P<sub>i</sub> requests an instance of R<sub>j</sub></td></tr><tr><td>R<sub>j</sub> (dot) → P<sub>i</sub></td><td>P<sub>i</sub> holds an instance of R<sub>j</sub></td></tr></tbody></table></div></div></div>
 </div></section>
 <section class="slide " data-title="Resource allocation graph example" aria-label="Resource allocation graph example" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Deadlock characterization</p><h2>Resource allocation graph example</h2><div class="cols fw"><div><ul><li>One instance of R1</li><li>Two instances of R2</li><li>One instance of R3</li><li>Three instances of R4</li><li>T1 holds one instance of R2 and is waiting for an instance of R1</li><li>T2 holds one instance of R1, one instance of R2, and is waiting for an instance of R3</li><li>T3 holds one instance of R3</li></ul></div><div><figure class="fig" data-fig="rag-example"><figcaption>Resource-allocation graph.</figcaption></figure></div></div>
+<p class="kicker">Deadlock characterization</p><h2>Resource allocation graph example</h2><ul><li>One instance of R1</li><li>Two instances of R2</li><li>One instance of R3</li><li>Three instances of R4</li><li>T1 holds one instance of R2 and is waiting for an instance of R1</li><li>T2 holds one instance of R1, one instance of R2, and is waiting for an instance of R3</li><li>T3 holds one instance of R3</li></ul>
+</div></section>
+<section class="slide " data-title="Resource allocation graph example (cont.)" aria-label="Resource allocation graph example (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Deadlock characterization</p><h2>Resource allocation graph example (cont.)</h2><figure class="fig" data-fig="rag-example"><figcaption>Resource-allocation graph.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="Graphs with and without deadlock" aria-label="Graphs with and without deadlock" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Deadlock characterization</p><h2>Graphs with and without deadlock</h2><div class="fig2"><figure class="fig" data-fig="rag-deadlock"><figcaption><b>With a deadlock:</b> T3 also requests R2. Cycles T1 → R1 → T2 → R3 → T3 → R2 → T1 and T2 → R3 → T3 → R2 → T2.</figcaption></figure><figure class="fig" data-fig="rag-cycle"><figcaption><b>A cycle but no deadlock:</b> T1 → R1 → T3 → R2 → T1, but T2 and T4 can finish and release an instance each.</figcaption></figure></div>
 </div></section>
 <section class="slide " data-title="Basic facts" aria-label="Basic facts" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Deadlock characterization</p><h2>Basic facts</h2><div class="cols "><div><ul><li>If graph contains no cycles → no deadlock</li><li>If graph contains a cycle →<ul><li>if only one instance per resource type, then deadlock</li><li>if several instances per resource type, possibility of deadlock</li></ul></li></ul></div><div><div data-demo="rag-check"></div></div></div>
+<p class="kicker">Deadlock characterization</p><h2>Basic facts</h2><ul><li>If graph contains no cycles → no deadlock</li><li>If graph contains a cycle →<ul><li>if only one instance per resource type, then deadlock</li><li>if several instances per resource type, possibility of deadlock</li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="Basic facts (cont.)" aria-label="Basic facts (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Deadlock characterization</p><h2>Basic facts (cont.)</h2><div data-demo="rag-check"></div>
 </div></section>
 <section class="slide " data-title="Methods for handling deadlocks" aria-label="Methods for handling deadlocks" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Methods for handling deadlocks</p><h2>Methods for handling deadlocks</h2><ul><li>Ensure that the system will <b>never</b> enter a deadlock state:<ul><li>Deadlock prevention</li><li>Deadlock avoidance</li></ul></li><li>Allow the system to enter a deadlock state and then recover</li><li>Ignore the problem and pretend that deadlocks never occur in the system.</li></ul>
@@ -95,7 +101,7 @@
 <p class="kicker">Deadlock prevention</p><h2>Deadlock prevention (cont.)</h2><ul><li><b>No preemption</b>:<ul><li>If a process that is holding some resources requests another resource that cannot be immediately allocated to it, then all resources currently being held are released</li><li>Preempted resources are added to the list of resources for which the process is waiting</li><li>Process will be restarted only when it can regain its old resources, as well as the new ones that it is requesting</li></ul></li><li><b>Circular wait</b>:<ul><li>Impose a total ordering of all resource types, and require that each process requests resources in an increasing order of enumeration</li></ul></li></ul>
 </div></section>
 <section class="slide " data-title="Circular wait" aria-label="Circular wait" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Deadlock prevention</p><h2>Circular wait</h2><div class="cols "><div><ul><li>Invalidating the circular wait condition is most common.</li><li>Simply assign each resource (i.e., mutex locks) a unique number.</li><li>Resources must be acquired in order.</li><li>If: <code>first_mutex = 1</code>, <code>second_mutex = 5</code>, code for <code>thread_two</code> could not be written as follows:</li></ul></div><div><pre class="code small-code" data-mark="16-17">/* thread_one runs in this function */
+<p class="kicker">Deadlock prevention</p><h2>Circular wait</h2><ul><li>Invalidating the circular wait condition is most common.</li><li>Simply assign each resource (i.e., mutex locks) a unique number.</li><li>Resources must be acquired in order.</li><li>If: <code>first_mutex = 1</code>, <code>second_mutex = 5</code>, code for <code>thread_two</code> could not be written as follows:</li></ul><pre class="code small-code" data-mark="16-17">/* thread_one runs in this function */
 void *do_work_one(void *param)
 {
    pthread_mutex_lock(&amp;first_mutex);
@@ -103,8 +109,10 @@ void *do_work_one(void *param)
    /** Do some work */
    pthread_mutex_unlock(&amp;second_mutex);
    pthread_mutex_unlock(&amp;first_mutex);
-   pthread_exit(0);
-}
+   pthread_exit(0);</pre>
+</div></section>
+<section class="slide " data-title="Circular wait (cont.)" aria-label="Circular wait (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Deadlock prevention</p><h2>Circular wait (cont.)</h2><pre data-start="10" class="code small-code" data-mark="16-17">}
 
 /* thread_two runs in this function */
 void *do_work_two(void *param)
@@ -115,25 +123,88 @@ void *do_work_two(void *param)
    pthread_mutex_unlock(&amp;first_mutex);
    pthread_mutex_unlock(&amp;second_mutex);
    pthread_exit(0);
-}</pre></div></div><div class="callout warn">If thread_one holds first_mutex and thread_two holds second_mutex, each waits for the other forever. Locking in increasing order (first, then second) in both threads removes the cycle.</div>
+}</pre><div class="callout warn">If thread_one holds first_mutex and thread_two holds second_mutex, each waits for the other forever. Locking in increasing order (first, then second) in both threads removes the cycle.</div>
+</div></section>
+<section class="slide " data-title="Step two threads into a deadlock" aria-label="Step two threads into a deadlock" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Interactive</p><h2>Step two threads into a deadlock</h2><div data-demo="deadlock-run"></div>
+</div></section>
+<section class="slide " data-title="The deadlock, for real" aria-label="The deadlock, for real" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>The deadlock, for real</h2><div class="co-h"><span>deadlock.c</span></div><pre class="code small-code">#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+pthread_mutex_t first_mutex  = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t second_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void *do_work_one(void *param)
+{
+    pthread_mutex_lock(&amp;first_mutex);
+    printf(&quot;thread_one: holds first_mutex, wants second_mutex\n&quot;);
+    sleep(1);                                 /* let thread_two run */
+    pthread_mutex_lock(&amp;second_mutex);        /* blocks forever */
+    printf(&quot;thread_one: got both\n&quot;);</pre>
+</div></section>
+<section class="slide " data-title="The deadlock, for real (cont.)" aria-label="The deadlock, for real (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>The deadlock, for real (cont.)</h2><pre data-start="15" class="code small-code">    return NULL;
+}
+
+void *do_work_two(void *param)
+{
+    pthread_mutex_lock(&amp;second_mutex);
+    printf(&quot;thread_two: holds second_mutex, wants first_mutex\n&quot;);
+    sleep(1);
+    pthread_mutex_lock(&amp;first_mutex);         /* blocks forever */
+    printf(&quot;thread_two: got both\n&quot;);
+    return NULL;
+}
+
+int main(void)
+{
+    pthread_t one, two;</pre>
+</div></section>
+<section class="slide " data-title="The deadlock, for real (cont.)" aria-label="The deadlock, for real (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>The deadlock, for real (cont.)</h2><pre data-start="31" class="code small-code">    pthread_create(&amp;one, NULL, do_work_one, NULL);
+    pthread_create(&amp;two, NULL, do_work_two, NULL);
+    pthread_join(one, NULL);                  /* never returns: deadlock */
+    pthread_join(two, NULL);
+    printf(&quot;done\n&quot;);
+    return 0;
+}</pre><div class="co-h"><span>Output</span></div><div class="console runnable" data-cmd="gcc deadlock.c -o deadlock -pthread &amp;&amp; ./deadlock" data-out="thread_one: holds first_mutex, wants second_mutex
+thread_two: holds second_mutex, wants first_mutex
+(no more output: both threads wait forever, the program never ends)"><div class="console-h"><span>Terminal</span><button type="button" class="run-btn">▶ Run</button></div><pre class="console-body">$ gcc deadlock.c -o deadlock -pthread &amp;&amp; ./deadlock
+thread_one: holds first_mutex, wants second_mutex
+thread_two: holds second_mutex, wants first_mutex
+(no more output: both threads wait forever, the program never ends)</pre></div><p class="co-note">Each thread gets its first mutex, sleeps, then asks for the other one. Both wait forever: the program has to be killed. Locking both mutexes in the same order in both threads removes the circular wait.</p>
 </div></section>
 <section class="slide " data-title="Deadlock avoidance" aria-label="Deadlock avoidance" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Deadlock avoidance</p><h2>Deadlock avoidance</h2><ul><li>Requires that the system has some additional <i>a priori</i> information available</li><li>Simplest and most useful model requires that each process declare the <b>maximum number</b> of resources of each type that it may need</li><li>The deadlock-avoidance algorithm dynamically examines the resource-allocation state to ensure that there can never be a circular-wait condition</li><li>Resource-allocation <b>state</b> is defined by the number of available and allocated resources, and the maximum demands of the processes</li></ul>
 </div></section>
 <section class="slide " data-title="Safe state" aria-label="Safe state" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Deadlock avoidance</p><h2>Safe state</h2><div class="cols "><div><ul><li>When a process requests an available resource, system must decide if immediate allocation leaves the system in a safe state</li><li>System is in <b>safe state</b> if there exists a sequence &lt;P<sub>1</sub>, P<sub>2</sub>, …, P<sub>n</sub>&gt; of ALL the processes in the system such that for each P<sub>i</sub>, the resources that P<sub>i</sub> can still request can be satisfied by currently available resources + resources held by all the P<sub>j</sub>, with j &lt; i</li><li>That is:<ul><li>If P<sub>i</sub> resource needs are not immediately available, then P<sub>i</sub> can wait until all P<sub>j</sub> have finished</li><li>When P<sub>j</sub> is finished, P<sub>i</sub> can obtain needed resources, execute, return allocated resources, and terminate</li><li>When P<sub>i</sub> terminates, P<sub>i+1</sub> can obtain its needed resources, and so on</li></ul></li></ul></div><div><h3>Basic facts</h3><ul><li>If a system is in safe state → no deadlocks</li><li>If a system is in unsafe state → possibility of deadlock</li><li>Avoidance → ensure that a system will never enter an unsafe state.</li></ul><figure class="fig" data-fig="safe-unsafe"><figcaption>Safe, unsafe, deadlock state spaces.</figcaption></figure></div></div>
+<p class="kicker">Deadlock avoidance</p><h2>Safe state</h2><ul><li>When a process requests an available resource, system must decide if immediate allocation leaves the system in a safe state</li><li>System is in <b>safe state</b> if there exists a sequence &lt;P<sub>1</sub>, P<sub>2</sub>, …, P<sub>n</sub>&gt; of ALL the processes in the system such that for each P<sub>i</sub>, the resources that P<sub>i</sub> can still request can be satisfied by currently available resources + resources held by all the P<sub>j</sub>, with j &lt; i</li><li>That is:<ul><li>If P<sub>i</sub> resource needs are not immediately available, then P<sub>i</sub> can wait until all P<sub>j</sub> have finished</li><li>When P<sub>j</sub> is finished, P<sub>i</sub> can obtain needed resources, execute, return allocated resources, and terminate</li><li>When P<sub>i</sub> terminates, P<sub>i+1</sub> can obtain its needed resources, and so on</li></ul></li></ul><h3>Basic facts</h3><ul><li>If a system is in safe state → no deadlocks</li></ul>
+</div></section>
+<section class="slide " data-title="Safe state (cont.)" aria-label="Safe state (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Deadlock avoidance</p><h2>Safe state (cont.)</h2><ul><li>If a system is in unsafe state → possibility of deadlock</li><li>Avoidance → ensure that a system will never enter an unsafe state.</li></ul><figure class="fig" data-fig="safe-unsafe"><figcaption>Safe, unsafe, deadlock state spaces.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="Avoidance algorithms" aria-label="Avoidance algorithms" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Deadlock avoidance</p><h2>Avoidance algorithms</h2><div class="tgrid"><div class="tcard"><h4>Single instance of a resource type</h4>Use a resource-allocation graph</div><div class="tcard"><h4>Multiple instances of a resource type</h4>Use the Banker’s algorithm</div></div>
 </div></section>
 <section class="slide " data-title="Resource-allocation graph scheme" aria-label="Resource-allocation graph scheme" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Deadlock avoidance</p><h2>Resource-allocation graph scheme</h2><div class="cols "><div><ul><li><b>Claim edge</b> P<sub>i</sub> → R<sub>j</sub> indicates that process P<sub>i</sub> may request resource R<sub>j</sub>; represented by a dashed line</li><li>Claim edge converts to request edge when a process requests a resource</li><li>Request edge converted to an assignment edge when the resource is allocated to the process</li><li>When a resource is released by a process, assignment edge reconverts to a claim edge</li><li>Resources must be claimed <i>a priori</i> in the system</li><li>Resource-allocation graph algorithm:<ul><li>Suppose that process P<sub>i</sub> requests a resource R<sub>j</sub></li><li>The request can be granted only if converting the request edge to an assignment edge does not result in the formation of a cycle in the resource allocation graph</li></ul></li></ul></div><div><div class="fig2"><figure class="fig" data-fig="rag-avoid"><figcaption>Resource-allocation graph with claim edges.</figcaption></figure><figure class="fig" data-fig="rag-unsafe"><figcaption>Unsafe state: giving R2 to T2 creates a cycle with T1’s claim edge.</figcaption></figure></div></div></div>
+<p class="kicker">Deadlock avoidance</p><h2>Resource-allocation graph scheme</h2><ul><li><b>Claim edge</b> P<sub>i</sub> → R<sub>j</sub> indicates that process P<sub>i</sub> may request resource R<sub>j</sub>; represented by a dashed line</li><li>Claim edge converts to request edge when a process requests a resource</li><li>Request edge converted to an assignment edge when the resource is allocated to the process</li><li>When a resource is released by a process, assignment edge reconverts to a claim edge</li><li>Resources must be claimed <i>a priori</i> in the system</li><li>Resource-allocation graph algorithm:<ul><li>Suppose that process P<sub>i</sub> requests a resource R<sub>j</sub></li><li>The request can be granted only if converting the request edge to an assignment edge does not result in the formation of a cycle in the resource allocation graph</li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="Resource-allocation graph scheme (cont.)" aria-label="Resource-allocation graph scheme (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Deadlock avoidance</p><h2>Resource-allocation graph scheme (cont.)</h2><div class="fig2"><figure class="fig" data-fig="rag-avoid"><figcaption>Resource-allocation graph with claim edges.</figcaption></figure><figure class="fig" data-fig="rag-unsafe"><figcaption>Unsafe state: giving R2 to T2 creates a cycle with T1’s claim edge.</figcaption></figure></div>
 </div></section>
 <section class="slide " data-title="Banker’s algorithm" aria-label="Banker’s algorithm" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Banker’s algorithm</p><h2>Banker’s algorithm</h2><div class="cols "><div><ul><li>Multiple instances of resources</li><li>Each process must a priori claim maximum use</li><li>When a process requests a resource it may have to wait</li><li>When a process gets all its resources it must return them in a finite amount of time</li></ul></div><div><h3>Data structures</h3><p>Let n = number of processes, and m = number of resource types.</p><ul><li><b>Available</b>: vector of length m. If Available[j] = k, there are k instances of resource type R<sub>j</sub> available</li><li><b>Max</b>: n × m matrix. If Max[i, j] = k, then process P<sub>i</sub> may request at most k instances of resource type R<sub>j</sub></li><li><b>Allocation</b>: n × m matrix. If Allocation[i, j] = k then P<sub>i</sub> is currently allocated k instances of R<sub>j</sub></li><li><b>Need</b>: n × m matrix. If Need[i, j] = k, then P<sub>i</sub> may need k more instances of R<sub>j</sub> to complete its task</li></ul><div class="formula">Need[i, j] = Max[i, j] – Allocation[i, j]</div></div></div>
+<p class="kicker">Banker’s algorithm</p><h2>Banker’s algorithm</h2><ul><li>Multiple instances of resources</li><li>Each process must a priori claim maximum use</li><li>When a process requests a resource it may have to wait</li><li>When a process gets all its resources it must return them in a finite amount of time</li></ul><h3>Data structures</h3><p>Let n = number of processes, and m = number of resource types.</p>
+</div></section>
+<section class="slide " data-title="Banker’s algorithm (cont.)" aria-label="Banker’s algorithm (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Banker’s algorithm</p><h2>Banker’s algorithm (cont.)</h2><ul><li><b>Available</b>: vector of length m. If Available[j] = k, there are k instances of resource type R<sub>j</sub> available</li><li><b>Max</b>: n × m matrix. If Max[i, j] = k, then process P<sub>i</sub> may request at most k instances of resource type R<sub>j</sub></li><li><b>Allocation</b>: n × m matrix. If Allocation[i, j] = k then P<sub>i</sub> is currently allocated k instances of R<sub>j</sub></li><li><b>Need</b>: n × m matrix. If Need[i, j] = k, then P<sub>i</sub> may need k more instances of R<sub>j</sub> to complete its task</li></ul><div class="formula">Need[i, j] = Max[i, j] – Allocation[i, j]</div>
 </div></section>
 <section class="slide " data-title="Safety algorithm and resource-request algorithm" aria-label="Safety algorithm and resource-request algorithm" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Banker’s algorithm</p><h2>Safety algorithm and resource-request algorithm</h2><div class="cols "><div><h3>Safety algorithm</h3><ol><li>Let <b>Work</b> and <b>Finish</b> be vectors of length m and n, respectively. Initialize:<ul><li>Work = Available</li><li>Finish[i] = false for i = 0, 1, …, n − 1</li></ul></li><li>Find an i such that both:<ul><li>(a) Finish[i] = false</li><li>(b) Need<sub>i</sub> ≤ Work</li><li>If no such i exists, go to step 4</li></ul></li><li>Work = Work + Allocation<sub>i</sub>; Finish[i] = true; go to step 2</li><li>If Finish[i] == true for all i, then the system is in a safe state</li></ol></div><div><h3>Resource-request algorithm for process P<sub>i</sub></h3><p>Request<sub>i</sub> = request vector for process P<sub>i</sub>. If Request<sub>i</sub>[j] = k then process P<sub>i</sub> wants k instances of resource type R<sub>j</sub>.</p><ol><li>If Request<sub>i</sub> ≤ Need<sub>i</sub> go to step 2. Otherwise, raise error condition, since process has exceeded its maximum claim</li><li>If Request<sub>i</sub> ≤ Available, go to step 3. Otherwise P<sub>i</sub> must wait, since resources are not available</li><li>Pretend to allocate requested resources to P<sub>i</sub> by modifying the state as follows:<ul><li>Available = Available – Request<sub>i</sub>;</li><li>Allocation<sub>i</sub> = Allocation<sub>i</sub> + Request<sub>i</sub>;</li><li>Need<sub>i</sub> = Need<sub>i</sub> – Request<sub>i</sub>;</li><li>If safe → the resources are allocated to P<sub>i</sub></li><li>If unsafe → P<sub>i</sub> must wait, and the old resource-allocation state is restored</li></ul></li></ol></div></div>
+<p class="kicker">Banker’s algorithm</p><h2>Safety algorithm and resource-request algorithm</h2><h3>Safety algorithm</h3><ol><li>Let <b>Work</b> and <b>Finish</b> be vectors of length m and n, respectively. Initialize:<ul><li>Work = Available</li><li>Finish[i] = false for i = 0, 1, …, n − 1</li></ul></li><li>Find an i such that both:<ul><li>(a) Finish[i] = false</li><li>(b) Need<sub>i</sub> ≤ Work</li><li>If no such i exists, go to step 4</li></ul></li><li>Work = Work + Allocation<sub>i</sub>; Finish[i] = true; go to step 2</li><li>If Finish[i] == true for all i, then the system is in a safe state</li></ol>
+</div></section>
+<section class="slide " data-title="Safety algorithm and resource-request algorithm (cont.)" aria-label="Safety algorithm and resource-request algorithm (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Banker’s algorithm</p><h2>Safety algorithm and resource-request algorithm (cont.)</h2><h3>Resource-request algorithm for process P<sub>i</sub></h3><p>Request<sub>i</sub> = request vector for process P<sub>i</sub>. If Request<sub>i</sub>[j] = k then process P<sub>i</sub> wants k instances of resource type R<sub>j</sub>.</p><ol><li>If Request<sub>i</sub> ≤ Need<sub>i</sub> go to step 2. Otherwise, raise error condition, since process has exceeded its maximum claim</li><li>If Request<sub>i</sub> ≤ Available, go to step 3. Otherwise P<sub>i</sub> must wait, since resources are not available</li><li>Pretend to allocate requested resources to P<sub>i</sub> by modifying the state as follows:<ul><li>Available = Available – Request<sub>i</sub>;</li><li>Allocation<sub>i</sub> = Allocation<sub>i</sub> + Request<sub>i</sub>;</li><li>Need<sub>i</sub> = Need<sub>i</sub> – Request<sub>i</sub>;</li><li>If safe → the resources are allocated to P<sub>i</sub></li><li>If unsafe → P<sub>i</sub> must wait, and the old resource-allocation state is restored</li></ul></li></ol>
 </div></section>
 <section class="slide " data-title="Example of Banker’s algorithm" aria-label="Example of Banker’s algorithm" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Banker’s algorithm</p><h2>Example of Banker’s algorithm</h2><div class="cols "><div><ul><li>5 processes P<sub>0</sub> through P<sub>4</sub>;</li><li>3 resource types: A (10 instances), B (5 instances), and C (7 instances)</li><li>Snapshot at time T<sub>0</sub>:</li></ul><div class="scrollx"><table class="doc os-ptab"><thead><tr><th></th><th>Allocation<br>A B C</th><th>Max<br>A B C</th><th>Available<br>A B C</th></tr></thead><tbody><tr><td>P0</td><td>0 1 0</td><td>7 5 3</td><td>3 3 2</td></tr><tr><td>P1</td><td>2 0 0</td><td>3 2 2</td><td></td></tr><tr><td>P2</td><td>3 0 2</td><td>9 0 2</td><td></td></tr><tr><td>P3</td><td>2 1 1</td><td>2 2 2</td><td></td></tr><tr><td>P4</td><td>0 0 2</td><td>4 3 3</td><td></td></tr></tbody></table></div></div><div><p>The content of the matrix Need is defined to be Max – Allocation:</p><div class="scrollx"><table class="doc os-ptab"><thead><tr><th></th><th>Need<br>A B C</th></tr></thead><tbody><tr><td>P0</td><td>7 4 3</td></tr><tr><td>P1</td><td>1 2 2</td></tr><tr><td>P2</td><td>6 0 0</td></tr><tr><td>P3</td><td>0 1 1</td></tr><tr><td>P4</td><td>4 3 1</td></tr></tbody></table></div><div class="callout">The system is in a safe state since the sequence &lt;P<sub>1</sub>, P<sub>3</sub>, P<sub>4</sub>, P<sub>0</sub>, P<sub>2</sub>&gt; satisfies safety criteria</div></div></div>
@@ -144,6 +215,57 @@ void *do_work_two(void *param)
 <section class="slide " data-title="Banker’s algorithm, step by step" aria-label="Banker’s algorithm, step by step" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Interactive</p><h2>Banker’s algorithm, step by step</h2><div data-demo="bankers"></div>
 </div></section>
+<section class="slide " data-title="The safety algorithm in C" aria-label="The safety algorithm in C" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>The safety algorithm in C</h2><div class="co-h"><span>bankers.c</span></div><pre class="code small-code">#include &lt;stdbool.h&gt;
+#include &lt;stdio.h&gt;
+
+#define N 5   /* processes */
+#define M 3   /* resource types A, B, C */
+
+int alloc[N][M] = {{0,1,0},{2,0,0},{3,0,2},{2,1,1},{0,0,2}};
+int max[N][M]   = {{7,5,3},{3,2,2},{9,0,2},{2,2,2},{4,3,3}};
+int avail[M]    = {3,3,2};
+
+int main(void)
+{
+    int need[N][M], work[M], seq[N], count = 0;
+    bool finish[N] = {false};</pre>
+</div></section>
+<section class="slide " data-title="The safety algorithm in C (cont.)" aria-label="The safety algorithm in C (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>The safety algorithm in C (cont.)</h2><pre data-start="16" class="code small-code">    for (int i = 0; i &lt; N; i++)
+        for (int j = 0; j &lt; M; j++)
+            need[i][j] = max[i][j] - alloc[i][j];   /* Need = Max - Allocation */
+    for (int j = 0; j &lt; M; j++) work[j] = avail[j]; /* Work = Available */
+
+    for (int i = 0, idle = 0; idle &lt; N; i = (i + 1) % N) {
+        bool ok = !finish[i];
+        for (int j = 0; ok &amp;&amp; j &lt; M; j++) ok = need[i][j] &lt;= work[j];
+        if (!ok) { idle++; continue; }
+        for (int j = 0; j &lt; M; j++) work[j] += alloc[i][j];
+        finish[i] = true; seq[count++] = i; idle = 0;
+        printf(&quot;P%d finishes, Work = (%d, %d, %d)\n&quot;, i, work[0], work[1], work[2]);
+    }
+    if (count == N) {</pre>
+</div></section>
+<section class="slide " data-title="The safety algorithm in C (cont.)" aria-label="The safety algorithm in C (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>The safety algorithm in C (cont.)</h2><pre data-start="30" class="code small-code">        printf(&quot;Safe. Safe sequence:&quot;);
+        for (int k = 0; k &lt; N; k++) printf(&quot; P%d&quot;, seq[k]);
+        printf(&quot;\n&quot;);
+    } else printf(&quot;Unsafe state\n&quot;);
+    return 0;
+}</pre><div class="co-h"><span>Output</span></div><div class="console runnable" data-cmd="gcc bankers.c -o bankers -pthread &amp;&amp; ./bankers" data-out="P1 finishes, Work = (5, 3, 2)
+P3 finishes, Work = (7, 4, 3)
+P4 finishes, Work = (7, 4, 5)
+P0 finishes, Work = (7, 5, 5)
+P2 finishes, Work = (10, 5, 7)
+Safe. Safe sequence: P1 P3 P4 P0 P2"><div class="console-h"><span>Terminal</span><button type="button" class="run-btn">▶ Run</button></div><pre class="console-body">$ gcc bankers.c -o bankers -pthread &amp;&amp; ./bankers
+P1 finishes, Work = (5, 3, 2)
+P3 finishes, Work = (7, 4, 3)
+P4 finishes, Work = (7, 4, 5)
+P0 finishes, Work = (7, 5, 5)
+P2 finishes, Work = (10, 5, 7)
+Safe. Safe sequence: P1 P3 P4 P0 P2</pre></div><p class="co-note">The same snapshot as the slides. The scan continues from the next process after each success, which gives the slide’s sequence &lt;P1, P3, P4, P0, P2&gt;.</p>
+</div></section>
 <section class="slide " data-title="Deadlock detection" aria-label="Deadlock detection" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Deadlock detection</p><h2>Deadlock detection</h2><div class="cols "><div><ul><li>Allow system to enter deadlock state</li><li>Detection algorithm</li><li>Recovery scheme</li></ul></div><div><h3>Single instance of each resource type</h3><ul><li>Maintain <b>wait-for</b> graph<ul><li>Nodes are processes</li><li>P<sub>i</sub> → P<sub>j</sub> if P<sub>i</sub> is waiting for P<sub>j</sub></li></ul></li><li>Periodically invoke an algorithm that searches for a cycle in the graph. If there is a cycle, there exists a deadlock</li><li>An algorithm to detect a cycle in a graph requires an order of <i>n</i><sup>2</sup> operations, where <i>n</i> is the number of vertices in the graph</li></ul></div></div>
 </div></section>
@@ -151,10 +273,19 @@ void *do_work_two(void *param)
 <p class="kicker">Deadlock detection</p><h2>Resource-allocation graph and wait-for graph</h2><figure class="fig" data-fig="rag-waitfor"><figcaption>Remove the resource nodes and collapse the edges: Pi → Rq → Pj becomes Pi → Pj.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="Several instances of a resource type" aria-label="Several instances of a resource type" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Deadlock detection</p><h2>Several instances of a resource type</h2><div class="cols "><div><ul><li><b>Available</b>: a vector of length m indicates the number of available resources of each type</li><li><b>Allocation</b>: an n × m matrix defines the number of resources of each type currently allocated to each process</li><li><b>Request</b>: an n × m matrix indicates the current request of each process. If Request[i][j] = k, then process P<sub>i</sub> is requesting k more instances of resource type R<sub>j</sub>.</li></ul></div><div><h3>Detection algorithm</h3><ol><li>Let Work and Finish be vectors of length m and n, respectively. Initialize:<ul><li>Work = Available</li><li>For i = 1, 2, …, n, if Allocation<sub>i</sub> ≠ 0, then Finish[i] = false; otherwise, Finish[i] = true</li></ul></li><li>Find an index i such that both:<ul><li>Finish[i] == false</li><li>Request<sub>i</sub> ≤ Work</li><li>If no such i exists, go to step 4</li></ul></li><li>Work = Work + Allocation<sub>i</sub>; Finish[i] = true; go to step 2</li><li>If Finish[i] == false, for some i, 1 ≤ i ≤ n, then the system is in deadlock state. Moreover, if Finish[i] == false, then P<sub>i</sub> is deadlocked</li></ol><div class="callout">Algorithm requires an order of O(m × n<sup>2</sup>) operations to detect whether the system is in deadlocked state</div></div></div>
+<p class="kicker">Deadlock detection</p><h2>Several instances of a resource type</h2><ul><li><b>Available</b>: a vector of length m indicates the number of available resources of each type</li><li><b>Allocation</b>: an n × m matrix defines the number of resources of each type currently allocated to each process</li><li><b>Request</b>: an n × m matrix indicates the current request of each process. If Request[i][j] = k, then process P<sub>i</sub> is requesting k more instances of resource type R<sub>j</sub>.</li></ul><h3>Detection algorithm</h3><ol><li>Let Work and Finish be vectors of length m and n, respectively. Initialize:<ul><li>Work = Available</li><li>For i = 1, 2, …, n, if Allocation<sub>i</sub> ≠ 0, then Finish[i] = false; otherwise, Finish[i] = true</li></ul></li></ol>
+</div></section>
+<section class="slide " data-title="Several instances of a resource type (cont.)" aria-label="Several instances of a resource type (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Deadlock detection</p><h2>Several instances of a resource type (cont.)</h2><ol start="2"><li>Find an index i such that both:<ul><li>Finish[i] == false</li><li>Request<sub>i</sub> ≤ Work</li><li>If no such i exists, go to step 4</li></ul></li><li>Work = Work + Allocation<sub>i</sub>; Finish[i] = true; go to step 2</li><li>If Finish[i] == false, for some i, 1 ≤ i ≤ n, then the system is in deadlock state. Moreover, if Finish[i] == false, then P<sub>i</sub> is deadlocked</li></ol><div class="callout">Algorithm requires an order of O(m × n<sup>2</sup>) operations to detect whether the system is in deadlocked state</div>
 </div></section>
 <section class="slide " data-title="Example of detection algorithm" aria-label="Example of detection algorithm" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Deadlock detection</p><h2>Example of detection algorithm</h2><div class="cols "><div><ul><li>Five processes P<sub>0</sub> through P<sub>4</sub>; three resource types A (7 instances), B (2 instances), and C (6 instances)</li><li>Snapshot at time T<sub>0</sub>:</li></ul><div class="scrollx"><table class="doc os-ptab"><thead><tr><th></th><th>Allocation<br>A B C</th><th>Request<br>A B C</th><th>Available<br>A B C</th></tr></thead><tbody><tr><td>P0</td><td>0 1 0</td><td>0 0 0</td><td>0 0 0</td></tr><tr><td>P1</td><td>2 0 0</td><td>2 0 2</td><td></td></tr><tr><td>P2</td><td>3 0 3</td><td>0 0 0</td><td></td></tr><tr><td>P3</td><td>2 1 1</td><td>1 0 0</td><td></td></tr><tr><td>P4</td><td>0 0 2</td><td>0 0 2</td><td></td></tr></tbody></table></div><ul><li>Sequence &lt;P<sub>0</sub>, P<sub>2</sub>, P<sub>3</sub>, P<sub>1</sub>, P<sub>4</sub>&gt; will result in Finish[i] = true for all i</li></ul></div><div><h3>Example (cont.)</h3><ul><li>P<sub>2</sub> requests an additional instance of type C</li></ul><div class="scrollx"><table class="doc os-ptab"><thead><tr><th></th><th>Request<br>A B C</th></tr></thead><tbody><tr><td>P0</td><td>0 0 0</td></tr><tr><td>P1</td><td>2 0 2</td></tr><tr><td>P2</td><td>0 0 1</td></tr><tr><td>P3</td><td>1 0 0</td></tr><tr><td>P4</td><td>0 0 2</td></tr></tbody></table></div><ul><li>State of system?<ul><li>Can reclaim resources held by process P<sub>0</sub>, but insufficient resources to fulfill other processes’ requests</li><li>Deadlock exists, consisting of processes P<sub>1</sub>, P<sub>2</sub>, P<sub>3</sub>, and P<sub>4</sub></li></ul></li></ul></div></div>
+<p class="kicker">Deadlock detection</p><h2>Example of detection algorithm</h2><ul><li>Five processes P<sub>0</sub> through P<sub>4</sub>; three resource types A (7 instances), B (2 instances), and C (6 instances)</li><li>Snapshot at time T<sub>0</sub>:</li></ul><div class="scrollx"><table class="doc os-ptab"><thead><tr><th></th><th>Allocation<br>A B C</th><th>Request<br>A B C</th><th>Available<br>A B C</th></tr></thead><tbody><tr><td>P0</td><td>0 1 0</td><td>0 0 0</td><td>0 0 0</td></tr><tr><td>P1</td><td>2 0 0</td><td>2 0 2</td><td></td></tr><tr><td>P2</td><td>3 0 3</td><td>0 0 0</td><td></td></tr><tr><td>P3</td><td>2 1 1</td><td>1 0 0</td><td></td></tr><tr><td>P4</td><td>0 0 2</td><td>0 0 2</td><td></td></tr></tbody></table></div>
+</div></section>
+<section class="slide " data-title="Example of detection algorithm (cont.)" aria-label="Example of detection algorithm (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Deadlock detection</p><h2>Example of detection algorithm (cont.)</h2><ul><li>Sequence &lt;P<sub>0</sub>, P<sub>2</sub>, P<sub>3</sub>, P<sub>1</sub>, P<sub>4</sub>&gt; will result in Finish[i] = true for all i</li></ul><h3>Example (cont.)</h3><ul><li>P<sub>2</sub> requests an additional instance of type C</li></ul>
+</div></section>
+<section class="slide " data-title="Example of detection algorithm (cont.)" aria-label="Example of detection algorithm (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Deadlock detection</p><h2>Example of detection algorithm (cont.)</h2><div class="scrollx"><table class="doc os-ptab"><thead><tr><th></th><th>Request<br>A B C</th></tr></thead><tbody><tr><td>P0</td><td>0 0 0</td></tr><tr><td>P1</td><td>2 0 2</td></tr><tr><td>P2</td><td>0 0 1</td></tr><tr><td>P3</td><td>1 0 0</td></tr><tr><td>P4</td><td>0 0 2</td></tr></tbody></table></div><ul><li>State of system?<ul><li>Can reclaim resources held by process P<sub>0</sub>, but insufficient resources to fulfill other processes’ requests</li><li>Deadlock exists, consisting of processes P<sub>1</sub>, P<sub>2</sub>, P<sub>3</sub>, and P<sub>4</sub></li></ul></li></ul>
 </div></section>
 <section class="slide " data-title="Detection algorithm, step by step" aria-label="Detection algorithm, step by step" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Interactive</p><h2>Detection algorithm, step by step</h2><div data-demo="detect"></div>
@@ -195,7 +326,7 @@ void *do_work_two(void *param)
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 38</span>
+  <span class="counter" id="counter">1 / 55</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>
@@ -207,6 +338,7 @@ void *do_work_two(void *param)
 <script src="../js/figs-final.js"></script>
 <script src="../js/demos-mid.js"></script>
 <script src="../js/demos-final.js"></script>
+<script src="../js/demos-anim.js"></script>
 <script src="../js/art.js"></script>
 <script src="../js/quiz.js"></script>
 <script src="../js/page.js"></script>

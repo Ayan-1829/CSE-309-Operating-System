@@ -2,7 +2,8 @@
 /* Each FIGS[id]() returns an SVG drawn with diagram.js, so every figure follows light and dark mode. */
 const FIGS = {};
 const L = D.line, R = D.rect, C = D.circle, E = D.ellipse, TX = D.T;
-const arrow = (pts, o) => L(pts, Object.assign({ end: 'arrow' }, o || {}));
+/* accent arrows are the main data path of a figure: they get a moving packet */
+const arrow = (pts, o) => L(pts, Object.assign({ end: 'arrow' }, o || {}, o && /dg-acc/.test(o.cls || '') && o.packet == null ? { packet: true } : {}));
 /* a vertical stack of labelled boxes: rows = [[label, cls, height]] */
 function stack(x, y, w, rows, gap) {
   const k = []; let yy = y;
@@ -68,9 +69,9 @@ FIGS['client-server'] = () => {
   const k = [];
   [['desktop', 30], ['laptop', 100], ['smartphone', 170]].forEach(([t, y]) => {
     k.push(R(20, y, 120, 46, 'client\n' + t, { cls: 'dg-fill1', tcls: 'dg-t2' }));
-    k.push(L([[140, y + 23], [250, 120]], { cls: 'dg-thin' }));
+    k.push(L([[140, y + 23], [250, 120]], { cls: 'dg-thin', packet: true, pcls: 'ac', dur: 2.2, delay: y / 90 }));
   });
-  k.push(E(300, 120, 54, 34, 'network', { cls: 'dg-fill3' }), arrow([[354, 120], [430, 120]], { start: 'arrow' }));
+  k.push(E(300, 120, 54, 34, 'network', { cls: 'dg-fill3' }), arrow([[354, 120], [430, 120]], { start: 'arrow', packet: true, dur: 1.6 }), L([[430, 128], [354, 128]], { cls: 'dg-fillonly', packet: true, pcls: 'ok', dur: 1.6, delay: 0.8 }));
   k.push(R(430, 84, 120, 72, 'server', { cls: 'dg-fill2' }));
   return D.svg(570, 240, 'General structure of a client–server system', k);
 };
@@ -90,8 +91,8 @@ FIGS['cloud'] = () => {
     R(160, 120, 90, 60, 'firewall', { cls: 'dg-fill2', tcls: 'dg-t2' }), R(285, 120, 100, 60, 'load\nbalancer', { cls: 'dg-fill1', tcls: 'dg-t2' }),
     R(430, 30, 150, 60, 'virtual\nmachines', { cls: 'dg-fill1', tcls: 'dg-t2' }), R(430, 120, 150, 60, 'servers', { cls: 'dg-fill1', tcls: 'dg-t2' }), R(430, 210, 150, 60, 'storage', { cls: 'dg-fill1', tcls: 'dg-t2' }),
     R(610, 100, 120, 100, 'cloud\nmanagement\nservices', { cls: 'dg-fill3', tcls: 'dg-t2' }),
-    arrow([[126, 150], [160, 150]]), arrow([[250, 150], [285, 150]]),
-    arrow([[385, 140], [430, 60]]), arrow([[385, 150], [430, 150]]), arrow([[385, 160], [430, 240]]),
+    arrow([[126, 150], [160, 150]], { packet: 2, dur: 1.2 }), arrow([[250, 150], [285, 150]], { packet: 2, dur: 1.2, delay: 0.3 }),
+    arrow([[385, 140], [430, 60]], { packet: true, dur: 1.8 }), arrow([[385, 150], [430, 150]], { packet: true, dur: 1.8, delay: 0.6 }), arrow([[385, 160], [430, 240]], { packet: true, dur: 1.8, delay: 1.2 }),
     L([[610, 150], [580, 150]], { end: 'arrow', cls: 'dg-thin' }), L([[610, 130], [580, 60]], { end: 'arrow', cls: 'dg-thin' }), L([[610, 170], [580, 240]], { end: 'arrow', cls: 'dg-thin' }),
     TX(670, 228, 'cloud management\ncommands', 'dg-s'), TX(670, 76, 'cloud customer\ninterface', 'dg-s')
   ];
@@ -238,14 +239,14 @@ FIGS['sched-queues'] = () => {
     g.push(TX(x + (w - 72) / 2, y + 15, lab, 'dg-s'));
     return g;
   };
-  k.push(...q(40, 20, 260, 'ready queue'), C(380, 35, 30, 'CPU', { cls: 'dg-fill2' }), arrow([[300, 35], [350, 35]]), arrow([[410, 35], [470, 35]]));
+  k.push(...q(40, 20, 260, 'ready queue'), C(380, 35, 30, 'CPU', { cls: 'dg-fill2' }), arrow([[300, 35], [350, 35]], { packet: true, dur: 1.2 }), arrow([[410, 35], [470, 35]], { packet: true, dur: 1.2, delay: 0.6 }));
   const rows = [['I/O request', 'I/O wait queue', 'I/O', 90], ['time slice expired', null, null, 150], ['create child process', 'child termination\nwait queue', 'child\nterminates', 200], ['wait for an\ninterrupt', 'interrupt\nwait queue', 'interrupt\noccurs', 270]];
   rows.forEach(([a, qq, ev, y]) => {
     k.push(R(470, y - 18, 140, 36, a, { cls: 'dg-fill1', tcls: 'dg-s' }), L([[440, 35], [440, y], [470, y]], { cls: 'dg-thin' }));
     if (qq) {
       k.push(...q(170, y - 15, 230, qq.replace('\n', ' ')), L([[470, y], [400, y]], { end: 'arrow' }));
-      k.push(R(60, y - 18, 80, 36, ev, { cls: 'dg-fill3', tcls: 'dg-s' }), arrow([[170, y], [140, y]]), L([[60, y], [20, y], [20, 35], [40, 35]], { end: 'arrow', cls: 'dg-thin' }));
-    } else k.push(L([[470, y], [30, y], [30, 35], [40, 35]], { end: 'arrow', cls: 'dg-thin' }));
+      k.push(R(60, y - 18, 80, 36, ev, { cls: 'dg-fill3', tcls: 'dg-s' }), arrow([[170, y], [140, y]]), L([[60, y], [20, y], [20, 35], [40, 35]], { end: 'arrow', cls: 'dg-thin', packet: true, pcls: 'ac', dur: 3, delay: y / 60 }));
+    } else k.push(L([[470, y], [30, y], [30, 35], [40, 35]], { end: 'arrow', cls: 'dg-thin', packet: true, pcls: 'ac', dur: 4 }));
   });
   return D.svg(630, 300, 'Queueing-diagram representation of process scheduling', k);
 };
@@ -330,8 +331,8 @@ FIGS['hw-protect'] = () => {
     D.ellipse(370, 85, 72, 30, 'address <\nbase + limit?', { cls: 'dg-fill3', tcls: 'dg-t2' }), R(520, 60, 110, 50, 'memory', { cls: 'dg-fill2' }),
     R(220, 170, 260, 40, 'trap to operating system:\naddressing error', { cls: 'dg-fill2', tcls: 'dg-s' }),
     TX(120, 30, 'base', 'dg-m'), TX(370, 30, 'base + limit', 'dg-m'), L([[120, 38], [150, 56]], { end: 'arrow', cls: 'dg-thin' }), L([[370, 38], [370, 55]], { end: 'arrow', cls: 'dg-thin' }),
-    arrow([[80, 85], [114, 85]], { label: 'address', dy: -12 }), arrow([[226, 85], [298, 85]], { label: 'yes', dy: -12, lcls: 'dg-okt' }), arrow([[442, 85], [520, 85]], { label: 'yes', dy: -12, lcls: 'dg-okt' }),
-    arrow([[170, 115], [170, 190], [220, 190]], { label: 'no', at: 0.3, dx: 14, lcls: 'dg-badt', cls: 'dg-bad' }), arrow([[370, 115], [370, 170]], { label: 'no', dx: 14, lcls: 'dg-badt', cls: 'dg-bad' })];
+    arrow([[80, 85], [114, 85]], { label: 'address', dy: -12, packet: true, dur: 1 }), arrow([[226, 85], [298, 85]], { label: 'yes', dy: -12, lcls: 'dg-okt', packet: true, pcls: 'ok', dur: 1.3, delay: 0.5 }), arrow([[442, 85], [520, 85]], { label: 'yes', dy: -12, lcls: 'dg-okt', packet: true, pcls: 'ok', dur: 1.3, delay: 1 }),
+    arrow([[170, 115], [170, 190], [220, 190]], { label: 'no', at: 0.3, dx: 14, lcls: 'dg-badt', cls: 'dg-bad', packet: true, pcls: 'bad', dur: 2.4 }), arrow([[370, 115], [370, 170]], { label: 'no', dx: 14, lcls: 'dg-badt', cls: 'dg-bad' })];
   return D.svg(640, 220, 'Hardware address protection with base and limit registers', k);
 };
 
@@ -343,9 +344,9 @@ FIGS['addr-format'] = () => {
 FIGS['paging-hw'] = () => {
   const k = [R(10, 50, 60, 44, 'CPU', { cls: 'dg-fill1' }), R(100, 52, 40, 40, 'p', { rx: 0, cls: 'dg-fill1', tcls: 'dg-m' }), R(140, 52, 40, 40, 'd', { rx: 0, cls: 'dg-fill2', tcls: 'dg-m' }), TX(140, 36, 'logical address', 'dg-s'),
     R(380, 52, 40, 40, 'f', { rx: 0, cls: 'dg-fill1', tcls: 'dg-m' }), R(420, 52, 40, 40, 'd', { rx: 0, cls: 'dg-fill2', tcls: 'dg-m' }), TX(420, 36, 'physical address', 'dg-s'),
-    arrow([[70, 72], [100, 72]]), arrow([[460, 72], [540, 72]])];
+    arrow([[70, 72], [100, 72]], { packet: true, dur: 0.9 }), arrow([[460, 72], [540, 72]], { packet: true, dur: 1.2, delay: 1 })];
   for (let r = 0; r < 6; r++) k.push(R(220, 130 + r * 22, 80, 22, r === 3 ? 'f' : '', { rx: 0, cls: r === 3 ? 'dg-fill2' : '', tcls: 'dg-m' }));
-  k.push(TX(260, 274, 'page table', 'dg-t2'), arrow([[120, 92], [120, 207], [220, 207]], { label: 'p', at: 0.6, dx: -10 }), arrow([[300, 207], [400, 207], [400, 92]]), arrow([[160, 92], [160, 110], [440, 110], [440, 92]], { cls: 'dg-thin' }));
+  k.push(TX(260, 274, 'page table', 'dg-t2'), arrow([[120, 92], [120, 207], [220, 207]], { label: 'p', at: 0.6, dx: -10, cls: 'dg-acc', dur: 2 }), arrow([[300, 207], [400, 207], [400, 92]], { cls: 'dg-acc', dur: 2, delay: 1 }), arrow([[160, 92], [160, 110], [440, 110], [440, 92]], { cls: 'dg-thin', packet: true, pcls: 'ac', dur: 2.6 }));
   k.push(R(540, 10, 140, 250, null, { cls: 'dg-fill3' }), TX(610, 274, 'physical memory', 'dg-t2'), R(540, 60, 140, 40, 'frame f', { cls: 'dg-fill2', tcls: 'dg-t2', rx: 0 }));
   return D.svg(700, 286, 'Paging hardware: the page number indexes the page table to find the frame', k);
 };
@@ -376,15 +377,15 @@ FIGS['free-frames'] = () => {
 };
 
 FIGS['tlb'] = () => {
-  const k = [R(10, 40, 60, 44, 'CPU', { cls: 'dg-fill1' }), R(100, 42, 40, 40, 'p', { rx: 0, cls: 'dg-fill1', tcls: 'dg-m' }), R(140, 42, 40, 40, 'd', { rx: 0, cls: 'dg-fill2', tcls: 'dg-m' }), TX(140, 28, 'logical address', 'dg-s'),
-    arrow([[70, 62], [100, 62]]), TX(300, 28, 'TLB', 'dg-t2')];
+  const k = [R(10, 40, 60, 44, 'CPU', { cls: 'dg-fill1' }), R(100, 42, 40, 40, 'p', { rx: 0, cls: 'dg-fill1', tcls: 'dg-m' }), R(140, 42, 40, 40, 'd', { rx: 0, cls: 'dg-fill2', tcls: 'dg-m' }), TX(154, 34, 'logical address', 'dg-s', 'end'),
+    arrow([[70, 62], [100, 62]]), TX(300, 32, 'TLB', 'dg-t2')];
   for (let r = 0; r < 5; r++) { k.push(R(240, 40 + r * 22, 60, 22, '', { rx: 0, cls: 'dg-fill1' }), R(300, 40 + r * 22, 60, 22, '', { rx: 0, cls: 'dg-fill2' })); }
   k.push(TX(270, 160, 'page no.', 'dg-s'), TX(330, 160, 'frame no.', 'dg-s'));
-  k.push(arrow([[120, 82], [120, 100], [240, 95]], { label: 'p', at: 0.2, dx: -10 }), arrow([[360, 62], [440, 62]], { label: 'TLB hit', dy: -12, cls: 'dg-acc', lcls: 'dg-okt' }));
-  k.push(R(440, 42, 40, 40, 'f', { rx: 0, cls: 'dg-fill1', tcls: 'dg-m' }), R(480, 42, 40, 40, 'd', { rx: 0, cls: 'dg-fill2', tcls: 'dg-m' }), TX(480, 28, 'physical address', 'dg-s'), arrow([[520, 62], [580, 62]]));
-  k.push(arrow([[160, 82], [160, 30], [500, 30], [500, 42]], { cls: 'dg-thin' }));
+  k.push(arrow([[120, 82], [120, 100], [240, 95]], { label: 'p', at: 0.2, dx: -18, packet: true, dur: 1.4 }), arrow([[360, 62], [440, 62]], { label: 'TLB hit', dy: -12, cls: 'dg-acc', lcls: 'dg-okt' }));
+  k.push(R(440, 42, 40, 40, 'f', { rx: 0, cls: 'dg-fill1', tcls: 'dg-m' }), R(480, 42, 40, 40, 'd', { rx: 0, cls: 'dg-fill2', tcls: 'dg-m' }), TX(496, 34, 'physical address', 'dg-s', 'end'), arrow([[520, 62], [580, 62]]));
+  k.push(arrow([[160, 42], [160, 14], [500, 14], [500, 42]], { cls: 'dg-thin' }));
   for (let r = 0; r < 5; r++) k.push(R(280, 200 + r * 22, 70, 22, r === 2 ? 'f' : '', { rx: 0, tcls: 'dg-m' }));
-  k.push(TX(315, 324, 'page table', 'dg-t2'), arrow([[120, 100], [120, 255], [280, 255]], { label: 'TLB miss', at: 0.75, dy: -12, cls: 'dg-bad', lcls: 'dg-badt' }), arrow([[350, 255], [460, 255], [460, 82]]));
+  k.push(TX(315, 324, 'page table', 'dg-t2'), arrow([[120, 100], [120, 255], [280, 255]], { label: 'TLB miss', at: 0.75, dy: -12, cls: 'dg-bad', lcls: 'dg-badt', packet: true, pcls: 'bad', dur: 2.4 }), arrow([[350, 255], [460, 255], [460, 82]], { packet: true, pcls: 'bad', dur: 2.4, delay: 1.2 }));
   k.push(R(580, 10, 120, 300, null, { cls: 'dg-fill3' }), TX(640, 324, 'physical memory', 'dg-t2'));
   return D.svg(710, 334, 'Paging hardware with a translation look-aside buffer (TLB)', k);
 };
@@ -460,7 +461,7 @@ FIGS['hashed'] = () => {
   for (let i = 0; i < 6; i++) k.push(R(180, 40 + i * 30, 60, 30, '', { rx: 0, cls: i === 3 ? 'dg-fill1' : '' }));
   k.push(TX(210, 240, 'hash table', 'dg-s'), arrow([[120, 135], [180, 135]]));
   k.push(R(300, 120, 30, 30, 'q', { rx: 0, tcls: 'dg-m' }), R(330, 120, 30, 30, 's', { rx: 0, tcls: 'dg-m' }), R(360, 120, 20, 30, '', { rx: 0 }), R(430, 120, 30, 30, 'p', { rx: 0, cls: 'dg-fill1', tcls: 'dg-m' }), R(460, 120, 30, 30, 'r', { rx: 0, cls: 'dg-fill2', tcls: 'dg-m' }), R(490, 120, 20, 30, '', { rx: 0 }));
-  k.push(arrow([[240, 135], [300, 135]]), arrow([[370, 135], [430, 135]]), TX(470, 168, 'match on p', 'dg-s'));
+  k.push(arrow([[240, 135], [300, 135]], { packet: true, dur: 1.2 }), arrow([[370, 135], [430, 135]], { packet: true, dur: 1.2, delay: 0.6 }), TX(470, 168, 'match on p', 'dg-s'));
   k.push(R(560, 24, 40, 34, 'r', { rx: 0, cls: 'dg-fill1', tcls: 'dg-m' }), R(600, 24, 40, 34, 'd', { rx: 0, cls: 'dg-fill2', tcls: 'dg-m' }), TX(600, 14, 'physical address', 'dg-s'), arrow([[475, 120], [475, 41], [560, 41]], { cls: 'dg-acc' }), arrow([[640, 41], [680, 41]]));
   k.push(R(680, 10, 40, 240, null, { cls: 'dg-fill3' }), TX(700, 262, 'memory', 'dg-s'));
   return D.svg(730, 272, 'Hashed page table: the page number is hashed and the chain is searched for a match', k);
@@ -470,7 +471,7 @@ FIGS['inverted'] = () => {
   const k = [R(10, 40, 60, 44, 'CPU', { cls: 'dg-fill1' }), TX(150, 26, 'logical address', 'dg-s'), R(90, 42, 40, 40, 'pid', { rx: 0, cls: 'dg-fill1', tcls: 'dg-m' }), R(130, 42, 40, 40, 'p', { rx: 0, cls: 'dg-fill1', tcls: 'dg-m' }), R(170, 42, 40, 40, 'd', { rx: 0, cls: 'dg-fill2', tcls: 'dg-m' }),
     arrow([[70, 62], [90, 62]]), TX(460, 26, 'physical address', 'dg-s'), R(420, 42, 40, 40, 'i', { rx: 0, cls: 'dg-fill1', tcls: 'dg-m' }), R(460, 42, 40, 40, 'd', { rx: 0, cls: 'dg-fill2', tcls: 'dg-m' }), arrow([[500, 62], [580, 62]])];
   for (let r = 0; r < 6; r++) k.push(TX(195, 132 + r * 26, r === 3 ? 'i' : '', 'dg-m', 'end'), R(200, 120 + r * 26, 60, 26, r === 3 ? 'pid' : '', { rx: 0, cls: r === 3 ? 'dg-fill2' : '', tcls: 'dg-m' }), R(260, 120 + r * 26, 40, 26, r === 3 ? 'p' : '', { rx: 0, cls: r === 3 ? 'dg-fill2' : '', tcls: 'dg-m' }));
-  k.push(TX(250, 290, 'page table', 'dg-t2'), arrow([[130, 82], [130, 211], [200, 211]], { label: 'search', at: 0.6, dx: -24 }), arrow([[300, 211], [440, 211], [440, 82]], { label: 'i', at: 0.5, dy: -10 }), arrow([[190, 82], [190, 100], [480, 100], [480, 82]], { cls: 'dg-thin' }));
+  k.push(TX(250, 290, 'page table', 'dg-t2'), arrow([[130, 82], [130, 211], [200, 211]], { label: 'search', at: 0.6, dx: -24, cls: 'dg-acc', dur: 2 }), arrow([[300, 211], [440, 211], [440, 82]], { label: 'i', at: 0.5, dy: -10, cls: 'dg-acc', dur: 2, delay: 1 }), arrow([[190, 82], [190, 100], [480, 100], [480, 82]], { cls: 'dg-thin' }));
   k.push(R(580, 10, 110, 270, null, { cls: 'dg-fill3' }), TX(635, 292, 'physical memory', 'dg-t2'));
   return D.svg(700, 302, 'Inverted page table: one entry per physical frame, searched for <pid, p>', k);
 };

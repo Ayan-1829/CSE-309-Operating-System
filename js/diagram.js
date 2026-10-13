@@ -66,9 +66,19 @@ const D = (() => {
       sH = head(o.start, pts[0].slice(), u, cls);
       pts[0] = [pts[0][0] - u[0] * L, pts[0][1] - u[1] * L];
     }
-    kids.push(sv('path', { d: pathD(pts), class: 'dg-ln ' + (o.dash ? 'dg-dash ' : '') + cls }));
+    kids.push(sv('path', { d: pathD(pts), class: 'dg-ln ' + (o.dash ? 'dg-dash ' : '') + (o.flow ? 'dg-flow ' : '') + cls }));
     if (sH) kids.push(sH);
     if (eH) kids.push(eH);
+    /* o.packet: dots that travel along the edge to show data moving (true = 1 dot, or a number of dots) */
+    if (o.packet) {
+      let len = 0; for (let i = 1; i < orig.length; i++) len += Math.hypot(orig[i][0] - orig[i - 1][0], orig[i][1] - orig[i - 1][1]);
+      const n = o.packet === true ? 1 : o.packet, dur = o.dur || Math.max(1.4, len / 120);
+      const path = o.back ? pathD(orig.slice().reverse()) : pathD(orig);
+      for (let i = 0; i < n; i++) {
+        kids.push(sv('circle', { r: o.pr || 5.5, class: 'dg-packet ' + (o.pcls || '') },
+          sv('animateMotion', { dur: dur + 's', begin: (-(i * dur / n) - (o.delay || 0)) + 's', repeatCount: 'indefinite', path })));
+      }
+    }
     if (o.label != null && o.label !== '') {
       const p = along(orig, o.at == null ? 0.5 : o.at);
       kids.push(T(p[0] + (o.dx || 0), p[1] + (o.dy || 0), o.label, 'dg-lbl ' + (o.lcls || ''), o.anchor));

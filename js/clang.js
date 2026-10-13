@@ -60,10 +60,10 @@ const CLang = (() => {
   function render(src, pre, opts = {}) {
     pre = pre || h('pre', { class: 'code' });
     const code = h('code', { class: 'language-c' });
-    const marks = parseMarks(opts.marks);
-    lines(src.replace(/^\n+|\s+$/g, '')).forEach((toks, k) => {
-      const el = lineEl(toks, k + 1, opts);
-      if (marks.has(k + 1)) el.classList.add('mk');
+    const marks = parseMarks(opts.marks), st = opts.start || 1;   /* start: first line number of a listing split across slides */
+    lines(src.replace(st > 1 ? /\s+$/g : /^\n+|\s+$/g, '')).forEach((toks, k) => {
+      const el = lineEl(toks, k + st, opts);
+      if (marks.has(k + st)) el.classList.add('mk');
       code.append(el);
     });
     clear(pre).append(code);
@@ -73,7 +73,7 @@ const CLang = (() => {
   }
   function highlightAll(root) {
     (root || document).querySelectorAll('pre.code:not([data-hl])').forEach((pre) => {
-      render(pre.textContent, pre, { marks: pre.getAttribute('data-mark'), nums: !pre.classList.contains('nonum') });
+      render(pre.textContent, pre, { marks: pre.getAttribute('data-mark'), nums: !pre.classList.contains('nonum'), start: +pre.getAttribute('data-start') || 1 });
     });
   }
   return { tokens, lines, render, highlightAll, lineEl };

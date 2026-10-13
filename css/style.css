@@ -1066,3 +1066,67 @@ body.deck-page .slide .os-mlfq{row-gap:2.4em;grid-template-columns:7em minmax(ca
 body.deck-page .slide .os-mlfq .os-gantt{height:1.9em}.os-mlfq .os-gseg{line-height:1.75em}
 body.deck-page .slide .os-mp{grid-template-columns:9em 1fr 9em}
 body.deck-page .slide .os-lane{grid-template-columns:7em repeat(3,minmax(0,1fr))}
+/* moving data in diagrams */
+.dg-packet{fill:var(--accent);stroke:var(--sheet);stroke-width:1.5}
+.dg-packet.ok{fill:var(--ok)}.dg-packet.bad{fill:var(--bad)}.dg-packet.ac{fill:var(--ac)}
+.dg-flow{stroke-dasharray:8 6;animation:dg-flow 1s linear infinite}
+@keyframes dg-flow{to{stroke-dashoffset:-28}}
+@media (prefers-reduced-motion:reduce){.dg-flow{animation:none}.dg-packet{display:none}}
+/* step-by-step flow animations */
+.os-flownote{font-family:var(--f-accessible)!important;line-height:1.45;min-height:3.2em}
+.os-vars{margin:6px 0}
+/* animated scheduler */
+.os-sa{display:grid;grid-template-columns:1.1fr 1.6fr .8fr 1.3fr;gap:12px;margin:8px 0 12px;align-items:stretch}
+.os-sa-col,.os-sa-cpu{border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--sheet);min-height:5.2em}
+.os-sa-col small,.os-sa-cpu small{display:block;font:600 var(--pj-sm,13px)/1.2 var(--f-head);color:var(--ink-3);margin-bottom:6px}
+.os-sa .os-q{justify-content:flex-start}
+.os-rq{border-left:4px solid var(--ac);padding-left:6px}
+.os-sa-cpu{text-align:center;border-color:var(--ink-3)}
+.os-sa-cpu.busy{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.os-sa-cpu .os-chip{font-size:1.2em;padding:8px 14px}
+@media (max-width:860px){.os-sa{grid-template-columns:1fr 1fr}}
+/* code next to its output, with a Run button */
+.codeout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start;margin:8px 0 14px}
+@media (max-width:860px){.codeout{grid-template-columns:1fr}}
+.co-h{font:700 var(--pj-sm,14px) var(--f-head);color:var(--ink-2);margin:0 0 6px;display:flex;align-items:center;gap:10px;justify-content:space-between}
+.codeout pre.code{margin:0}
+.console.runnable .console-body{min-height:6em}
+.console .run-btn{font:600 13px var(--f-head);padding:3px 10px;border-radius:4px;border:1px solid #3b5457;background:#1d3236;color:#E4F2EE;cursor:pointer}
+.console .run-btn:hover{background:#28464b}
+.console-body .prompt{color:#9DB6B3}
+.console-body .cursor{display:inline-block;width:.6em;background:#E4F2EE;animation:os-blink 1s steps(1) infinite}
+@keyframes os-blink{50%{opacity:0}}
+.co-note{font:500 var(--pj-sm,14px)/1.4 var(--f-accessible);color:var(--ink-2);margin:6px 0 0}
+/* flow animations: keep the diagram, the explanation and the controls on one screen */
+.os-flowpic svg.dg,.os-tlbsim svg.dg{height:min(33vh,330px)!important;width:auto!important;max-width:100%!important;min-width:0!important}
+.os-tlbrow{align-items:flex-start;gap:18px}
+.os-tlbrow table.tt td,.os-tlbrow table.tt th{padding:3px 12px}
+/* code beside output: more room for the code; long lines wrap under their own text */
+.codeout{grid-template-columns:minmax(0,1.75fr) minmax(0,1fr)}
+body.deck-page .slide .codeout pre.code{font-size:calc(var(--pj-code) * .9)!important}
+.codeout .cl,.slide pre.code .cl{white-space:pre-wrap;word-break:break-word;padding-left:4.2em;text-indent:-4.2em}
+.codeout .cl .cn,.slide pre.code .cl .cn{text-indent:0}
+body.deck-page .slide .console-h{font-size:var(--pj-sm)!important;text-transform:none;letter-spacing:0;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.console .run-btn{font:700 var(--pj-sm,14px) var(--f-head);padding:4px 16px;border-radius:6px;background:#2f6f4f;border-color:#3f8a64}
+.console .run-btn:hover{background:#3a8560}
+.os-tlbsim svg.dg{height:min(26vh,260px)!important}
+
+/* ===== projector layout (shared by all course sites) =====
+   Interactive boxes show their controls first, right under the title; figures that used to sit
+   in a half-width column are stacked full width (see _tools/paginate) and capped in height. */
+.demo{display:flex;flex-direction:column}
+.demo>*{min-width:0}
+.demo>h3,.demo>.sub{order:-3}
+.demo>.row:has(button,select),.demo>.row.os-ctl{order:-2;margin-bottom:12px}
+.demo>label.fld,.demo>input,.demo>.bits{align-self:flex-start}
+.trace>.trace-ctl{justify-content:flex-start;margin:0 0 10px}
+.slide .trace-code{max-height:min(36vh,385px)}
+.lab>.lab-ctl{margin:0 0 8px}
+.slide-inner>figure.fig svg.dg{max-height:min(60vh,640px)}
+/* long code lines wrap (with a hanging indent past the line number) instead of scrolling sideways */
+.slide pre.code .cl{white-space:pre-wrap;overflow-wrap:anywhere;padding-left:4.2em;text-indent:-4.2em}
+.slide pre.code .cl .cn{text-indent:0}
+.slide pre.code.nonum .cl{padding-left:14px;text-indent:0}
+/* ===== end projector layout ===== */
+.slide .demo svg.dg{max-height:min(44vh,460px)}
+.slide-inner>.co-h{margin-top:14px}

@@ -175,7 +175,19 @@ DEMOS['proc-states'] = (root) => {
     clear(btns);
     Object.keys(T).forEach((k) => btns.append(h('button', { type: 'button', class: 'btn sm' + (T[k][0] === state ? ' pri' : ''), disabled: T[k][0] !== state, onclick: () => { edge = T[k][2]; log.append(h('li', null, `${T[k][0]} → ${T[k][1]}: ${LBL[k]}`)); state = T[k][1]; draw(); } }, LBL[k])));
     btns.append(btn('New process', () => { state = 'new'; edge = null; clear(log); draw(); }));
+    btns.append(lifeBtn);
   }
+  /* play a typical lifecycle: admitted, run, I/O, run, preempted, run, exit */
+  let life = null;
+  const LIFE = ['admit', 'dispatch', 'wait', 'done', 'dispatch', 'interrupt', 'dispatch', 'exit'];
+  const lifeBtn = btn('▶ Play a lifecycle', () => {
+    if (life) { clearInterval(life); life = null; lifeBtn.textContent = '▶ Play a lifecycle'; return; }
+    state = 'new'; edge = null; clear(log); draw(); let k = 0; lifeBtn.textContent = '❚❚ Stop';
+    life = setInterval(() => {
+      const e = LIFE[k++]; if (!e) { clearInterval(life); life = null; lifeBtn.textContent = '▶ Play a lifecycle'; return; }
+      edge = T[e][2]; log.append(h('li', null, `${T[e][0]} → ${T[e][1]}: ${LBL[e]}`)); state = T[e][1]; draw();
+    }, 1300);
+  });
   root.append(demoBox('Drive a process through its states', 'Only the events that can happen in the current state are enabled.', pic, btns, log));
   draw();
 };
@@ -347,8 +359,14 @@ DEMOS['bounded-buffer'] = (root) => {
       h('div', { class: 'kv' + (wait === 'cw' ? ' warn' : '') }, h('small', null, 'consumer'), h('b', null, wait === 'cw' ? 'waiting' : 'ready')),
       h('div', { class: 'kv' }, h('small', null, 'items in buffer'), h('b', null, String(unbounded ? ub.length : count))));
   }
+  let auto = null;
+  const autoBtn = btn('▶ Auto run', () => {
+    if (auto) { clearInterval(auto); auto = null; autoBtn.textContent = '▶ Auto run'; return; }
+    autoBtn.textContent = '❚❚ Pause';
+    auto = setInterval(() => (Math.random() < 0.55 ? produce() : consume()), 800);
+  });
   root.append(demoBox('Producer–consumer with a shared buffer', 'Produce and consume items. With a bounded buffer, in and out wrap around: the buffer is full when it holds N items.',
-    h('div', { class: 'row' }, kind.el, size.el), ring, stats, msg, h('div', { class: 'row' }, btn('Produce', produce, 'pri'), btn('Consume', consume), btn('Reset', reset))));
+    h('div', { class: 'row' }, kind.el, size.el), ring, stats, msg, h('div', { class: 'row' }, btn('Produce', produce, 'pri'), btn('Consume', consume), autoBtn, btn('Reset', reset))));
   reset();
 };
 

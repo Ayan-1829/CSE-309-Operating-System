@@ -65,7 +65,7 @@
 <p class="kicker">Before we start</p><h2>Why this matters</h2><div class="hook"><p class="q">Your program can be bigger than the RAM it runs in, and you never notice.</p><p>Virtual memory keeps only the pages a process is using in memory and fetches the rest on demand.</p><p>When memory is full, the OS must choose a page to throw out. Choose badly and the disk thrashes; this chapter compares the choices on the same reference string.</p></div>
 </div></section>
 <section class="slide " data-title="Outline" aria-label="Outline" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Chapter 10 · Lectures 11–12</p><h2>Outline</h2><p class="muted">Select a topic to jump to the slide that explains it.</p><ol class="outline-list"><li><a href="#s=4">Background</a></li><li><a href="#s=5">Virtual memory</a></li><li><a href="#s=6">Demand paging</a></li><li><a href="#s=7">Page replacement</a></li><li><a href="#s=10">Page and frame replacement algorithms</a></li><li><a href="#s=19">Counting algorithms</a></li></ol>
+<p class="kicker">Chapter 10 · Lectures 11–12</p><h2>Outline</h2><p class="muted">Select a topic to jump to the slide that explains it.</p><ol class="outline-list"><li><a href="#s=4">Background</a></li><li><a href="#s=5">Virtual memory</a></li><li><a href="#s=6">Demand paging</a></li><li><a href="#s=8">Page replacement</a></li><li><a href="#s=11">Page and frame replacement algorithms</a></li><li><a href="#s=21">Counting algorithms</a></li></ol>
 </div></section>
 <section class="slide " data-title="Background" aria-label="Background" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Background</p><h2>Background</h2><ul><li>Code needs to be in memory to execute, but entire program rarely used<ul><li>Error code, unusual routines, large data structures</li></ul></li><li>Entire program code not needed at same time</li><li>Consider ability to execute partially-loaded program<ul><li>Program no longer constrained by limits of physical memory</li><li>Each program takes less memory while running → more programs run at the same time<ul><li>Increased CPU utilization and throughput with no increase in response time or turnaround time</li></ul></li><li>Less I/O needed to load or swap programs into memory → each user program runs faster</li></ul></li></ul>
@@ -74,37 +74,110 @@
 <p class="kicker">Virtual memory</p><h2>Virtual memory</h2><div class="cols "><div><ul><li><b>Virtual memory</b> – separation of user logical memory from physical memory<ul><li>Only part of the program needs to be in memory for execution</li><li>Logical address space can therefore be much larger than physical address space</li><li>Allows address spaces to be shared by several processes</li><li>Allows for more efficient process creation</li><li>More programs running concurrently</li><li>Less I/O needed to load or swap processes</li></ul></li></ul></div><div><ul><li><b>Virtual address space</b> – logical view of how process is stored in memory<ul><li>Usually start at address 0, contiguous addresses until end of space</li><li>Meanwhile, physical memory organized in page frames</li><li>MMU must map logical to physical</li></ul></li><li>Virtual memory can be implemented via:<ul><li>Demand paging</li><li>Demand segmentation</li></ul></li></ul></div></div>
 </div></section>
 <section class="slide " data-title="Demand paging" aria-label="Demand paging" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Demand paging</p><h2>Demand paging</h2><div class="cols fw"><div><ul><li>Could bring entire process into memory at load time</li><li>Or bring a page into memory only when it is needed<ul><li>Less I/O needed, no unnecessary I/O</li><li>Less memory needed</li><li>Faster response</li><li>More users</li></ul></li><li>Similar to paging system with swapping (diagram on right)</li><li>Page is needed → reference to it<ul><li>invalid reference → abort</li><li>not-in-memory → bring to memory</li></ul></li><li><b>Lazy swapper</b> – never swaps a page into memory unless page will be needed<ul><li>Swapper that deals with pages is a <b>pager</b></li></ul></li></ul></div><div><figure class="fig" data-fig="demand-pt"><figcaption>Page table when some pages are not in main memory: only A, C and F are loaded (valid); a reference to any other page causes a page fault.</figcaption></figure></div></div>
+<p class="kicker">Demand paging</p><h2>Demand paging</h2><ul><li>Could bring entire process into memory at load time</li><li>Or bring a page into memory only when it is needed<ul><li>Less I/O needed, no unnecessary I/O</li><li>Less memory needed</li><li>Faster response</li><li>More users</li></ul></li><li>Similar to paging system with swapping (diagram on right)</li><li>Page is needed → reference to it<ul><li>invalid reference → abort</li><li>not-in-memory → bring to memory</li></ul></li><li><b>Lazy swapper</b> – never swaps a page into memory unless page will be needed<ul><li>Swapper that deals with pages is a <b>pager</b></li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="Demand paging (cont.)" aria-label="Demand paging (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Demand paging</p><h2>Demand paging (cont.)</h2><figure class="fig" data-fig="demand-pt"><figcaption>Page table when some pages are not in main memory: only A, C and F are loaded (valid); a reference to any other page causes a page fault.</figcaption></figure>
+</div></section>
+<section class="slide " data-title="Handling a page fault, step by step" aria-label="Handling a page fault, step by step" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Animated</p><h2>Handling a page fault, step by step</h2><div data-demo="flow" data-anim="pagefault"></div>
 </div></section>
 <section class="slide " data-title="What happens if there is no free frame?" aria-label="What happens if there is no free frame?" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Page replacement</p><h2>What happens if there is no free frame?</h2><div class="cols fw"><div><ul><li>Used up by process pages</li><li>Also in demand from the kernel, I/O buffers, etc</li><li>How much to allocate to each?</li><li>Page replacement – find some page in memory, but not really in use, page it out<ul><li>Algorithm – terminate? swap out? replace the page?</li><li>Performance – want an algorithm which will result in minimum number of page faults</li></ul></li><li>Same page may be brought into memory several times</li></ul></div><div><figure class="fig" data-fig="need-replace"><figcaption>Need for page replacement.</figcaption></figure></div></div>
+<p class="kicker">Page replacement</p><h2>What happens if there is no free frame?</h2><ul><li>Used up by process pages</li><li>Also in demand from the kernel, I/O buffers, etc</li><li>How much to allocate to each?</li><li>Page replacement – find some page in memory, but not really in use, page it out<ul><li>Algorithm – terminate? swap out? replace the page?</li><li>Performance – want an algorithm which will result in minimum number of page faults</li></ul></li><li>Same page may be brought into memory several times</li></ul>
+</div></section>
+<section class="slide " data-title="What happens if there is no free frame? (cont.)" aria-label="What happens if there is no free frame? (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Page replacement</p><h2>What happens if there is no free frame? (cont.)</h2><figure class="fig" data-fig="need-replace"><figcaption>Need for page replacement.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="Page replacement" aria-label="Page replacement" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Page replacement</p><h2>Page replacement</h2><ul><li>Prevent over-allocation of memory by modifying page-fault service routine to include page replacement</li><li>Use <b>modify (dirty) bit</b> to reduce overhead of page transfers – only modified pages are written to disk</li><li>Page replacement completes separation between logical memory and physical memory – large virtual memory can be provided on a smaller physical memory</li></ul>
 </div></section>
 <section class="slide " data-title="Basic page replacement" aria-label="Basic page replacement" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Page replacement</p><h2>Basic page replacement</h2><div class="cols fw"><div><ol><li>Find the location of the desired page on disk</li><li>Find a free frame:<ul><li>If there is a free frame, use it</li><li>If there is no free frame, use a page replacement algorithm to select a <b>victim frame</b></li><li>Write victim frame to disk if dirty</li></ul></li><li>Bring the desired page into the (newly) free frame; update the page and frame tables</li><li>Continue the process by restarting the instruction that caused the trap</li></ol><div class="callout warn">Note now potentially 2 page transfers for page fault – increasing EAT</div></div><div><figure class="fig" data-fig="page-replace-steps"><figcaption>Page replacement.</figcaption></figure></div></div>
+<p class="kicker">Page replacement</p><h2>Basic page replacement</h2><ol><li>Find the location of the desired page on disk</li><li>Find a free frame:<ul><li>If there is a free frame, use it</li><li>If there is no free frame, use a page replacement algorithm to select a <b>victim frame</b></li><li>Write victim frame to disk if dirty</li></ul></li><li>Bring the desired page into the (newly) free frame; update the page and frame tables</li><li>Continue the process by restarting the instruction that caused the trap</li></ol><div class="callout warn">Note now potentially 2 page transfers for page fault – increasing EAT</div>
+</div></section>
+<section class="slide " data-title="Basic page replacement (cont.)" aria-label="Basic page replacement (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Page replacement</p><h2>Basic page replacement (cont.)</h2><figure class="fig" data-fig="page-replace-steps"><figcaption>Page replacement.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="Page and frame replacement algorithms" aria-label="Page and frame replacement algorithms" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Page and frame replacement algorithms</p><h2>Page and frame replacement algorithms</h2><div class="cols fw"><div><ul><li><b>Frame-allocation algorithm</b> determines<ul><li>How many frames to give each process</li><li>Which frames to replace</li></ul></li><li><b>Page-replacement algorithm</b><ul><li>Want lowest page-fault rate on both first access and re-access</li></ul></li><li>Evaluate algorithm by running it on a particular string of memory references (<b>reference string</b>) and computing the number of page faults on that string<ul><li>String is just page numbers, not full addresses</li><li>Repeated access to the same page does not cause a page fault</li><li>Results depend on number of frames available</li></ul></li><li>In all our examples, the reference string of referenced page numbers is</li></ul><div class="formula">7,0,1,2,0,3,0,4,2,3,0,3,0,3,2,1,2,0,1,7,0,1</div></div><div><figure class="fig" data-fig="faults-graph"><figcaption>Graph of page faults versus the number of frames.</figcaption></figure></div></div>
+<p class="kicker">Page and frame replacement algorithms</p><h2>Page and frame replacement algorithms</h2><ul><li><b>Frame-allocation algorithm</b> determines<ul><li>How many frames to give each process</li><li>Which frames to replace</li></ul></li><li><b>Page-replacement algorithm</b><ul><li>Want lowest page-fault rate on both first access and re-access</li></ul></li><li>Evaluate algorithm by running it on a particular string of memory references (<b>reference string</b>) and computing the number of page faults on that string<ul><li>String is just page numbers, not full addresses</li><li>Repeated access to the same page does not cause a page fault</li><li>Results depend on number of frames available</li></ul></li><li>In all our examples, the reference string of referenced page numbers is</li></ul>
+</div></section>
+<section class="slide " data-title="Page and frame replacement algorithms (cont.)" aria-label="Page and frame replacement algorithms (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Page and frame replacement algorithms</p><h2>Page and frame replacement algorithms (cont.)</h2><div class="formula">7,0,1,2,0,3,0,4,2,3,0,3,0,3,2,1,2,0,1,7,0,1</div><figure class="fig" data-fig="faults-graph"><figcaption>Graph of page faults versus the number of frames.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="First-in-first-out (FIFO) algorithm" aria-label="First-in-first-out (FIFO) algorithm" tabindex="-1"><div class="slide-inner">
-<p class="kicker">FIFO</p><h2>First-in-first-out (FIFO) algorithm</h2><ul><li>Reference string: 7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1</li><li>3 frames (3 pages can be in memory at a time per process)</li><li><b>15 page faults</b></li><li>How to track ages of pages?<ul><li>Just use a FIFO queue</li></ul></li></ul><div data-demo="page-replace" data-ref="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1" data-algo="fifo" data-frames="3" data-full="1"></div>
+<p class="kicker">FIFO</p><h2>First-in-first-out (FIFO) algorithm</h2><ul><li>Reference string: 7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1</li><li>3 frames (3 pages can be in memory at a time per process)</li><li><b>15 page faults</b></li><li>How to track ages of pages?<ul><li>Just use a FIFO queue</li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="First-in-first-out (FIFO) algorithm (cont.)" aria-label="First-in-first-out (FIFO) algorithm (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">FIFO</p><h2>First-in-first-out (FIFO) algorithm (cont.)</h2><div data-demo="page-replace" data-ref="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1" data-algo="fifo" data-frames="3" data-full="1"></div>
 </div></section>
 <section class="slide " data-title="Belady’s anomaly" aria-label="Belady’s anomaly" tabindex="-1"><div class="slide-inner">
-<p class="kicker">FIFO illustrating Belady’s anomaly</p><h2>Belady’s anomaly</h2><div class="cols "><div><ul><li>Can vary by reference string: consider 1,2,3,4,1,2,5,1,2,3,4,5<ul><li>Adding more frames can cause more page faults!</li><li><b>Belady’s anomaly</b></li></ul></li></ul><div class="scrollx"><table class="doc"><thead><tr><th>Frames</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead><tbody><tr><td>FIFO faults</td><td>12</td><td>12</td><td><b>9</b></td><td><b>10</b></td><td>5</td></tr></tbody></table></div></div><div><div data-demo="belady"></div></div></div>
+<p class="kicker">FIFO illustrating Belady’s anomaly</p><h2>Belady’s anomaly</h2><ul><li>Can vary by reference string: consider 1,2,3,4,1,2,5,1,2,3,4,5<ul><li>Adding more frames can cause more page faults!</li><li><b>Belady’s anomaly</b></li></ul></li></ul><div class="scrollx"><table class="doc"><thead><tr><th>Frames</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead><tbody><tr><td>FIFO faults</td><td>12</td><td>12</td><td><b>9</b></td><td><b>10</b></td><td>5</td></tr></tbody></table></div>
+</div></section>
+<section class="slide " data-title="Belady’s anomaly (cont.)" aria-label="Belady’s anomaly (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">FIFO illustrating Belady’s anomaly</p><h2>Belady’s anomaly (cont.)</h2><div data-demo="belady"></div>
 </div></section>
 <section class="slide " data-title="Optimal algorithm" aria-label="Optimal algorithm" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Optimal</p><h2>Optimal algorithm</h2><ul><li>Replace page that will not be used for longest period of time<ul><li>9 is optimal for the example</li></ul></li><li>How do you know this?<ul><li>Can’t read the future</li></ul></li><li>Used for measuring how well your algorithm performs</li></ul><div data-demo="page-replace" data-ref="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1" data-algo="opt" data-frames="3" data-full="1"></div>
+<p class="kicker">Optimal</p><h2>Optimal algorithm</h2><ul><li>Replace page that will not be used for longest period of time<ul><li>9 is optimal for the example</li></ul></li><li>How do you know this?<ul><li>Can’t read the future</li></ul></li><li>Used for measuring how well your algorithm performs</li></ul>
+</div></section>
+<section class="slide " data-title="Optimal algorithm (cont.)" aria-label="Optimal algorithm (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Optimal</p><h2>Optimal algorithm (cont.)</h2><div data-demo="page-replace" data-ref="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1" data-algo="opt" data-frames="3" data-full="1"></div>
 </div></section>
 <section class="slide " data-title="Least recently used (LRU) algorithm" aria-label="Least recently used (LRU) algorithm" tabindex="-1"><div class="slide-inner">
-<p class="kicker">LRU</p><h2>Least recently used (LRU) algorithm</h2><ul><li>Use past knowledge rather than future</li><li>Replace page that has not been used in the most amount of time</li><li>Associate time of last use with each page</li><li><b>12 faults</b> – better than FIFO but worse than OPT</li><li>Generally good algorithm and frequently used</li><li>But how to implement?</li></ul><div data-demo="page-replace" data-ref="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1" data-algo="lru" data-frames="3" data-full="1"></div>
+<p class="kicker">LRU</p><h2>Least recently used (LRU) algorithm</h2><ul><li>Use past knowledge rather than future</li><li>Replace page that has not been used in the most amount of time</li><li>Associate time of last use with each page</li><li><b>12 faults</b> – better than FIFO but worse than OPT</li><li>Generally good algorithm and frequently used</li><li>But how to implement?</li></ul>
+</div></section>
+<section class="slide " data-title="Least recently used (LRU) algorithm (cont.)" aria-label="Least recently used (LRU) algorithm (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">LRU</p><h2>Least recently used (LRU) algorithm (cont.)</h2><div data-demo="page-replace" data-ref="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1" data-algo="lru" data-frames="3" data-full="1"></div>
 </div></section>
 <section class="slide " data-title="LRU algorithm (cont.)" aria-label="LRU algorithm (cont.)" tabindex="-1"><div class="slide-inner">
-<p class="kicker">LRU</p><h2>LRU algorithm (cont.)</h2><div class="cols fw"><div><ul><li><b>Counter implementation</b><ul><li>Every page entry has a counter; every time page is referenced through this entry, copy the clock into the counter</li><li>When a page needs to be changed, look at the counters to find smallest value<ul><li>Search through table needed</li></ul></li></ul></li><li><b>Stack implementation</b><ul><li>Keep a stack of page numbers in a double link form:<ul></ul></li><li>Page referenced:<ul><li>move it to the top</li><li>requires 6 pointers to be changed</li></ul></li><li>But each update more expensive</li><li>No search for replacement</li></ul></li></ul><div class="callout">LRU and OPT are cases of <b>stack algorithms</b> that don’t have Belady’s anomaly</div></div><div><figure class="fig" data-fig="lru-stack"><figcaption>Use of a stack to record most recent page references.</figcaption></figure></div></div>
+<p class="kicker">LRU</p><h2>LRU algorithm (cont.)</h2><ul><li><b>Counter implementation</b><ul><li>Every page entry has a counter; every time page is referenced through this entry, copy the clock into the counter</li><li>When a page needs to be changed, look at the counters to find smallest value<ul><li>Search through table needed</li></ul></li></ul></li><li><b>Stack implementation</b><ul><li>Keep a stack of page numbers in a double link form:<ul></ul></li><li>Page referenced:<ul><li>move it to the top</li><li>requires 6 pointers to be changed</li></ul></li><li>But each update more expensive</li><li>No search for replacement</li></ul></li></ul><div class="callout">LRU and OPT are cases of <b>stack algorithms</b> that don’t have Belady’s anomaly</div>
+</div></section>
+<section class="slide " data-title="LRU algorithm (cont.)" aria-label="LRU algorithm (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">LRU</p><h2>LRU algorithm (cont.)</h2><figure class="fig" data-fig="lru-stack"><figcaption>Use of a stack to record most recent page references.</figcaption></figure>
+</div></section>
+<section class="slide " data-title="Counting page faults in C" aria-label="Counting page faults in C" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>Counting page faults in C</h2><div class="co-h"><span>replace.c — FIFO and LRU</span></div><pre class="code small-code">#include &lt;stdio.h&gt;
+
+int ref[] = {7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1};
+int n = sizeof ref / sizeof ref[0];
+
+int faults(int frames, int lru)
+{
+    int f[8], last[8], used = 0, next = 0, count = 0;
+    for (int t = 0; t &lt; n; t++) {
+        int hit = -1;
+        for (int i = 0; i &lt; used; i++) if (f[i] == ref[t]) hit = i;</pre>
+</div></section>
+<section class="slide " data-title="Counting page faults in C (cont.)" aria-label="Counting page faults in C (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>Counting page faults in C (cont.)</h2><pre data-start="12" class="code small-code">        if (hit &gt;= 0) { last[hit] = t; continue; }   /* page already in memory */
+        count++;                                     /* page fault */
+        int v;
+        if (used &lt; frames) v = used++;               /* a free frame */
+        else if (!lru) { v = next; next = (next + 1) % frames; }   /* FIFO: oldest */
+        else { v = 0; for (int i = 1; i &lt; used; i++) if (last[i] &lt; last[v]) v = i; } /* LRU */
+        f[v] = ref[t]; last[v] = t;
+    }
+    return count;
+}
+
+int main(void)
+{</pre>
+</div></section>
+<section class="slide " data-title="Counting page faults in C (cont.)" aria-label="Counting page faults in C (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>Counting page faults in C (cont.)</h2><pre data-start="25" class="code small-code">    printf(&quot;reference string of %d pages, 3 frames\n&quot;, n);
+    printf(&quot;FIFO: %d page faults\n&quot;, faults(3, 0));
+    printf(&quot;LRU : %d page faults\n&quot;, faults(3, 1));
+    return 0;
+}</pre><div class="co-h"><span>Output</span></div><div class="console runnable" data-cmd="gcc replace.c -o replace -pthread &amp;&amp; ./replace" data-out="reference string of 20 pages, 3 frames
+FIFO: 15 page faults
+LRU : 12 page faults"><div class="console-h"><span>Terminal</span><button type="button" class="run-btn">▶ Run</button></div><pre class="console-body">$ gcc replace.c -o replace -pthread &amp;&amp; ./replace
+reference string of 20 pages, 3 frames
+FIFO: 15 page faults
+LRU : 12 page faults</pre></div><p class="co-note">The same 20-reference string as the slides: 15 faults for FIFO and 12 for LRU with 3 frames.</p>
 </div></section>
 <section class="slide " data-title="LRU approximation algorithms" aria-label="LRU approximation algorithms" tabindex="-1"><div class="slide-inner">
-<p class="kicker">LRU approximation</p><h2>LRU approximation algorithms</h2><div class="cols fw"><div><ul><li>LRU needs special hardware and still slow</li><li><b>Reference bit</b><ul><li>With each page associate a bit, initially = 0</li><li>When page is referenced bit set to 1</li><li>Replace any with reference bit = 0 (if one exists)<ul><li>We do not know the order, however</li></ul></li></ul></li><li><b>Second-chance algorithm</b><ul><li>Generally FIFO, plus hardware-provided reference bit</li><li><b>Clock</b> replacement</li><li>If page to be replaced has<ul><li>Reference bit = 0 → replace it</li><li>reference bit = 1 then:<ul><li>set reference bit 0, leave page in memory</li><li>replace next page, subject to same rules</li></ul></li></ul></li></ul></li></ul></div><div><figure class="fig" data-fig="second-chance"><figcaption>Second-chance (clock) page-replacement algorithm.</figcaption></figure></div></div>
+<p class="kicker">LRU approximation</p><h2>LRU approximation algorithms</h2><ul><li>LRU needs special hardware and still slow</li><li><b>Reference bit</b><ul><li>With each page associate a bit, initially = 0</li><li>When page is referenced bit set to 1</li><li>Replace any with reference bit = 0 (if one exists)<ul><li>We do not know the order, however</li></ul></li></ul></li><li><b>Second-chance algorithm</b><ul><li>Generally FIFO, plus hardware-provided reference bit</li><li><b>Clock</b> replacement</li><li>If page to be replaced has<ul><li>Reference bit = 0 → replace it</li><li>reference bit = 1 then:<ul><li>set reference bit 0, leave page in memory</li><li>replace next page, subject to same rules</li></ul></li></ul></li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="LRU approximation algorithms (cont.)" aria-label="LRU approximation algorithms (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">LRU approximation</p><h2>LRU approximation algorithms (cont.)</h2><figure class="fig" data-fig="second-chance"><figcaption>Second-chance (clock) page-replacement algorithm.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="Second chance on the example" aria-label="Second chance on the example" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Interactive</p><h2>Second chance on the example</h2><div data-demo="page-replace" data-ref="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1" data-algo="clock" data-frames="3"></div>
@@ -142,7 +215,7 @@
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 27</span>
+  <span class="counter" id="counter">1 / 41</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>
@@ -154,6 +227,7 @@
 <script src="../js/figs-final.js"></script>
 <script src="../js/demos-mid.js"></script>
 <script src="../js/demos-final.js"></script>
+<script src="../js/demos-anim.js"></script>
 <script src="../js/art.js"></script>
 <script src="../js/quiz.js"></script>
 <script src="../js/page.js"></script>

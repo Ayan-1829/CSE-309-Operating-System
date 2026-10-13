@@ -65,7 +65,7 @@
 <p class="kicker">Before we start</p><h2>Why this matters</h2><div class="hook"><p class="q">A program cannot touch the disk, the screen or another process directly. It has to ask.</p><p>System calls are how it asks, and they are the boundary between your code and the kernel.</p><p>This chapter shows what the OS offers, how a request crosses into the kernel, and how different OSes organise the code behind that boundary.</p></div>
 </div></section>
 <section class="slide " data-title="Outline" aria-label="Outline" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Chapter 2 · Lectures 4–6</p><h2>Outline</h2><p class="muted">Select a topic to jump to the slide that explains it.</p><ol class="outline-list"><li><a href="#s=4">Operating system services</a></li><li><a href="#s=8">User and operating-system interface</a></li><li><a href="#s=11">System calls</a></li><li><a href="#s=14">Types of system calls</a></li><li><a href="#s=19">System services</a></li><li><a href="#s=23">Why applications are OS specific</a></li><li><a href="#s=24">Design and implementation</a></li><li><a href="#s=26">Operating system structure</a></li><li><a href="#s=35">Building and booting an operating system</a></li><li><a href="#s=38">Operating system debugging</a></li></ol>
+<p class="kicker">Chapter 2 · Lectures 4–6</p><h2>Outline</h2><p class="muted">Select a topic to jump to the slide that explains it.</p><ol class="outline-list"><li><a href="#s=4">Operating system services</a></li><li><a href="#s=8">User and operating-system interface</a></li><li><a href="#s=11">System calls</a></li><li><a href="#s=16">Types of system calls</a></li><li><a href="#s=22">System services</a></li><li><a href="#s=26">Why applications are OS specific</a></li><li><a href="#s=27">Design and implementation</a></li><li><a href="#s=29">Operating system structure</a></li><li><a href="#s=38">Building and booting an operating system</a></li><li><a href="#s=42">Operating system debugging</a></li></ol>
 </div></section>
 <section class="slide " data-title="Operating system services" aria-label="Operating system services" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Operating system services</p><h2>Operating system services</h2><p>Operating systems provide an environment for execution of programs and services to programs and users.</p><p>One set of operating-system services provides functions that are helpful to the user:</p><ul><li><b>User interface</b> – almost all operating systems have a user interface (UI)<ul><li>Varies between command-line (CLI), graphics user interface (GUI), touch-screen, batch</li></ul></li><li><b>Program execution</b> – the system must be able to load a program into memory and to run that program, end execution, either normally or abnormally (indicating error)</li><li><b>I/O operations</b> – a running program may require I/O, which may involve a file or an I/O device</li><li><b>File-system manipulation</b> – the file system is of particular interest. Programs need to read and write files and directories, create and delete them, search them, list file information, permission management.</li></ul>
@@ -96,10 +96,46 @@ $ echo $SHELL
 <p class="kicker">System calls</p><h2>System calls</h2><ul><li>Programming interface to the services provided by the OS</li><li>Typically written in a high-level language (C or C++)</li><li>Mostly accessed by programs via a high-level <b>Application Programming Interface (API)</b> rather than direct system call use</li><li>Three most common APIs are Win32 API for Windows, POSIX API for POSIX-based systems (including virtually all versions of UNIX, Linux, and Mac OS X), and Java API for the Java virtual machine (JVM)</li><li>Note that the system-call names used throughout this text are generic</li></ul>
 </div></section>
 <section class="slide " data-title="Example of system calls" aria-label="Example of system calls" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Interactive</p><h2>Example of system calls</h2><p>System call sequence to copy the contents of one file to another file:</p><div data-demo="copy-file"></div>
+<p class="kicker">Interactive</p><h2>Example of system calls</h2><p>System call sequence to copy the contents of one file to another file:</p>
+</div></section>
+<section class="slide " data-title="Example of system calls (cont.)" aria-label="Example of system calls (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Interactive</p><h2>Example of system calls (cont.)</h2><div data-demo="copy-file"></div>
+</div></section>
+<section class="slide " data-title="The copy program in C" aria-label="The copy program in C" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>The copy program in C</h2><div class="co-h"><span>copy.c — every commented line is a system call</span></div><pre class="code small-code">#include &lt;fcntl.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(void)
+{
+    char buf[64];
+    ssize_t n, total = 0;
+
+    int in  = open(&quot;notes.txt&quot;, O_RDONLY);                       /* system call */
+    int out = open(&quot;copy.txt&quot;, O_WRONLY | O_CREAT | O_TRUNC, 0644); /* system call */
+    if (in &lt; 0 || out &lt; 0) { perror(&quot;open&quot;); return 1; }
+
+    while ((n = read(in, buf, sizeof buf)) &gt; 0) {  /* system call */</pre>
+</div></section>
+<section class="slide " data-title="The copy program in C (cont.)" aria-label="The copy program in C (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>The copy program in C (cont.)</h2><pre data-start="15" class="code small-code">        write(out, buf, n);                        /* system call */
+        total += n;
+    }
+    close(in);                                     /* system call */
+    close(out);                                    /* system call */
+    printf(&quot;copied %zd bytes\n&quot;, total);           /* write() inside */
+    return 0;
+}</pre><div class="co-h"><span>Output</span></div><div class="console runnable" data-cmd="./copy        # copies notes.txt to copy.txt" data-out="copied 48 bytes"><div class="console-h"><span>Terminal</span><button type="button" class="run-btn">▶ Run</button></div><pre class="console-body">$ ./copy        # copies notes.txt to copy.txt
+copied 48 bytes</pre></div><p class="co-note">Run <code>strace ./copy</code> on Linux to see each call listed with its arguments and return value.</p>
 </div></section>
 <section class="slide " data-title="API – system call – OS relationship" aria-label="API – system call – OS relationship" tabindex="-1"><div class="slide-inner">
-<p class="kicker">System calls</p><h2>API – system call – OS relationship</h2><div class="cols wf"><div><figure class="fig" data-fig="api-syscall"><figcaption>The system-call interface finds the kernel routine through a table indexed by the system-call number i.</figcaption></figure></div><div><ul><li>The program calls <code>open()</code> in the API (a library function).</li><li>The library puts the system-call number in a register and traps into the kernel.</li><li>The system-call interface looks up entry <b>i</b> in its table and runs the kernel implementation of <code>open()</code>.</li><li>The return status and any values go back to the program.</li></ul></div></div>
+<p class="kicker">System calls</p><h2>API – system call – OS relationship</h2><figure class="fig" data-fig="api-syscall"><figcaption>The system-call interface finds the kernel routine through a table indexed by the system-call number i.</figcaption></figure>
+</div></section>
+<section class="slide " data-title="API – system call – OS relationship (cont.)" aria-label="API – system call – OS relationship (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">System calls</p><h2>API – system call – OS relationship (cont.)</h2><ul><li>The program calls <code>open()</code> in the API (a library function).</li><li>The library puts the system-call number in a register and traps into the kernel.</li><li>The system-call interface looks up entry <b>i</b> in its table and runs the kernel implementation of <code>open()</code>.</li><li>The return status and any values go back to the program.</li></ul>
+</div></section>
+<section class="slide " data-title="The journey of a system call" aria-label="The journey of a system call" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Animated</p><h2>The journey of a system call</h2><div data-demo="flow" data-anim="syscall"></div>
 </div></section>
 <section class="slide " data-title="Types of system calls" aria-label="Types of system calls" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Types of system calls</p><h2>Types of system calls</h2><div class="cols "><div><h3>Process control</h3><ul><li>create process, terminate process</li><li>end, abort</li><li>load, execute</li><li>get process attributes, set process attributes</li><li>wait for time</li><li>wait event, signal event</li><li>allocate and free memory</li><li>Dump memory if error</li><li><b>Debugger</b> for determining <b>bugs</b>, <b>single step</b> execution</li><li><b>Locks</b> for managing access to shared data between processes</li></ul></div><div><h3>File management</h3><ul><li>create file, delete file</li><li>open, close file</li><li>read, write, reposition</li><li>get and set file attributes</li></ul><h3>Device management</h3><ul><li>request device, release device</li><li>read, write, reposition</li><li>get device attributes, set device attributes</li><li>logically attach or detach devices</li></ul></div></div>
@@ -114,12 +150,29 @@ $ echo $SHELL
 <p class="kicker">Interactive</p><h2>Classify the calls</h2><div data-demo="syscall-sort"></div>
 </div></section>
 <section class="slide " data-title="Standard C library example" aria-label="Standard C library example" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Types of system calls</p><h2>Standard C library example</h2><div class="cols fw"><div><p>C program invoking the <code>printf()</code> library call, which calls the <code>write()</code> system call.</p><pre class="code">#include &lt;stdio.h&gt;
+<p class="kicker">Types of system calls</p><h2>Standard C library example</h2><p>C program invoking the <code>printf()</code> library call, which calls the <code>write()</code> system call.</p><pre class="code">#include &lt;stdio.h&gt;
 int main()
 {
    printf(&quot;Greetings&quot;);
    return 0;
-}</pre></div><div><figure class="fig" data-fig="printf-flow"><figcaption>printf() runs in user mode inside the C library; only write() enters the kernel.</figcaption></figure></div></div>
+}</pre>
+</div></section>
+<section class="slide " data-title="Standard C library example (cont.)" aria-label="Standard C library example (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Types of system calls</p><h2>Standard C library example (cont.)</h2><figure class="fig" data-fig="printf-flow"><figcaption>printf() runs in user mode inside the C library; only write() enters the kernel.</figcaption></figure>
+</div></section>
+<section class="slide " data-title="printf( ) and write( ): run it" aria-label="printf( ) and write( ): run it" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Code and output</p><h2>printf( ) and write( ): run it</h2><div class="codeout"><div><div class="co-h"><span>greet.c</span></div><pre class="code small-code">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(void)
+{
+    printf(&quot;Greetings from printf\n&quot;);     /* C library: formats, then calls write() */
+    write(1, &quot;Greetings from write\n&quot;, 21); /* system call: fd 1 is the screen */
+    return 0;
+}</pre></div><div><div class="co-h"><span>Output</span></div><div class="console runnable" data-cmd="gcc greet.c -o greet -pthread &amp;&amp; ./greet" data-out="Greetings from printf
+Greetings from write"><div class="console-h"><span>Terminal</span><button type="button" class="run-btn">▶ Run</button></div><pre class="console-body">$ gcc greet.c -o greet -pthread &amp;&amp; ./greet
+Greetings from printf
+Greetings from write</pre></div><p class="co-note">Both lines reach the screen through the <code>write()</code> system call. <code>printf()</code> first formats the text and keeps it in a buffer in user space; when the output is a file instead of the screen, that buffer is flushed only at exit, so the order can change.</p></div></div>
 </div></section>
 <section class="slide " data-title="System services" aria-label="System services" tabindex="-1"><div class="slide-inner">
 <p class="kicker">System services</p><h2>System services</h2><div class="cols "><div><p><b>System programs</b> provide a convenient environment for program development and execution. They can be divided into:</p><ul><li>File manipulation</li><li>Status information sometimes stored in a file</li><li>Programming language support</li><li>Program loading and execution</li><li>Communications</li><li>Background services</li><li>Application programs</li></ul></div><div><div class="callout">Most users’ view of the operating system is defined by system programs, not the actual system calls.</div></div></div>
@@ -146,28 +199,49 @@ int main()
 <p class="kicker">Operating system structure</p><h2>Operating system structure</h2><div class="cols "><div><ul><li>General-purpose OS is very large program</li><li>Various ways to structure ones<ul><li>Simple structure – MS-DOS</li><li>More complex – UNIX</li><li>Layered – an abstraction</li><li>Microkernel – Mach</li></ul></li></ul></div><div><div class="tgrid"><div class="tcard"><h4>Monolithic</h4>everything in one kernel</div><div class="tcard"><h4>Layered</h4>each layer uses only lower layers</div><div class="tcard"><h4>Microkernel</h4>minimal kernel, services in user space</div><div class="tcard"><h4>Modules / hybrid</h4>loadable pieces, mixed models</div></div></div></div>
 </div></section>
 <section class="slide " data-title="Monolithic structure – original UNIX" aria-label="Monolithic structure – original UNIX" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Operating system structure</p><h2>Monolithic structure – original UNIX</h2><div class="cols fw"><div><ul><li>UNIX – limited by hardware functionality, the original UNIX operating system had limited structuring.</li><li>The UNIX OS consists of two separable parts<ul><li>Systems programs</li><li>The kernel<ul><li>Consists of everything below the system-call interface and above the physical hardware</li><li>Provides the file system, CPU scheduling, memory management, and other operating-system functions; a large number of functions for one level</li></ul></li></ul></li></ul></div><div><figure class="fig" data-fig="unix-structure"><figcaption>Traditional UNIX system structure: beyond simple but not fully layered.</figcaption></figure></div></div>
+<p class="kicker">Operating system structure</p><h2>Monolithic structure – original UNIX</h2><ul><li>UNIX – limited by hardware functionality, the original UNIX operating system had limited structuring.</li><li>The UNIX OS consists of two separable parts<ul><li>Systems programs</li><li>The kernel<ul><li>Consists of everything below the system-call interface and above the physical hardware</li><li>Provides the file system, CPU scheduling, memory management, and other operating-system functions; a large number of functions for one level</li></ul></li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="Monolithic structure – original UNIX (cont.)" aria-label="Monolithic structure – original UNIX (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Operating system structure</p><h2>Monolithic structure – original UNIX (cont.)</h2><figure class="fig" data-fig="unix-structure"><figcaption>Traditional UNIX system structure: beyond simple but not fully layered.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="Linux system structure" aria-label="Linux system structure" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Operating system structure</p><h2>Linux system structure</h2><div class="cols wf"><div><figure class="fig" data-fig="linux-structure"><figcaption>Monolithic plus modular design.</figcaption></figure></div><div><ul><li>The whole kernel runs in one address space (monolithic): fast, because services call each other directly.</li><li>Loadable kernel modules (for example device drivers) can be added and removed while the system runs.</li></ul></div></div>
+<p class="kicker">Operating system structure</p><h2>Linux system structure</h2><figure class="fig" data-fig="linux-structure"><figcaption>Monolithic plus modular design.</figcaption></figure>
+</div></section>
+<section class="slide " data-title="Linux system structure (cont.)" aria-label="Linux system structure (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Operating system structure</p><h2>Linux system structure (cont.)</h2><ul><li>The whole kernel runs in one address space (monolithic): fast, because services call each other directly.</li><li>Loadable kernel modules (for example device drivers) can be added and removed while the system runs.</li></ul>
 </div></section>
 <section class="slide " data-title="Layered approach" aria-label="Layered approach" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Operating system structure</p><h2>Layered approach</h2><div class="cols fw"><div><ul><li>The operating system is divided into a number of layers (levels), each built on top of lower layers. The bottom layer (layer 0) is the hardware; the highest (layer N) is the user interface.</li><li>With modularity, layers are selected such that each uses functions (operations) and services of only lower-level layers</li></ul></div><div><figure class="fig" data-fig="layered"><figcaption>A layered operating system.</figcaption></figure></div></div>
+<p class="kicker">Operating system structure</p><h2>Layered approach</h2><ul><li>The operating system is divided into a number of layers (levels), each built on top of lower layers. The bottom layer (layer 0) is the hardware; the highest (layer N) is the user interface.</li><li>With modularity, layers are selected such that each uses functions (operations) and services of only lower-level layers</li></ul>
+</div></section>
+<section class="slide " data-title="Layered approach (cont.)" aria-label="Layered approach (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Operating system structure</p><h2>Layered approach (cont.)</h2><figure class="fig" data-fig="layered"><figcaption>A layered operating system.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="Microkernels" aria-label="Microkernels" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Operating system structure</p><h2>Microkernels</h2><div class="cols fw"><div><ul><li>Moves as much from the kernel into user space</li><li><b>Mach</b> is an example of microkernel<ul><li>Mac OS X kernel (<b>Darwin</b>) partly based on Mach</li></ul></li><li>Communication takes place between user modules using <b>message passing</b></li><li>Benefits:<ul><li>Easier to extend a microkernel</li><li>Easier to port the operating system to new architectures</li><li>More reliable (less code is running in kernel mode)</li><li>More secure</li></ul></li><li>Detriments:<ul><li>Performance overhead of user space to kernel space communication</li></ul></li></ul></div><div><figure class="fig" data-fig="microkernel"><figcaption>Microkernel system structure.</figcaption></figure></div></div>
+<p class="kicker">Operating system structure</p><h2>Microkernels</h2><ul><li>Moves as much from the kernel into user space</li><li><b>Mach</b> is an example of microkernel<ul><li>Mac OS X kernel (<b>Darwin</b>) partly based on Mach</li></ul></li><li>Communication takes place between user modules using <b>message passing</b></li><li>Benefits:<ul><li>Easier to extend a microkernel</li><li>Easier to port the operating system to new architectures</li><li>More reliable (less code is running in kernel mode)</li><li>More secure</li></ul></li><li>Detriments:<ul><li>Performance overhead of user space to kernel space communication</li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="Microkernels (cont.)" aria-label="Microkernels (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Operating system structure</p><h2>Microkernels (cont.)</h2><figure class="fig" data-fig="microkernel"><figcaption>Microkernel system structure.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="Modules" aria-label="Modules" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Operating system structure</p><h2>Modules</h2><ul><li>Many modern operating systems implement <b>loadable kernel modules (LKMs)</b><ul><li>Uses object-oriented approach</li><li>Each core component is separate</li><li>Each talks to the others over known interfaces</li><li>Each is loadable as needed within the kernel</li></ul></li><li>Overall, similar to layers but with more flexible<ul><li>Linux, Solaris, etc.</li></ul></li></ul>
 </div></section>
 <section class="slide " data-title="Hybrid systems" aria-label="Hybrid systems" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Operating system structure</p><h2>Hybrid systems</h2><div class="cols fw"><div><ul><li>Most modern operating systems are not one pure model<ul><li>Hybrid combines multiple approaches to address performance, security, usability needs</li><li>Linux and Solaris kernels in kernel address space, so monolithic, plus modular for dynamic loading of functionality</li><li>Windows mostly monolithic, plus microkernel for different subsystem <b>personalities</b></li></ul></li><li>Apple Mac OS X hybrid, layered, <b>Aqua</b> UI plus <b>Cocoa</b> programming environment<ul><li>Below is kernel consisting of Mach microkernel and BSD Unix parts, plus I/O kit and dynamically loadable modules (called <b>kernel extensions</b>)</li></ul></li></ul></div><div><figure class="fig" data-fig="macos-ios"><figcaption>macOS and iOS structure.</figcaption></figure></div></div>
+<p class="kicker">Operating system structure</p><h2>Hybrid systems</h2><ul><li>Most modern operating systems are not one pure model<ul><li>Hybrid combines multiple approaches to address performance, security, usability needs</li><li>Linux and Solaris kernels in kernel address space, so monolithic, plus modular for dynamic loading of functionality</li><li>Windows mostly monolithic, plus microkernel for different subsystem <b>personalities</b></li></ul></li><li>Apple Mac OS X hybrid, layered, <b>Aqua</b> UI plus <b>Cocoa</b> programming environment<ul><li>Below is kernel consisting of Mach microkernel and BSD Unix parts, plus I/O kit and dynamically loadable modules (called <b>kernel extensions</b>)</li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="Hybrid systems (cont.)" aria-label="Hybrid systems (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Operating system structure</p><h2>Hybrid systems (cont.)</h2><figure class="fig" data-fig="macos-ios"><figcaption>macOS and iOS structure.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="iOS" aria-label="iOS" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Operating system structure</p><h2>iOS</h2><div class="cols fw"><div><ul><li>Apple mobile OS for <b>iPhone</b>, <b>iPad</b><ul><li>Structured on Mac OS X, added functionality</li><li>Does not run OS X applications natively<ul><li>Also runs on different CPU architecture (ARM vs. Intel)</li></ul></li><li><b>Cocoa Touch</b> Objective-C API for developing apps</li><li><b>Media services</b> layer for graphics, audio, video</li><li><b>Core services</b> provides cloud computing, databases</li><li>Core operating system, based on Mac OS X kernel</li></ul></li></ul></div><div><figure class="fig" data-fig="ios-stack"><figcaption>The four layers of iOS.</figcaption></figure></div></div>
+<p class="kicker">Operating system structure</p><h2>iOS</h2><ul><li>Apple mobile OS for <b>iPhone</b>, <b>iPad</b><ul><li>Structured on Mac OS X, added functionality</li><li>Does not run OS X applications natively<ul><li>Also runs on different CPU architecture (ARM vs. Intel)</li></ul></li><li><b>Cocoa Touch</b> Objective-C API for developing apps</li><li><b>Media services</b> layer for graphics, audio, video</li><li><b>Core services</b> provides cloud computing, databases</li><li>Core operating system, based on Mac OS X kernel</li></ul></li></ul>
+</div></section>
+<section class="slide " data-title="iOS (cont.)" aria-label="iOS (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Operating system structure</p><h2>iOS (cont.)</h2><figure class="fig" data-fig="ios-stack"><figcaption>The four layers of iOS.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="Android" aria-label="Android" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Operating system structure</p><h2>Android</h2><div class="cols fw"><div><ul><li>Developed by Open Handset Alliance (mostly Google)<ul><li>Open source</li></ul></li><li>Similar stack to iOS</li><li>Based on Linux kernel but modified<ul><li>Provides process, memory, device-driver management</li><li>Adds power management</li></ul></li><li>Runtime environment includes core set of libraries and Dalvik virtual machine<ul><li>Apps developed in Java plus Android API</li><li>Java class files compiled to Java bytecode then translated to executable that runs in Dalvik VM<ul></ul></li></ul></li><li>Libraries include frameworks for web browser (webkit), database (SQLite), multimedia, smaller libc</li></ul></div><div><figure class="fig" data-fig="android-arch"><figcaption>Android architecture.</figcaption></figure></div></div>
+<p class="kicker">Operating system structure</p><h2>Android</h2><ul><li>Developed by Open Handset Alliance (mostly Google)<ul><li>Open source</li></ul></li><li>Similar stack to iOS</li><li>Based on Linux kernel but modified<ul><li>Provides process, memory, device-driver management</li><li>Adds power management</li></ul></li><li>Runtime environment includes core set of libraries and Dalvik virtual machine<ul><li>Apps developed in Java plus Android API</li><li>Java class files compiled to Java bytecode then translated to executable that runs in Dalvik VM<ul></ul></li></ul></li><li>Libraries include frameworks for web browser (webkit), database (SQLite), multimedia, smaller libc</li></ul>
+</div></section>
+<section class="slide " data-title="Android (cont.)" aria-label="Android (cont.)" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Operating system structure</p><h2>Android (cont.)</h2><figure class="fig" data-fig="android-arch"><figcaption>Android architecture.</figcaption></figure>
 </div></section>
 <section class="slide " data-title="Building and booting an operating system" aria-label="Building and booting an operating system" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Building and booting an operating system</p><h2>Building and booting an operating system</h2><ul><li>Operating systems generally designed to run on a class of systems with variety of peripherals</li><li>Commonly, operating system already installed on purchased computer<ul><li>But can build and install some other operating systems</li><li>If generating an operating system from scratch<ul><li>Write the operating system source code</li><li>Configure the operating system for the system on which it will run</li><li>Compile the operating system</li><li>Install the operating system</li><li>Boot the computer and its new operating system</li></ul></li></ul></li></ul>
@@ -180,7 +254,10 @@ $ sudo make modules_install
 $ sudo make install</pre></div></div></div>
 </div></section>
 <section class="slide " data-title="System boot" aria-label="System boot" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Building and booting an operating system</p><h2>System boot</h2><div class="cols "><div><ul><li>When power initialized on system, execution starts at a fixed memory location</li><li>Operating system must be made available to hardware so hardware can start it<ul><li>Small piece of code – <b>bootstrap loader</b>, <b>BIOS</b>, stored in <b>ROM</b> or <b>EEPROM</b> locates the kernel, loads it into memory, and starts it</li><li>Sometimes two-step process where <b>boot block</b> at fixed location loaded by ROM code, which loads bootstrap loader from disk</li><li>Modern systems replace BIOS with <b>Unified Extensible Firmware Interface (UEFI)</b></li></ul></li><li>Common bootstrap loader, <b>GRUB</b>, allows selection of kernel from multiple disks, versions, kernel options</li><li>Kernel loads and system is then <b>running</b></li><li>Boot loaders frequently allow various boot states, such as single user mode</li></ul></div><div><div class="flow"><span>power on</span><i>→</i><span>BIOS / UEFI</span><i>→</i><span>boot block</span><i>→</i><span>GRUB</span><i>→</i><span>kernel</span><i>→</i><span>running</span></div></div></div>
+<p class="kicker">Building and booting an operating system</p><h2>System boot</h2><ul><li>When power initialized on system, execution starts at a fixed memory location</li><li>Operating system must be made available to hardware so hardware can start it<ul><li>Small piece of code – <b>bootstrap loader</b>, <b>BIOS</b>, stored in <b>ROM</b> or <b>EEPROM</b> locates the kernel, loads it into memory, and starts it</li><li>Sometimes two-step process where <b>boot block</b> at fixed location loaded by ROM code, which loads bootstrap loader from disk</li><li>Modern systems replace BIOS with <b>Unified Extensible Firmware Interface (UEFI)</b></li></ul></li><li>Common bootstrap loader, <b>GRUB</b>, allows selection of kernel from multiple disks, versions, kernel options</li><li>Kernel loads and system is then <b>running</b></li><li>Boot loaders frequently allow various boot states, such as single user mode</li></ul><div class="flow"><span>power on</span><i>→</i><span>BIOS / UEFI</span><i>→</i><span>boot block</span><i>→</i><span>GRUB</span><i>→</i><span>kernel</span><i>→</i><span>running</span></div>
+</div></section>
+<section class="slide " data-title="System boot, animated" aria-label="System boot, animated" tabindex="-1"><div class="slide-inner">
+<p class="kicker">Animated</p><h2>System boot, animated</h2><div data-demo="flow" data-anim="boot"></div>
 </div></section>
 <section class="slide " data-title="Operating-system debugging" aria-label="Operating-system debugging" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Operating system debugging</p><h2>Operating-system debugging</h2><ul><li><b>Debugging</b> is finding and fixing errors, or <b>bugs</b></li><li>Also <b>performance tuning</b></li><li>OS generate <b>log files</b> containing error information</li><li>Failure of an application can generate <b>core dump</b> file capturing memory of the process</li><li>Operating system failure can generate <b>crash dump</b> file containing kernel memory</li><li>Beyond crashes, performance tuning can optimize system performance<ul><li>Sometimes using <b>trace listings</b> of activities, recorded for analysis</li><li><b>Profiling</b> is periodic sampling of instruction pointer to look for statistical trends</li></ul></li></ul><div class="callout"><b>Kernighan’s Law:</b> “Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.”</div>
@@ -226,7 +303,7 @@ close(3)                               = 0</pre></div>
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 47</span>
+  <span class="counter" id="counter">1 / 62</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>
@@ -238,6 +315,7 @@ close(3)                               = 0</pre></div>
 <script src="../js/figs-final.js"></script>
 <script src="../js/demos-mid.js"></script>
 <script src="../js/demos-final.js"></script>
+<script src="../js/demos-anim.js"></script>
 <script src="../js/art.js"></script>
 <script src="../js/quiz.js"></script>
 <script src="../js/page.js"></script>
