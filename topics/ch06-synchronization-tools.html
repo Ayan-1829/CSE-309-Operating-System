@@ -22,7 +22,7 @@
 <meta property="og:title" content="Synchronization Tools – Chapter 6 | CSE 309 Operating System">
 <meta property="og:description" content="Race conditions, the critical-section problem and its three requirements, interrupt-based and software solutions, Peterson’s solution, test_and_set and compare_and_swap, atomic variables, mutex locks, semaphores and monitors with condition variables. Interactive slides, diagrams, simulators and a quiz for chapter 6 of the CSE 309 Operating System course.">
 <meta property="og:url" content="https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch06-synchronization-tools.html">
-<meta property="og:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch06-synchronization-tools.png?v=1">
+<meta property="og:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch06-synchronization-tools.png?v=2">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -30,7 +30,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Synchronization Tools – Chapter 6 | CSE 309 Operating System">
 <meta name="twitter:description" content="Race conditions, the critical-section problem and its three requirements, interrupt-based and software solutions, Peterson’s solution, test_and_set and compare_and_swap, atomic variables, mutex locks, semaphores and monitors with condition variables. Interactive slides, diagrams, simulators and a quiz for chapter 6 of the CSE 309 Operating System course.">
-<meta name="twitter:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch06-synchronization-tools.png?v=1">
+<meta name="twitter:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch06-synchronization-tools.png?v=2">
 <meta name="twitter:image:alt" content="Synchronization Tools – Chapter 6 | CSE 309 Operating System">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Synchronization Tools", "description": "Race conditions, the critical-section problem and its three requirements, interrupt-based and software solutions, Peterson’s solution, test_and_set and compare_and_swap, atomic variables, mutex locks, semaphores and monitors with condition variables.", "position": 8, "educationalLevel": "Undergraduate", "learningResourceType": "Lecture slides", "inLanguage": "en", "isAccessibleForFree": true, "teaches": ["Concurrent access to shared data can leave it inconsistent; a race condition is when the result depends on the order of access.", "A critical-section solution needs mutual exclusion, progress and bounded waiting.", "Disabling interrupts fails on multiprocessors; the shared-turn algorithm breaks progress; Peterson’s solution (turn + flag[2]) meets all three.", "Hardware offers atomic test_and_set and compare_and_swap, used to build atomic variables and mutex locks (spinlocks).", "Semaphores (counting or binary) use atomic wait() and signal(); a waiting queue with block and wakeup avoids busy waiting.", "Monitors allow one active process at a time; condition variables provide x.wait() and x.signal(), with x.wait(c) for priority."], "keywords": "process synchronization, race condition, critical section, mutual exclusion, progress, bounded waiting, Peterson solution, test and set, compare and swap, atomic variable, mutex lock, spinlock, busy waiting, semaphore wait signal, counting semaphore, binary semaphore, monitor, condition variable, CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch06-synchronization-tools.html", "image": "https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch06-synchronization-tools.png", "isPartOf": {"@type": "Course", "name": "Operating System", "courseCode": "CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Operating System", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/"}, {"@type": "ListItem", "position": 2, "name": "Chapter 6: Synchronization Tools", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch06-synchronization-tools.html"}]}</script>
@@ -366,7 +366,7 @@ signal(mutex);</pre><ul><li>Mutual exclusion within a monitor is ensured</li></u
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 35</span>
+  <span class="counter" id="counter">1 / 45</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>

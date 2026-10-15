@@ -22,7 +22,7 @@
 <meta property="og:title" content="Processes – Chapter 3 | CSE 309 Operating System">
 <meta property="og:description" content="The process concept, process states and the PCB, scheduling queues and context switches, process creation and termination with fork(), exec() and wait(), and interprocess communication by shared memory and message passing. Interactive slides, diagrams, simulators and a quiz for chapter 3 of the CSE 309 Operating System course.">
 <meta property="og:url" content="https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch03-processes.html">
-<meta property="og:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch03-processes.png?v=1">
+<meta property="og:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch03-processes.png?v=2">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -30,7 +30,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Processes – Chapter 3 | CSE 309 Operating System">
 <meta name="twitter:description" content="The process concept, process states and the PCB, scheduling queues and context switches, process creation and termination with fork(), exec() and wait(), and interprocess communication by shared memory and message passing. Interactive slides, diagrams, simulators and a quiz for chapter 3 of the CSE 309 Operating System course.">
-<meta name="twitter:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch03-processes.png?v=1">
+<meta name="twitter:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch03-processes.png?v=2">
 <meta name="twitter:image:alt" content="Processes – Chapter 3 | CSE 309 Operating System">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Processes", "description": "The process concept, process states and the PCB, scheduling queues and context switches, process creation and termination with fork(), exec() and wait(), and interprocess communication by shared memory and message passing.", "position": 3, "educationalLevel": "Undergraduate", "learningResourceType": "Lecture slides", "inLanguage": "en", "isAccessibleForFree": true, "teaches": ["A process is a program in execution: text, data, heap, stack, program counter and registers.", "It moves between new, ready, running, waiting and terminated; the OS keeps its information in a PCB.", "The scheduler picks from the ready queue; a context switch saves and restores PCBs and is pure overhead.", "fork() creates a child copy, exec() replaces its program, wait() lets the parent collect it; zombies and orphans result when wait() is missing.", "Cooperating processes use IPC: shared memory (e.g. the producer–consumer buffer) or message passing with send/receive.", "Message passing can be direct or indirect (mailboxes), blocking or non-blocking, with zero, bounded or unbounded buffering."], "keywords": "process, process state diagram, PCB, process control block, ready queue, context switch, fork, exec, wait, execlp, zombie, orphan, process tree, IPC, shared memory, message passing, producer consumer, bounded buffer, mailbox, blocking send, rendezvous, POSIX shm_open, Mach, Windows ALPC, CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch03-processes.html", "image": "https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch03-processes.png", "isPartOf": {"@type": "Course", "name": "Operating System", "courseCode": "CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Operating System", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/"}, {"@type": "ListItem", "position": 2, "name": "Chapter 3: Processes", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch03-processes.html"}]}</script>
@@ -359,7 +359,7 @@ child read 9 bytes: Greetings</pre></div>
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 47</span>
+  <span class="counter" id="counter">1 / 63</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>

@@ -22,7 +22,7 @@
 <meta property="og:title" content="Main Memory – Chapter 9 | CSE 309 Operating System">
 <meta property="og:description" content="Base and limit protection, contiguous allocation with first-, best- and worst-fit, fragmentation, paging and address translation, the TLB and effective access time, page-table structures (hierarchical, hashed, inverted) and swapping. Interactive slides, diagrams, simulators and a quiz for chapter 9 of the CSE 309 Operating System course.">
 <meta property="og:url" content="https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch09-main-memory.html">
-<meta property="og:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch09-main-memory.png?v=1">
+<meta property="og:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch09-main-memory.png?v=2">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -30,7 +30,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Main Memory – Chapter 9 | CSE 309 Operating System">
 <meta name="twitter:description" content="Base and limit protection, contiguous allocation with first-, best- and worst-fit, fragmentation, paging and address translation, the TLB and effective access time, page-table structures (hierarchical, hashed, inverted) and swapping. Interactive slides, diagrams, simulators and a quiz for chapter 9 of the CSE 309 Operating System course.">
-<meta name="twitter:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch09-main-memory.png?v=1">
+<meta name="twitter:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch09-main-memory.png?v=2">
 <meta name="twitter:image:alt" content="Main Memory – Chapter 9 | CSE 309 Operating System">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Main Memory", "description": "Base and limit protection, contiguous allocation with first-, best- and worst-fit, fragmentation, paging and address translation, the TLB and effective access time, page-table structures (hierarchical, hashed, inverted) and swapping.", "position": 4, "educationalLevel": "Undergraduate", "learningResourceType": "Lecture slides", "inLanguage": "en", "isAccessibleForFree": true, "teaches": ["Base and limit registers, checked by hardware on every user-mode access, protect each process’s memory.", "Contiguous allocation places each process in one hole: first-fit, best-fit or worst-fit; it suffers external fragmentation (50-percent rule).", "Paging splits logical memory into pages and physical memory into frames; the page table maps page number p to frame f, and the offset d is unchanged.", "Paging removes external fragmentation but keeps internal fragmentation (on average half a page).", "A TLB caches page-table entries: EAT = hit × m + miss × 2m; valid-invalid and protection bits catch illegal accesses, and shared pages save memory.", "Large address spaces use hierarchical, hashed or inverted page tables; swapping moves processes or pages to a backing store."], "keywords": "main memory, base register, limit register, contiguous allocation, first fit best fit worst fit, external fragmentation, internal fragmentation, 50 percent rule, paging, page table, frame, page number offset, TLB, effective access time, valid invalid bit, shared pages, two-level paging, hashed page table, inverted page table, swapping, CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch09-main-memory.html", "image": "https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch09-main-memory.png", "isPartOf": {"@type": "Course", "name": "Operating System", "courseCode": "CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Operating System", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/"}, {"@type": "ListItem", "position": 2, "name": "Chapter 9: Main Memory", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch09-main-memory.html"}]}</script>
@@ -288,7 +288,7 @@ int main(void)
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 48</span>
+  <span class="counter" id="counter">1 / 64</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>

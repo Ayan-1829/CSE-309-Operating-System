@@ -22,7 +22,7 @@
 <meta property="og:title" content="Virtual Memory – Chapter 10 | CSE 309 Operating System">
 <meta property="og:description" content="Why programs need not be fully in memory, demand paging and page faults, the steps of page replacement, and the replacement algorithms FIFO (with Belady’s anomaly), Optimal, LRU, second chance, enhanced second chance, LFU and MFU. Interactive slides, diagrams, simulators and a quiz for chapter 10 of the CSE 309 Operating System course.">
 <meta property="og:url" content="https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch10-virtual-memory.html">
-<meta property="og:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch10-virtual-memory.png?v=1">
+<meta property="og:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch10-virtual-memory.png?v=2">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -30,7 +30,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Virtual Memory – Chapter 10 | CSE 309 Operating System">
 <meta name="twitter:description" content="Why programs need not be fully in memory, demand paging and page faults, the steps of page replacement, and the replacement algorithms FIFO (with Belady’s anomaly), Optimal, LRU, second chance, enhanced second chance, LFU and MFU. Interactive slides, diagrams, simulators and a quiz for chapter 10 of the CSE 309 Operating System course.">
-<meta name="twitter:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch10-virtual-memory.png?v=1">
+<meta name="twitter:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch10-virtual-memory.png?v=2">
 <meta name="twitter:image:alt" content="Virtual Memory – Chapter 10 | CSE 309 Operating System">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Virtual Memory", "description": "Why programs need not be fully in memory, demand paging and page faults, the steps of page replacement, and the replacement algorithms FIFO (with Belady’s anomaly), Optimal, LRU, second chance, enhanced second chance, LFU and MFU.", "position": 5, "educationalLevel": "Undergraduate", "learningResourceType": "Lecture slides", "inLanguage": "en", "isAccessibleForFree": true, "teaches": ["Virtual memory lets a process run with only part of it in memory, so logical memory can exceed physical memory.", "Demand paging loads a page only on reference; a reference to a non-resident page causes a page fault.", "With no free frame, a victim page is chosen; the dirty bit avoids writing clean pages back.", "Algorithms are compared by counting faults on a reference string: FIFO 15, OPT 9, LRU 12 on the class example with 3 frames.", "FIFO can show Belady’s anomaly; LRU and OPT are stack algorithms and cannot.", "LRU is approximated with reference bits: second chance (clock), enhanced second chance with (reference, modify) classes; LFU and MFU count references."], "keywords": "virtual memory, demand paging, lazy swapper, page fault, page replacement, dirty bit, reference string, FIFO page replacement, Belady anomaly, optimal page replacement, LRU, stack algorithm, second chance, clock algorithm, enhanced second chance, LFU, MFU, CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch10-virtual-memory.html", "image": "https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch10-virtual-memory.png", "isPartOf": {"@type": "Course", "name": "Operating System", "courseCode": "CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Operating System", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/"}, {"@type": "ListItem", "position": 2, "name": "Chapter 10: Virtual Memory", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch10-virtual-memory.html"}]}</script>
@@ -215,7 +215,7 @@ LRU : 12 page faults</pre></div><p class="co-note">The same 20-reference string 
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 29</span>
+  <span class="counter" id="counter">1 / 41</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>

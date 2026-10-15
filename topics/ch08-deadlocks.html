@@ -22,7 +22,7 @@
 <meta property="og:title" content="Deadlocks – Chapter 8 | CSE 309 Operating System">
 <meta property="og:description" content="The system model, the four necessary conditions, resource-allocation graphs, prevention, avoidance with safe states and the Banker’s algorithm, detection with wait-for graphs and the detection algorithm, and recovery by termination or preemption. Interactive slides, diagrams, simulators and a quiz for chapter 8 of the CSE 309 Operating System course.">
 <meta property="og:url" content="https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch08-deadlocks.html">
-<meta property="og:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch08-deadlocks.png?v=1">
+<meta property="og:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch08-deadlocks.png?v=2">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -30,7 +30,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Deadlocks – Chapter 8 | CSE 309 Operating System">
 <meta name="twitter:description" content="The system model, the four necessary conditions, resource-allocation graphs, prevention, avoidance with safe states and the Banker’s algorithm, detection with wait-for graphs and the detection algorithm, and recovery by termination or preemption. Interactive slides, diagrams, simulators and a quiz for chapter 8 of the CSE 309 Operating System course.">
-<meta name="twitter:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch08-deadlocks.png?v=1">
+<meta name="twitter:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch08-deadlocks.png?v=2">
 <meta name="twitter:image:alt" content="Deadlocks – Chapter 8 | CSE 309 Operating System">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Deadlocks", "description": "The system model, the four necessary conditions, resource-allocation graphs, prevention, avoidance with safe states and the Banker’s algorithm, detection with wait-for graphs and the detection algorithm, and recovery by termination or preemption.", "position": 9, "educationalLevel": "Undergraduate", "learningResourceType": "Lecture slides", "inLanguage": "en", "isAccessibleForFree": true, "teaches": ["Processes request, use and release resources; deadlock needs mutual exclusion, hold and wait, no preemption and circular wait at once.", "Resource-allocation graphs: no cycle → no deadlock; a cycle → deadlock with single instances, possible deadlock otherwise.", "Prevention breaks a condition — most often circular wait, by acquiring resources in a fixed order.", "Avoidance keeps the system in a safe state: the RAG algorithm with claim edges for single instances, the Banker’s algorithm (Need = Max − Allocation) for several.", "Detection finds cycles in a wait-for graph or runs the detection algorithm with the Request matrix.", "Recovery aborts processes or preempts resources, choosing victims by cost and avoiding starvation."], "keywords": "deadlock, mutual exclusion, hold and wait, no preemption, circular wait, resource allocation graph, deadlock prevention, deadlock avoidance, safe state, unsafe state, claim edge, Banker’s algorithm, safety algorithm, resource request algorithm, need matrix, wait-for graph, deadlock detection, recovery, CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch08-deadlocks.html", "image": "https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch08-deadlocks.png", "isPartOf": {"@type": "Course", "name": "Operating System", "courseCode": "CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Operating System", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/"}, {"@type": "ListItem", "position": 2, "name": "Chapter 8: Deadlocks", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch08-deadlocks.html"}]}</script>
@@ -326,7 +326,7 @@ Safe. Safe sequence: P1 P3 P4 P0 P2</pre></div><p class="co-note">The same snaps
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 41</span>
+  <span class="counter" id="counter">1 / 55</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>

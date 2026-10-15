@@ -22,7 +22,7 @@
 <meta property="og:title" content="Threads &amp;amp; Concurrency – Chapter 4 | CSE 309 Operating System">
 <meta property="og:description" content="Why applications use threads, concurrency versus parallelism, Amdahl’s law, user and kernel threads, the many-to-one, one-to-one, many-to-many and two-level models, Pthreads, implicit threading, threading issues and Windows and Linux threads. Interactive slides, diagrams, simulators and a quiz for chapter 4 of the CSE 309 Operating System course.">
 <meta property="og:url" content="https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch04-threads-and-concurrency.html">
-<meta property="og:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch04-threads-and-concurrency.png?v=1">
+<meta property="og:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch04-threads-and-concurrency.png?v=2">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -30,7 +30,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Threads &amp;amp; Concurrency – Chapter 4 | CSE 309 Operating System">
 <meta name="twitter:description" content="Why applications use threads, concurrency versus parallelism, Amdahl’s law, user and kernel threads, the many-to-one, one-to-one, many-to-many and two-level models, Pthreads, implicit threading, threading issues and Windows and Linux threads. Interactive slides, diagrams, simulators and a quiz for chapter 4 of the CSE 309 Operating System course.">
-<meta name="twitter:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch04-threads-and-concurrency.png?v=1">
+<meta name="twitter:image" content="https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch04-threads-and-concurrency.png?v=2">
 <meta name="twitter:image:alt" content="Threads &amp;amp; Concurrency – Chapter 4 | CSE 309 Operating System">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Threads &amp; Concurrency", "description": "Why applications use threads, concurrency versus parallelism, Amdahl’s law, user and kernel threads, the many-to-one, one-to-one, many-to-many and two-level models, Pthreads, implicit threading, threading issues and Windows and Linux threads.", "position": 6, "educationalLevel": "Undergraduate", "learningResourceType": "Lecture slides", "inLanguage": "en", "isAccessibleForFree": true, "teaches": ["A thread is a unit of CPU use with its own registers, PC and stack, sharing code, data and files with the other threads of its process.", "Benefits: responsiveness, resource sharing, economy, scalability; concurrency is progress, parallelism is simultaneous execution.", "Amdahl’s law: speedup ≤ 1 / (S + (1 − S)/N), limited to 1/S by the serial part.", "User threads map to kernel threads many-to-one, one-to-one (Windows, Linux), many-to-many or two-level.", "Libraries (Pthreads, Windows, Java) and implicit threading (thread pools, fork-join, OpenMP, GCD, TBB) create and manage threads.", "Issues: fork/exec semantics, signal delivery, asynchronous vs deferred cancellation; Windows uses ETHREAD/KTHREAD/TEB and Linux uses clone() tasks."], "keywords": "threads, multithreading, concurrency vs parallelism, data parallelism, task parallelism, Amdahl law, user threads, kernel threads, many-to-one, one-to-one, many-to-many, two-level model, Pthreads, thread pool, fork-join, OpenMP, Grand Central Dispatch, TBB, signal handling, thread cancellation, clone, CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch04-threads-and-concurrency.html", "image": "https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch04-threads-and-concurrency.png", "isPartOf": {"@type": "Course", "name": "Operating System", "courseCode": "CSE 309", "url": "https://ayan-1829.github.io/CSE-309-Operating-System/"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Operating System", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/"}, {"@type": "ListItem", "position": 2, "name": "Chapter 4: Threads &amp; Concurrency", "item": "https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch04-threads-and-concurrency.html"}]}</script>
@@ -321,7 +321,7 @@ pthread_join(tid,NULL);</pre></div></div>
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 40</span>
+  <span class="counter" id="counter">1 / 51</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>

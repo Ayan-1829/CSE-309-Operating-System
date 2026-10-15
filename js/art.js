@@ -27,7 +27,7 @@ const TOPIC_ART = (() => {
     3: `${bg}
       <path d="M200,92 L120,178 M200,92 L280,178 M120,178 L84,258 M120,178 L156,258 M280,178 L280,258" class="ta-line"/>
       <circle cx="200" cy="84" r="30" class="ta-ac"/><text x="200" y="91" class="ta-s ta-on-ac">init</text>
-      <circle cx="120" cy="178" r="26" class="ta-soft1"/><circle cx="280" cy="178" r="26" class="ta-soft2"/>
+      <circle cx="120" cy="178" r="26" class="ta-paper"/><circle cx="280" cy="178" r="26" class="ta-paper"/><circle cx="120" cy="178" r="26" class="ta-soft1"/><circle cx="280" cy="178" r="26" class="ta-soft2"/>
       <circle cx="84" cy="258" r="20" class="ta-card"/><circle cx="156" cy="258" r="20" class="ta-card"/><circle cx="280" cy="258" r="20" class="ta-acc"/>`,
     /* 4. Main memory: frames and a page table */
     4: `${bg}
