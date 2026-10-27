@@ -76,10 +76,10 @@
 <section class="slide " data-title="Demand paging" aria-label="Demand paging" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Demand paging</p><h2>Demand paging</h2><ul><li>Could bring entire process into memory at load time</li><li>Or bring a page into memory only when it is needed<ul><li>Less I/O needed, no unnecessary I/O</li><li>Less memory needed</li><li>Faster response</li><li>More users</li></ul></li><li>Similar to paging system with swapping (diagram on right)</li><li>Page is needed → reference to it<ul><li>invalid reference → abort</li><li>not-in-memory → bring to memory</li></ul></li><li><b>Lazy swapper</b> – never swaps a page into memory unless page will be needed<ul><li>Swapper that deals with pages is a <b>pager</b></li></ul></li></ul>
 </div></section>
-<section class="slide " data-title="Demand paging (cont.)" aria-label="Demand paging (cont.)" tabindex="-1"><div class="slide-inner">
+<section class="slide " data-title="Demand paging (cont.)" aria-label="Demand paging (cont.)" tabindex="-1"><div style="zoom:0.94;" class="slide-inner">
 <p class="kicker">Demand paging</p><h2>Demand paging (cont.)</h2><figure class="fig" data-fig="demand-pt"><figcaption>Page table when some pages are not in main memory: only A, C and F are loaded (valid); a reference to any other page causes a page fault.</figcaption></figure><div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/ssd.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">SSD</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/hdd.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Hard drive</span></a></div>
 </div></section>
-<section class="slide " data-title="Handling a page fault, step by step" aria-label="Handling a page fault, step by step" tabindex="-1"><div class="slide-inner">
+<section class="slide " data-title="Handling a page fault, step by step" aria-label="Handling a page fault, step by step" tabindex="-1"><div style="zoom:0.98;" class="slide-inner">
 <p class="kicker">Animated</p><h2>Handling a page fault, step by step</h2><div data-demo="flow" data-anim="pagefault"></div>
 </div></section>
 <section class="slide " data-title="What happens if there is no free frame?" aria-label="What happens if there is no free frame?" tabindex="-1"><div class="slide-inner">
@@ -106,25 +106,25 @@
 <section class="slide " data-title="First-in-first-out (FIFO) algorithm" aria-label="First-in-first-out (FIFO) algorithm" tabindex="-1"><div class="slide-inner">
 <p class="kicker">FIFO</p><h2>First-in-first-out (FIFO) algorithm</h2><ul><li>Reference string: 7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1</li><li>3 frames (3 pages can be in memory at a time per process)</li><li><b>15 page faults</b></li><li>How to track ages of pages?<ul><li>Just use a FIFO queue</li></ul></li></ul>
 </div></section>
-<section class="slide " data-title="First-in-first-out (FIFO) algorithm (cont.)" aria-label="First-in-first-out (FIFO) algorithm (cont.)" tabindex="-1"><div class="slide-inner">
+<section class="slide " data-title="First-in-first-out (FIFO) algorithm (cont.)" aria-label="First-in-first-out (FIFO) algorithm (cont.)" tabindex="-1"><div style="zoom:0.99;" class="slide-inner">
 <p class="kicker">FIFO</p><h2>First-in-first-out (FIFO) algorithm (cont.)</h2><div data-demo="page-replace" data-ref="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1" data-algo="fifo" data-frames="3" data-full="1"></div>
 </div></section>
 <section class="slide " data-title="Belady’s anomaly" aria-label="Belady’s anomaly" tabindex="-1"><div class="slide-inner">
 <p class="kicker">FIFO illustrating Belady’s anomaly</p><h2>Belady’s anomaly</h2><ul><li>Can vary by reference string: consider 1,2,3,4,1,2,5,1,2,3,4,5<ul><li>Adding more frames can cause more page faults!</li><li><b>Belady’s anomaly</b></li></ul></li></ul><div class="scrollx"><table class="doc"><thead><tr><th>Frames</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead><tbody><tr><td>FIFO faults</td><td>12</td><td>12</td><td><b>9</b></td><td><b>10</b></td><td>5</td></tr></tbody></table></div>
 </div></section>
-<section class="slide " data-title="Belady’s anomaly (cont.)" aria-label="Belady’s anomaly (cont.)" tabindex="-1"><div class="slide-inner">
+<section class="slide " data-title="Belady’s anomaly (cont.)" aria-label="Belady’s anomaly (cont.)" tabindex="-1"><div style="zoom:0.96;" class="slide-inner">
 <p class="kicker">FIFO illustrating Belady’s anomaly</p><h2>Belady’s anomaly (cont.)</h2><div data-demo="belady"></div>
 </div></section>
 <section class="slide " data-title="Optimal algorithm" aria-label="Optimal algorithm" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Optimal</p><h2>Optimal algorithm</h2><ul><li>Replace page that will not be used for longest period of time<ul><li>9 is optimal for the example</li></ul></li><li>How do you know this?<ul><li>Can’t read the future</li></ul></li><li>Used for measuring how well your algorithm performs</li></ul>
 </div></section>
-<section class="slide " data-title="Optimal algorithm (cont.)" aria-label="Optimal algorithm (cont.)" tabindex="-1"><div class="slide-inner">
+<section class="slide " data-title="Optimal algorithm (cont.)" aria-label="Optimal algorithm (cont.)" tabindex="-1"><div style="zoom:0.99;" class="slide-inner">
 <p class="kicker">Optimal</p><h2>Optimal algorithm (cont.)</h2><div data-demo="page-replace" data-ref="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1" data-algo="opt" data-frames="3" data-full="1"></div>
 </div></section>
 <section class="slide " data-title="Least recently used (LRU) algorithm" aria-label="Least recently used (LRU) algorithm" tabindex="-1"><div class="slide-inner">
 <p class="kicker">LRU</p><h2>Least recently used (LRU) algorithm</h2><ul><li>Use past knowledge rather than future</li><li>Replace page that has not been used in the most amount of time</li><li>Associate time of last use with each page</li><li><b>12 faults</b> – better than FIFO but worse than OPT</li><li>Generally good algorithm and frequently used</li><li>But how to implement?</li></ul>
 </div></section>
-<section class="slide " data-title="Least recently used (LRU) algorithm (cont.)" aria-label="Least recently used (LRU) algorithm (cont.)" tabindex="-1"><div class="slide-inner">
+<section class="slide " data-title="Least recently used (LRU) algorithm (cont.)" aria-label="Least recently used (LRU) algorithm (cont.)" tabindex="-1"><div style="zoom:0.99;" class="slide-inner">
 <p class="kicker">LRU</p><h2>Least recently used (LRU) algorithm (cont.)</h2><div data-demo="page-replace" data-ref="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1" data-algo="lru" data-frames="3" data-full="1"></div>
 </div></section>
 <section class="slide " data-title="LRU algorithm (cont.)" aria-label="LRU algorithm (cont.)" tabindex="-1"><div class="slide-inner">
@@ -179,7 +179,7 @@ LRU : 12 page faults</pre></div><p class="co-note">The same 20-reference string 
 <section class="slide " data-title="LRU approximation algorithms (cont.)" aria-label="LRU approximation algorithms (cont.)" tabindex="-1"><div class="slide-inner">
 <p class="kicker">LRU approximation</p><h2>LRU approximation algorithms (cont.)</h2><figure class="fig" data-fig="second-chance"><figcaption>Second-chance (clock) page-replacement algorithm.</figcaption></figure>
 </div></section>
-<section class="slide " data-title="Second chance on the example" aria-label="Second chance on the example" tabindex="-1"><div class="slide-inner">
+<section class="slide " data-title="Second chance on the example" aria-label="Second chance on the example" tabindex="-1"><div style="zoom:0.99;" class="slide-inner">
 <p class="kicker">Interactive</p><h2>Second chance on the example</h2><div data-demo="page-replace" data-ref="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1" data-algo="clock" data-frames="3"></div>
 </div></section>
 <section class="slide " data-title="Enhanced second-chance algorithm" aria-label="Enhanced second-chance algorithm" tabindex="-1"><div class="slide-inner">
@@ -188,7 +188,7 @@ LRU : 12 page faults</pre></div><p class="co-note">The same 20-reference string 
 <section class="slide " data-title="Counting algorithms" aria-label="Counting algorithms" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Counting algorithms</p><h2>Counting algorithms</h2><div class="cols "><div><ul><li>Keep a counter of the number of references that have been made to each page<ul><li>Not common</li></ul></li><li><b>Least frequently used (LFU)</b> algorithm:<ul><li>Replaces page with smallest count</li></ul></li><li><b>Most frequently used (MFU)</b> algorithm:<ul><li>Based on the argument that the page with the smallest count was probably just brought in and has yet to be used</li></ul></li></ul></div><div><div class="callout">In the simulator, ties between equal counts are broken by replacing the page that has been in memory longest (FIFO).</div></div></div>
 </div></section>
-<section class="slide " data-title="Page-replacement simulator" aria-label="Page-replacement simulator" tabindex="-1"><div class="slide-inner">
+<section class="slide " data-title="Page-replacement simulator" aria-label="Page-replacement simulator" tabindex="-1"><div style="zoom:0.99;" class="slide-inner">
 <p class="kicker">Interactive · all algorithms</p><h2>Page-replacement simulator</h2><div data-demo="page-replace" data-ref="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1" data-algo="lru" data-frames="3"></div>
 </div></section>
 <section class="slide " data-title="Worked example 1" aria-label="Worked example 1" tabindex="-1"><div class="slide-inner">

@@ -72,17 +72,13 @@
 
 <div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/registers.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Registers</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/cache.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Cache</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/ram.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">RAM</span></a></div>
 </div></section>
-<section class="slide " data-title="Protection" aria-label="Protection" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Background</p><h2>Protection</h2><ul><li>Need to ensure that a process can access only those addresses in its address space.</li><li>We can provide this protection by using a pair of <b>base</b> and <b>limit registers</b> that define the logical address space of a process</li></ul>
+<section class="slide " data-title="Protection" aria-label="Protection" tabindex="-1"><div style="zoom:0.90;" class="slide-inner">
+<p class="kicker">Background</p><h2>Protection</h2><ul><li>Need to ensure that a process can access only those addresses in its address space.</li><li>We can provide this protection by using a pair of <b>base</b> and <b>limit registers</b> that define the logical address space of a process</li></ul><figure class="fig" data-fig="base-limit"><figcaption>A base and a limit register define a logical address space.</figcaption></figure>
 </div></section>
-<section class="slide " data-title="Protection (cont.)" aria-label="Protection (cont.)" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Background</p><h2>Protection (cont.)</h2><figure class="fig" data-fig="base-limit"><figcaption>A base and a limit register define a logical address space.</figcaption></figure>
-</div></section>
-<section class="slide " data-title="Hardware address protection" aria-label="Hardware address protection" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Background</p><h2>Hardware address protection</h2><figure class="fig" data-fig="hw-protect"><figcaption>Hardware address protection with base and limit registers.</figcaption></figure>
-</div></section>
-<section class="slide " data-title="Hardware address protection (cont.)" aria-label="Hardware address protection (cont.)" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Background</p><h2>Hardware address protection (cont.)</h2><ul><li>CPU must check every memory access generated in user mode to be sure it is between base and limit for that user</li><li>The instructions to load the base and limit registers are privileged</li></ul><div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/comparator.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Comparator</span></a></div>
+<section class="slide " data-title="Hardware address protection" aria-label="Hardware address protection" tabindex="-1"><div style="zoom:0.98;" class="slide-inner">
+<p class="kicker">Background</p><h2>Hardware address protection</h2><figure class="fig" data-fig="hw-protect"><figcaption>Hardware address protection with base and limit registers.</figcaption></figure><ul><li>CPU must check every memory access generated in user mode to be sure it is between base and limit for that user</li><li>The instructions to load the base and limit registers are privileged</li></ul>
+
+<div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/comparator.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Comparator</span></a></div>
 </div></section>
 <section class="slide " data-title="Check an address" aria-label="Check an address" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Interactive</p><h2>Check an address</h2><div data-demo="base-limit"></div>
@@ -170,7 +166,7 @@ int main(void)
 <section class="slide " data-title="Translation look-aside buffer" aria-label="Translation look-aside buffer" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Paging</p><h2>Translation look-aside buffer</h2><ul><li>Some TLBs store <b>address-space identifiers (ASIDs)</b> in each TLB entry – uniquely identifies each process to provide address-space protection for that process<ul><li>Otherwise need to flush at every context switch</li></ul></li><li>TLBs typically small (64 to 1,024 entries)</li><li>On a TLB miss, value is loaded into the TLB for faster access next time<ul><li>Replacement policies must be considered</li><li>Some entries can be <b>wired down</b> for permanent fast access</li></ul></li></ul>
 </div></section>
-<section class="slide " data-title="Translation look-aside buffer (cont.)" aria-label="Translation look-aside buffer (cont.)" tabindex="-1"><div class="slide-inner">
+<section class="slide " data-title="Translation look-aside buffer (cont.)" aria-label="Translation look-aside buffer (cont.)" tabindex="-1"><div style="zoom:0.94;" class="slide-inner">
 <p class="kicker">Paging</p><h2>Translation look-aside buffer (cont.)</h2><figure class="fig" data-fig="tlb"><figcaption>Paging hardware with TLB.</figcaption></figure><div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/cache-tags.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Cache tags and lines</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/cache.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Cache</span></a></div>
 </div></section>
 <section class="slide " data-title="Effective access time" aria-label="Effective access time" tabindex="-1"><div class="slide-inner">
@@ -179,10 +175,10 @@ int main(void)
 <section class="slide " data-title="Effective access time (cont.)" aria-label="Effective access time (cont.)" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Paging</p><h2>Effective access time (cont.)</h2><p>implying only 1% slowdown in access time.</p><div data-demo="eat-calc"></div>
 </div></section>
-<section class="slide " data-title="Translating one address, animated" aria-label="Translating one address, animated" tabindex="-1"><div class="slide-inner">
+<section class="slide " data-title="Translating one address, animated" aria-label="Translating one address, animated" tabindex="-1"><div style="zoom:0.98;" class="slide-inner">
 <p class="kicker">Animated</p><h2>Translating one address, animated</h2><div data-demo="flow" data-anim="xlate"></div>
 </div></section>
-<section class="slide " data-title="TLB simulator" aria-label="TLB simulator" tabindex="-1"><div class="slide-inner">
+<section class="slide " data-title="TLB simulator" aria-label="TLB simulator" tabindex="-1"><div style="zoom:0.92;" class="slide-inner">
 <p class="kicker">Interactive</p><h2>TLB simulator</h2><div data-demo="tlb-sim"></div>
 </div></section>
 <section class="slide " data-title="Memory protection" aria-label="Memory protection" tabindex="-1"><div class="slide-inner">
@@ -244,11 +240,8 @@ int main(void)
 <section class="slide " data-title="Swapping (cont.)" aria-label="Swapping (cont.)" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Swapping</p><h2>Swapping (cont.)</h2><figure class="fig" data-fig="swapping"><figcaption>Schematic view of swapping.</figcaption></figure>
 </div></section>
-<section class="slide " data-title="Context switch time including swapping" aria-label="Context switch time including swapping" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Swapping</p><h2>Context switch time including swapping</h2><ul><li>If next process to be put on CPU is not in memory, need to swap out a process and swap in target process</li><li>Context switch time can then be very high</li><li>100 MB process swapping to hard disk with transfer rate of 50 MB/sec<ul><li>Swap out time of 2000 ms</li><li>Plus swap in of same sized process</li><li>Total context switch swapping component time of 4000 ms (4 seconds)</li></ul></li></ul>
-</div></section>
-<section class="slide " data-title="Context switch time including swapping (cont.)" aria-label="Context switch time including swapping (cont.)" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Swapping</p><h2>Context switch time including swapping (cont.)</h2><ul><li>Can reduce if reduce size of memory swapped – by knowing how much memory really being used<ul><li>System calls to inform OS of memory use via <code>request_memory()</code> and <code>release_memory()</code></li></ul></li></ul><div data-demo="swap-calc"></div>
+<section class="slide " data-title="Context switch time including swapping" aria-label="Context switch time including swapping" tabindex="-1"><div style="zoom:0.94;" class="slide-inner">
+<p class="kicker">Swapping</p><h2>Context switch time including swapping</h2><div class="cols "><div><ul><li>If next process to be put on CPU is not in memory, need to swap out a process and swap in target process</li><li>Context switch time can then be very high</li><li>100 MB process swapping to hard disk with transfer rate of 50 MB/sec<ul><li>Swap out time of 2000 ms</li><li>Plus swap in of same sized process</li><li>Total context switch swapping component time of 4000 ms (4 seconds)</li></ul></li><li>Can reduce if reduce size of memory swapped – by knowing how much memory really being used<ul><li>System calls to inform OS of memory use via <code>request_memory()</code> and <code>release_memory()</code></li></ul></li></ul></div><div><div data-demo="swap-calc"></div></div></div>
 </div></section>
 <section class="slide " data-title="Context switch time and swapping (cont.)" aria-label="Context switch time and swapping (cont.)" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Swapping</p><h2>Context switch time and swapping (cont.)</h2><ul><li>Other constraints as well on swapping<ul><li>Pending I/O – can’t swap out as I/O would occur to wrong process</li><li>Or always transfer I/O to kernel space, then to I/O device<ul><li>Known as <b>double buffering</b>, adds overhead</li></ul></li></ul></li><li>Standard swapping not used in modern operating systems<ul><li>But modified version common<ul><li>Swap only when free memory extremely low</li></ul></li></ul></li></ul>
@@ -288,7 +281,7 @@ int main(void)
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 64</span>
+  <span class="counter" id="counter">1 / 61</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>

@@ -187,11 +187,8 @@ with lock:   counter = 2000000 (expected 2000000)</pre></div><p class="co-note">
     return temp;
 }</pre><ul><li>Executed atomically</li><li>Returns the original value of passed parameter <code>value</code></li><li>Set the variable <code>value</code> the value of the passed parameter <code>new_value</code> but only if <code>*value == expected</code> is true. That is, the swap takes place only under this condition.</li></ul><div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/x86-data.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">8086 data transfer (XCHG)</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/x86-proc.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">8086 processor control (LOCK)</span></a></div>
 </div></section>
-<section class="slide " data-title="Atomic variables" aria-label="Atomic variables" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Hardware support for synchronization</p><h2>Atomic variables</h2><ul><li>Typically, instructions such as compare-and-swap are used as building blocks for other synchronization tools.</li><li>One tool is an <b>atomic variable</b> that provides atomic (uninterruptible) updates on basic data types such as integers and booleans.</li><li>For example:<ul><li>Let <code>sequence</code> be an atomic variable</li><li>Let <code>increment()</code> be operation on the atomic variable <code>sequence</code></li><li>The command <code>increment(&amp;sequence);</code> ensures <code>sequence</code> is incremented without interruption</li></ul></li></ul>
-</div></section>
-<section class="slide " data-title="Atomic variables (cont.)" aria-label="Atomic variables (cont.)" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Hardware support for synchronization</p><h2>Atomic variables (cont.)</h2><p>The <code>increment()</code> function can be implemented as follows:</p><pre class="code">void increment(atomic_int *v)
+<section class="slide " data-title="Atomic variables" aria-label="Atomic variables" tabindex="-1"><div style="zoom:0.95;" class="slide-inner">
+<p class="kicker">Hardware support for synchronization</p><h2>Atomic variables</h2><div class="cols "><div><ul><li>Typically, instructions such as compare-and-swap are used as building blocks for other synchronization tools.</li><li>One tool is an <b>atomic variable</b> that provides atomic (uninterruptible) updates on basic data types such as integers and booleans.</li><li>For example:<ul><li>Let <code>sequence</code> be an atomic variable</li><li>Let <code>increment()</code> be operation on the atomic variable <code>sequence</code></li><li>The command <code>increment(&amp;sequence);</code> ensures <code>sequence</code> is incremented without interruption</li></ul></li></ul></div><div><p>The <code>increment()</code> function can be implemented as follows:</p><pre class="code">void increment(atomic_int *v)
 {
     int temp;
 
@@ -199,7 +196,7 @@ with lock:   counter = 2000000 (expected 2000000)</pre></div><p class="co-note">
         temp = *v;
     }
     while (temp != compare_and_swap(v, temp, temp+1));
-}</pre><div class="callout">If another thread changed <code>*v</code> between the read and the swap, compare_and_swap fails (returns a different value) and the loop simply tries again.</div>
+}</pre><div class="callout">If another thread changed <code>*v</code> between the read and the swap, compare_and_swap fails (returns a different value) and the loop simply tries again.</div></div></div>
 </div></section>
 <section class="slide " data-title="Mutex locks" aria-label="Mutex locks" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Mutex locks</p><h2>Mutex locks</h2><ul><li>Previous solutions are complicated and generally inaccessible to application programmers</li><li>OS designers build software tools to solve critical section problem</li><li>Simplest is mutex lock<ul><li>Boolean variable indicating if lock is available or not</li></ul></li><li>Protect a critical section by<ul><li>First <code>acquire()</code> a lock</li><li>Then <code>release()</code> the lock</li></ul></li><li>Calls to <code>acquire()</code> and <code>release()</code> must be <b>atomic</b><ul><li>Usually implemented via hardware atomic instructions such as compare-and-swap.</li></ul></li></ul>
@@ -366,7 +363,7 @@ signal(mutex);</pre><ul><li>Mutual exclusion within a monitor is ensured</li></u
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 45</span>
+  <span class="counter" id="counter">1 / 44</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>

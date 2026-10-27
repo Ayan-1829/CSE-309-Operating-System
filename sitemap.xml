@@ -2,79 +2,79 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://ayan-1829.github.io/CSE-309-Operating-System/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <priority>1.0</priority>
     <image:image><image:loc>https://ayan-1829.github.io/CSE-309-Operating-System/img/og/home.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://ayan-1829.github.io/CSE-309-Operating-System/practice.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <priority>0.7</priority>
     <image:image><image:loc>https://ayan-1829.github.io/CSE-309-Operating-System/img/og/practice.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://ayan-1829.github.io/CSE-309-Operating-System/reference.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <priority>0.8</priority>
     <image:image><image:loc>https://ayan-1829.github.io/CSE-309-Operating-System/img/og/reference.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://ayan-1829.github.io/CSE-309-Operating-System/course.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <priority>0.6</priority>
     <image:image><image:loc>https://ayan-1829.github.io/CSE-309-Operating-System/img/og/course.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch01-introduction.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <priority>0.9</priority>
     <image:image><image:loc>https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch01-introduction.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch02-operating-system-services.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <priority>0.9</priority>
     <image:image><image:loc>https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch02-operating-system-services.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch03-processes.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <priority>0.9</priority>
     <image:image><image:loc>https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch03-processes.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch09-main-memory.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <priority>0.9</priority>
     <image:image><image:loc>https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch09-main-memory.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch10-virtual-memory.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <priority>0.9</priority>
     <image:image><image:loc>https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch10-virtual-memory.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch04-threads-and-concurrency.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <priority>0.9</priority>
     <image:image><image:loc>https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch04-threads-and-concurrency.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch05-cpu-scheduling.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <priority>0.9</priority>
     <image:image><image:loc>https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch05-cpu-scheduling.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch06-synchronization-tools.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <priority>0.9</priority>
     <image:image><image:loc>https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch06-synchronization-tools.png</image:loc></image:image>
   </url>
   <url>
     <loc>https://ayan-1829.github.io/CSE-309-Operating-System/topics/ch08-deadlocks.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <priority>0.9</priority>
     <image:image><image:loc>https://ayan-1829.github.io/CSE-309-Operating-System/img/og/ch08-deadlocks.png</image:loc></image:image>
   </url>

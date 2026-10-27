@@ -76,7 +76,7 @@
 <section class="slide " data-title="Computer system structure" aria-label="Computer system structure" tabindex="-1"><div class="slide-inner">
 <p class="kicker">What operating systems do</p><h2>Computer system structure</h2><p>A computer system can be divided into four components:</p><ul><li><b>Hardware</b> – provides basic computing resources<ul><li>CPU, memory, I/O devices</li></ul></li><li><b>Operating system</b><ul><li>Controls and coordinates use of hardware among various applications and users</li></ul></li><li><b>Application programs</b> – define the ways in which the system resources are used to solve the computing problems of the users<ul><li>Word processors, compilers, web browsers, database systems, video games</li></ul></li><li><b>Users</b><ul><li>People, machines, other computers</li></ul></li></ul>
 </div></section>
-<section class="slide " data-title="Computer system structure (cont.)" aria-label="Computer system structure (cont.)" tabindex="-1"><div class="slide-inner">
+<section class="slide " data-title="Computer system structure (cont.)" aria-label="Computer system structure (cont.)" tabindex="-1"><div style="zoom:0.98;" class="slide-inner">
 <p class="kicker">What operating systems do</p><h2>Computer system structure (cont.)</h2><figure class="fig" data-fig="sys-components"><figcaption>Abstract view of the components of a computer.</figcaption></figure><div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">From the case down to the gates</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/motherboard.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Motherboard</span></a></div>
 </div></section>
 <section class="slide " data-title="What operating systems do" aria-label="What operating systems do" tabindex="-1"><div class="slide-inner">
@@ -90,22 +90,19 @@
 
 <div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/power-button.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Power button</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/bios.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">BIOS chip</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/cmos.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">CMOS battery</span></a></div>
 </div></section>
-<section class="slide " data-title="Booting, step by step" aria-label="Booting, step by step" tabindex="-1"><div class="slide-inner">
+<section class="slide " data-title="Booting, step by step" aria-label="Booting, step by step" tabindex="-1"><div style="zoom:0.98;" class="slide-inner">
 <p class="kicker">Animated</p><h2>Booting, step by step</h2><div data-demo="flow" data-anim="boot"></div>
 </div></section>
 <section class="slide " data-title="Operating-system operations" aria-label="Operating-system operations" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Operating-system operations</p><h2>Operating-system operations</h2><ul><li>Bootstrap program – simple code to initialize the system, load the kernel</li><li>Kernel loads</li><li>Starts <b>system daemons</b> (services provided outside of the kernel)</li><li>Kernel is <b>interrupt driven</b> (hardware and software)<ul><li>Hardware interrupt by one of the devices</li><li>Software interrupt (<b>exception</b> or <b>trap</b>):<ul><li>Software error (e.g., division by zero)</li><li>Request for operating system service – <b>system call</b></li><li>Other process problems include infinite loop, processes modifying each other or the operating system</li></ul></li></ul></li></ul>
 </div></section>
-<section class="slide " data-title="Handling an interrupt, step by step" aria-label="Handling an interrupt, step by step" tabindex="-1"><div class="slide-inner">
+<section class="slide " data-title="Handling an interrupt, step by step" aria-label="Handling an interrupt, step by step" tabindex="-1"><div style="zoom:0.91;" class="slide-inner">
 <p class="kicker">Animated</p><h2>Handling an interrupt, step by step</h2><div data-demo="flow" data-anim="interrupt"></div>
 
 <div class="applinks" role="group" aria-label="Explore further"><span class="al-h">Explore further</span><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/kb-controller.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">Keyboard controller</span></a><a class="al al-itc" href="https://ayan-1829.github.io/inside-the-computer/parts/x86-control.html" target="_blank" rel="noopener"><span class="al-app">Inside the Computer</span><span class="al-t">8086 control transfer (CALL, INT)</span></a></div>
 </div></section>
-<section class="slide " data-title="Multiprogramming" aria-label="Multiprogramming" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Operating-system operations</p><h2>Multiprogramming</h2><ul><li>Single user cannot always keep CPU and I/O devices busy</li><li>Multiprogramming organizes jobs (code and data) so the CPU always has one to execute</li><li>A subset of total jobs in system is kept in memory</li><li>One job selected and run via <b>job scheduling</b></li><li>When job has to wait (for I/O for example), OS switches to another job</li></ul>
-</div></section>
-<section class="slide " data-title="Multiprogramming (cont.)" aria-label="Multiprogramming (cont.)" tabindex="-1"><div class="slide-inner">
-<p class="kicker">Operating-system operations</p><h2>Multiprogramming (cont.)</h2><div data-demo="multiprog"></div>
+<section class="slide " data-title="Multiprogramming" aria-label="Multiprogramming" tabindex="-1"><div style="zoom:0.93;" class="slide-inner">
+<p class="kicker">Operating-system operations</p><h2>Multiprogramming</h2><ul><li>Single user cannot always keep CPU and I/O devices busy</li><li>Multiprogramming organizes jobs (code and data) so the CPU always has one to execute</li><li>A subset of total jobs in system is kept in memory</li><li>One job selected and run via <b>job scheduling</b></li><li>When job has to wait (for I/O for example), OS switches to another job</li></ul><div data-demo="multiprog"></div>
 </div></section>
 <section class="slide " data-title="Multitasking (timesharing)" aria-label="Multitasking (timesharing)" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Operating-system operations</p><h2>Multitasking (timesharing)</h2><p>A logical extension of multiprogramming – the CPU switches jobs so frequently that users can interact with each job while it is running, creating <b>interactive</b> computing.</p><ul><li><b>Response time</b> should be &lt; 1 second</li><li>Each user has at least one program executing in memory → <b>process</b></li><li>If several jobs ready to run at the same time → <b>CPU scheduling</b></li><li>If processes don’t fit in memory, <b>swapping</b> moves them in and out to run</li><li><b>Virtual memory</b> allows execution of processes not completely in memory</li></ul>
@@ -228,7 +225,7 @@
 </main>
 <footer class="deck-foot">
   <button type="button" class="btn" id="prev">Previous</button>
-  <span class="counter" id="counter">1 / 51</span>
+  <span class="counter" id="counter">1 / 50</span>
   <button type="button" class="btn pri" id="next">Next</button>
 </footer>
 <aside id="slide-menu" hidden aria-label="Slide list"><div class="menu-head"><h3>Slides in this chapter</h3><button type="button" id="btn-menu-close" class="menu-close" aria-label="Close slide list">&#10005;</button></div></aside>
