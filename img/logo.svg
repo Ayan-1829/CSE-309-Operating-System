@@ -10,6 +10,6 @@
   <path d="M16 16.5 h7 M16 28.5 h12" stroke="#3446A8" stroke-width="2" stroke-linecap="round"/>
   <path d="M16 40.5 h18" stroke="#8A4500" stroke-width="2" stroke-linecap="round"/>
   </g>
-  <text x="78" y="27" font-family="'Bricolage Grotesque',system-ui,sans-serif" font-weight="700" font-size="15" letter-spacing="1.5" fill="#434B6B">CSE 309 · OPERATING</text>
-  <text x="77" y="52" font-family="'Bricolage Grotesque',system-ui,sans-serif" font-weight="800" font-size="27" fill="#B85E00">System</text>
+  <text x="78" y="27" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="15" letter-spacing="1.5" fill="#434B6B">CSE 309 · OPERATING</text>
+  <text x="77" y="52" font-family="Georgia,'Times New Roman',serif" font-weight="800" font-size="27" fill="#B85E00">System</text>
 </svg>

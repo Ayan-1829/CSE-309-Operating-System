@@ -9,10 +9,10 @@
   --mark:#C2560C; --mark-soft:#FCE6D6; --ok:#1D7A3E; --ok-soft:#DDF2E3; --bad:#B42318; --bad-soft:#FBE3E0;
   --ac:#3446A8; --ac-soft:#E4E8F8; --ac-ink:#25338A;
   --accent:#B85E00; --accent-ink:#8A4500; --accent-soft:#FCEBD3;
-  --f-head:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --f-body:'Literata',Georgia,'Times New Roman',serif;
+  --f-head:Georgia,'Times New Roman',Times,serif;
+  --f-body:Georgia,'Times New Roman',Times,serif;
   --f-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
-  --f-accessible:'Atkinson Hyperlegible',Arial,sans-serif;
+  --f-accessible:Georgia,'Times New Roman',Times,serif;
   --text-body:18px; --text-small:16px; --text-control:16px; --text-slide:clamp(20px,1.6vw,25px);
 }
 @media (prefers-color-scheme: dark){
