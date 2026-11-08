@@ -2,9 +2,6 @@
 I18N_BN_ADD({
 "Operating-System Services": "অপারেটিং সিস্টেমের সেবাসমূহ",
 "The services an OS provides, CLI, GUI and touch interfaces, system calls and APIs, the six types of system calls, system programs, design goals, monolithic, layered, microkernel, modular and hybrid structures, booting and debugging.": "OS কী কী সেবা দেয়, CLI, GUI ও টাচ ইন্টারফেস, system call ও API, ছয় ধরনের system call, system program, design-এর লক্ষ্য, monolithic, layered, microkernel, modular ও hybrid গঠন, booting এবং debugging।",
-"A program cannot touch the disk, the screen or another process directly. It has to ask.": "একটি প্রোগ্রাম সরাসরি disk, স্ক্রিন বা অন্য process ছুঁতে পারে না। তাকে অনুরোধ করতে হয়।",
-"System calls are how it asks, and they are the boundary between your code and the kernel.": "System call হলো সেই অনুরোধের উপায়, আর এটিই আপনার কোড ও kernel-এর মধ্যকার সীমানা।",
-"This chapter shows what the OS offers, how a request crosses into the kernel, and how different OSes organise the code behind that boundary.": "এই অধ্যায় দেখায় OS কী দেয়, একটি অনুরোধ কীভাবে kernel-এ প্রবেশ করে, এবং বিভিন্ন OS সেই সীমানার পেছনের কোড কীভাবে সাজায়।",
 "Operating system services": "অপারেটিং সিস্টেমের সেবাসমূহ",
 "User and operating-system interface": "ইউজার ও অপারেটিং সিস্টেমের interface",
 "System calls": "System call",
@@ -455,5 +452,8 @@ I18N_BN_ADD({
 "being read": "পড়া হচ্ছে",
 "⑤ <b>Reset the page table</b>: entry M now holds the frame number and the valid bit v.": "⑤ <b>Reset the page table</b>: entry M-এ এখন frame নম্বর ও valid bit v আছে।",
 "in memory": "মেমরিতে",
-"⑥ <b>Restart the instruction</b>. This time the reference succeeds, as if the page had always been there.": "⑥ <b>Restart the instruction</b>। এবার reference সফল হয়, যেন page-টি সবসময়ই সেখানে ছিল।"
+"⑥ <b>Restart the instruction</b>. This time the reference succeeds, as if the page had always been there.": "⑥ <b>Restart the instruction</b>। এবার reference সফল হয়, যেন page-টি সবসময়ই সেখানে ছিল।",
+"Your program wants to read a file. It can’t just walk into the disk, the way a customer can’t walk into the bank vault. It fills in a form and asks the teller.": "আপনার program একটি file পড়তে চায়। এটি সোজা disk-এ ঢুকে পড়তে পারে না, যেমন একজন গ্রাহক bank-এর ভল্টে ঢুকতে পারেন না। এটি একটি ফর্ম পূরণ করে teller-কে বলে।",
+"That form is a <b>system call</b>, and the teller is the kernel. System calls are the boundary between your code and the hardware, and every OS organises the code behind that counter differently.": "সেই ফর্ম হলো একটি <b>system call</b>, আর teller হলো kernel। system call আপনার কোড আর hardware-এর সীমানা, আর প্রতিটি OS সেই কাউন্টারের পেছনের কোড আলাদাভাবে সাজায়।",
+"This chapter shows what the OS offers, how a request crosses into the kernel, and how operating systems are structured.": "এই chapter দেখায় OS কী দেয়, একটি অনুরোধ কীভাবে kernel-এ পৌঁছায়, আর operating system-গুলোর গঠন কেমন।"
 });

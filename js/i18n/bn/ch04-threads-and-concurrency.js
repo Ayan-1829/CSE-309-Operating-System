@@ -2,9 +2,6 @@
 I18N_BN_ADD({
 "Threads &amp; Concurrency": "Thread ও Concurrency",
 "Why applications use threads, concurrency versus parallelism, Amdahl’s law, user and kernel threads, the many-to-one, one-to-one, many-to-many and two-level models, Pthreads, implicit threading, threading issues and Windows and Linux threads.": "অ্যাপ্লিকেশন কেন thread ব্যবহার করে, concurrency বনাম parallelism, Amdahl’s law, user ও kernel thread, many-to-one, one-to-one, many-to-many ও two-level মডেল, Pthreads, implicit threading, threading-এর সমস্যা এবং Windows ও Linux-এর thread।",
-"Your phone has eight cores, but a single-threaded program can only ever use one of them.": "আপনার ফোনে আটটি core আছে, কিন্তু একটি single-threaded প্রোগ্রাম তাদের মাত্র একটিই ব্যবহার করতে পারে।",
-"Threads let one process do several things at once — and, on a multicore CPU, truly in parallel.": "Thread একটি process-কে একসাথে কয়েকটি কাজ করতে দেয় — আর multicore CPU-তে সত্যিই parallel-ভাবে।",
-"This chapter explains how threads are mapped onto the kernel, how much speedup to expect, and what changes when a process has many threads.": "এই অধ্যায় ব্যাখ্যা করে thread কীভাবে kernel-এ map হয়, কতটা speedup আশা করা যায়, এবং একটি process-এ অনেক thread থাকলে কী বদলায়।",
 "Overview": "সংক্ষিপ্ত পরিচিতি",
 "Multithreading models": "Multithreading মডেল",
 "Thread libraries": "Thread library",
@@ -333,5 +330,8 @@ I18N_BN_ADD({
 "being read": "পড়া হচ্ছে",
 "⑤ <b>Reset the page table</b>: entry M now holds the frame number and the valid bit v.": "⑤ <b>Reset the page table</b>: entry M-এ এখন frame নম্বর ও valid bit v আছে।",
 "in memory": "মেমরিতে",
-"⑥ <b>Restart the instruction</b>. This time the reference succeeds, as if the page had always been there.": "⑥ <b>Restart the instruction</b>। এবার reference সফল হয়, যেন page-টি সবসময়ই সেখানে ছিল।"
+"⑥ <b>Restart the instruction</b>. This time the reference succeeds, as if the page had always been there.": "⑥ <b>Restart the instruction</b>। এবার reference সফল হয়, যেন page-টি সবসময়ই সেখানে ছিল।",
+"Your phone has eight cores. A single-threaded app is like a restaurant with eight cooks where only one is allowed into the kitchen.": "আপনার ফোনে আটটি core। একটি single-threaded app যেন আটজন রাঁধুনির এমন রেস্তোরাঁ, যেখানে রান্নাঘরে ঢুকতে পারেন মাত্র একজন।",
+"<b>Threads</b> let one process do several things at once — and on a multicore CPU, truly in parallel. More cooks help, but only up to a point, and they need rules for sharing the stove.": "<b>Thread</b> একটি process-কে একসঙ্গে কয়েকটি কাজ করতে দেয় — আর multicore CPU-তে সত্যিই সমান্তরালে। বেশি রাঁধুনি সাহায্য করে, তবে একটা সীমা পর্যন্ত, আর চুলা ভাগাভাগির নিয়ম লাগে।",
+"This chapter explains how threads map onto the kernel, how much speedup to expect, and what changes when a process has many threads.": "এই chapter ব্যাখ্যা করে thread কীভাবে kernel-এর সঙ্গে যুক্ত হয়, কতটা গতি বাড়বে বলে আশা করা যায়, আর একটি process-এ অনেক thread থাকলে কী বদলায়।"
 });

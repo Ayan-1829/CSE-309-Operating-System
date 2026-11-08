@@ -2,9 +2,6 @@
 I18N_BN_ADD({
 "Introduction": "ভূমিকা",
 "What an operating system does, how it runs (interrupts, dual mode, timer), its process, memory and storage management, protection, virtualization, distributed systems, computing environments and open-source OSes.": "অপারেটিং সিস্টেম কী করে, এটি কীভাবে চলে (interrupt, dual mode, timer), এর process, মেমরি ও storage management, protection, virtualization, distributed system, computing environment এবং open-source OS।",
-"Every program you have ever run asked the operating system for something: memory, a file, the screen, the CPU itself.": "আপনি এ পর্যন্ত যত প্রোগ্রাম চালিয়েছেন, প্রতিটিই অপারেটিং সিস্টেমের কাছে কিছু না কিছু চেয়েছে: মেমরি, একটি ফাইল, স্ক্রিন, এমনকি CPU নিজেই।",
-"This chapter answers what that program is, why it is always running, and how it stays in control even when a user program misbehaves.": "এই অধ্যায় ব্যাখ্যা করে সেই প্রোগ্রামটি কী, কেন এটি সবসময় চলতে থাকে, এবং কোনো ইউজার প্রোগ্রাম ভুল আচরণ করলেও এটি কীভাবে নিয়ন্ত্রণ ধরে রাখে।",
-"The ideas here — processes, memory, storage, protection — are the map for the rest of the course.": "এখানকার ধারণাগুলো — process, মেমরি, storage, protection — পুরো কোর্সের মানচিত্র।",
 "What operating systems do": "অপারেটিং সিস্টেম কী করে",
 "Operating-system operations": "অপারেটিং সিস্টেমের কার্যক্রম",
 "Security and protection": "Security ও protection",
@@ -438,5 +435,8 @@ I18N_BN_ADD({
 "being read": "পড়া হচ্ছে",
 "⑤ <b>Reset the page table</b>: entry M now holds the frame number and the valid bit v.": "⑤ <b>Reset the page table</b>: entry M-এ এখন frame নম্বর ও valid bit v আছে।",
 "in memory": "মেমরিতে",
-"⑥ <b>Restart the instruction</b>. This time the reference succeeds, as if the page had always been there.": "⑥ <b>Restart the instruction</b>। এবার reference সফল হয়, যেন page-টি সবসময়ই সেখানে ছিল।"
+"⑥ <b>Restart the instruction</b>. This time the reference succeeds, as if the page had always been there.": "⑥ <b>Restart the instruction</b>। এবার reference সফল হয়, যেন page-টি সবসময়ই সেখানে ছিল।",
+"Your laptop has one CPU, one screen and one disk — and right now forty programs each believe they own all three. Somebody is keeping the peace.": "আপনার laptop-এ একটি CPU, একটি স্ক্রিন আর একটি disk — আর এই মুহূর্তে চল্লিশটি program প্রত্যেকে ভাবে তিনটিই তার। কেউ একজন শান্তি বজায় রাখছে।",
+"That somebody is the operating system: always running, sharing out the hardware, and stepping in when a program misbehaves. Every program you have ever run had to ask it for memory, files, the screen and the CPU itself.": "সেই কেউ হলো operating system: সবসময় চালু, hardware ভাগ করে দেয়, আর কোনো program বেয়াদবি করলে হস্তক্ষেপ করে। আপনি যত program চালিয়েছেন, সবাইকে memory, file, স্ক্রিন আর স্বয়ং CPU-র জন্য এর কাছেই চাইতে হয়েছে।",
+"This chapter maps the course: processes, memory, storage and protection.": "এই chapter পুরো course-এর মানচিত্র আঁকে: process, memory, storage আর protection।"
 });

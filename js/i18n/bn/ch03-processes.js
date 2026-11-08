@@ -2,9 +2,6 @@
 I18N_BN_ADD({
 "Processes": "Process",
 "The process concept, process states and the PCB, scheduling queues and context switches, process creation and termination with fork(), exec() and wait(), and interprocess communication by shared memory and message passing.": "Process-এর ধারণা, process state ও PCB, scheduling queue ও context switch, fork(), exec() ও wait() দিয়ে process তৈরি ও সমাপ্তি, এবং shared memory ও message passing দিয়ে interprocess communication।",
-"When you run the same program twice, the computer has two processes, not one program.": "একই প্রোগ্রাম দুবার চালালে কম্পিউটারে থাকে দুটি process, একটি প্রোগ্রাম নয়।",
-"Each has its own memory, its own place in the code and its own state, and the OS juggles all of them on a few CPU cores.": "প্রত্যেকের নিজস্ব মেমরি, কোডে নিজস্ব অবস্থান ও নিজস্ব state থাকে, আর OS অল্প কয়েকটি CPU core-এ এদের সবাইকে সামলায়।",
-"This chapter shows what the OS keeps about each process, how fork() and exec() create them, and how separate processes can still work together.": "এই অধ্যায় দেখায় OS প্রতিটি process সম্পর্কে কী রাখে, fork() ও exec() কীভাবে process তৈরি করে, এবং আলাদা process-গুলো কীভাবে একসাথে কাজ করতে পারে।",
 "Process concept": "Process-এর ধারণা",
 "Operations on processes": "Process-এর ওপর operation",
 "fork( ) and exec( ) in practice": "বাস্তবে fork( ) ও exec( )",
@@ -425,5 +422,8 @@ I18N_BN_ADD({
 "being read": "পড়া হচ্ছে",
 "⑤ <b>Reset the page table</b>: entry M now holds the frame number and the valid bit v.": "⑤ <b>Reset the page table</b>: entry M-এ এখন frame নম্বর ও valid bit v আছে।",
 "in memory": "মেমরিতে",
-"⑥ <b>Restart the instruction</b>. This time the reference succeeds, as if the page had always been there.": "⑥ <b>Restart the instruction</b>। এবার reference সফল হয়, যেন page-টি সবসময়ই সেখানে ছিল।"
+"⑥ <b>Restart the instruction</b>. This time the reference succeeds, as if the page had always been there.": "⑥ <b>Restart the instruction</b>। এবার reference সফল হয়, যেন page-টি সবসময়ই সেখানে ছিল।",
+"Open the calculator twice. One program — but now there are two calculators, each with its own numbers. The OS sees two completely separate lives.": "calculator দুবার খুলুন। program একটি — কিন্তু এখন দুটি calculator, প্রত্যেকটির নিজের সংখ্যা। OS দেখে দুটি সম্পূর্ণ আলাদা জীবন।",
+"Each running program is a <b>process</b>, with its own memory, its own place in the code and its own state, and the OS juggles them all on a few CPU cores.": "প্রতিটি চলমান program একটি <b>process</b>, যার নিজের memory, কোডে নিজের অবস্থান আর নিজের state আছে, আর OS কয়েকটি CPU core-এ সবাইকে সামলায়।",
+"This chapter shows what the OS records about each process, how fork() and exec() create them, and how processes talk to each other.": "এই chapter দেখায় OS প্রতিটি process সম্পর্কে কী লিখে রাখে, fork() আর exec() কীভাবে তাদের তৈরি করে, আর process-রা কীভাবে একে অপরের সঙ্গে কথা বলে।"
 });

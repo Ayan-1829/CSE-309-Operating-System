@@ -653,7 +653,7 @@ input[type=color]{width:44px;height:36px;border:1px solid var(--ink-3);border-ra
 .tex-src{width:100%;min-height:340px;font:500 14.5px/1.55 var(--f-mono);background:var(--code-bg);border-left:4px solid var(--ac);tab-size:2}
 .tex-log{margin-top:8px;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#0E1A16;color:#E4F2EE;font:500 14px/1.5 var(--f-mono);max-height:180px;overflow:auto}
 .tex-log .tl-err{color:#FF9E9E}.tex-log .tl-warn{color:#F6D38A}.tex-log .tl-ok{color:#8EE0BA}
-.tex-page{background:#fff;color:#111;border:1px solid var(--line);border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,.08);padding:34px 38px;min-height:340px;font:400 16px/1.55 'Latin Modern Roman','Computer Modern Serif','Literata',Georgia,serif;overflow-x:auto}
+.tex-page{background:#fff;color:#111;border:1px solid var(--line);border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,.08);padding:34px 38px;min-height:340px;font:400 16px/1.55 'Latin Modern Roman','Computer Modern Serif',Georgia,serif;overflow-x:auto}
 .tex-page.small-page{padding:20px;min-height:0}
 .tex-page p{margin:0 0 .7em;text-align:justify;text-indent:1.4em}
 .tex-page p:first-child,.tex-page h4+p,.tex-page h5+p,.tex-page h6+p,.tex-page .tx-title+p{text-indent:0}
