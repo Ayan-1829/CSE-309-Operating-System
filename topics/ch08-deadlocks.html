@@ -59,7 +59,6 @@
 <h1>Deadlocks</h1>
 <p class="lead">The system model, the four necessary conditions, resource-allocation graphs, prevention, avoidance with safe states and the Banker’s algorithm, detection with wait-for graphs and the detection algorithm, and recovery by termination or preemption.</p>
 <div class="row"><a class="btn pri" href="#s=2">Start</a><a class="btn" href="../index.html">All chapters</a></div>
-<p class="hint"><kbd>←</kbd> <kbd>→</kbd> move between slides · <kbd>F</kbd> full screen · <kbd>M</kbd> slide list</p>
 </div></section>
 <section class="slide " data-title="Why this matters" aria-label="Why this matters" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Before we start</p><h2>Why this matters</h2><div class="hook"><p class="q">Two threads each hold one lock and wait for the other’s. Nothing crashes — everything just stops, forever.</p><p>A deadlock needs four conditions at once. Break any one and it cannot happen; or check every request so the system never gets close; or let it happen and clean up.</p><p>This chapter covers all three strategies, including the Banker’s algorithm you can run step by step.</p></div>

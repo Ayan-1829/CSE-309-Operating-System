@@ -59,7 +59,6 @@
 <h1>Virtual Memory</h1>
 <p class="lead">Why programs need not be fully in memory, demand paging and page faults, the steps of page replacement, and the replacement algorithms FIFO (with Belady’s anomaly), Optimal, LRU, second chance, enhanced second chance, LFU and MFU.</p>
 <div class="row"><a class="btn pri" href="#s=2">Start</a><a class="btn" href="../index.html">All chapters</a></div>
-<p class="hint"><kbd>←</kbd> <kbd>→</kbd> move between slides · <kbd>F</kbd> full screen · <kbd>M</kbd> slide list</p>
 </div></section>
 <section class="slide " data-title="Why this matters" aria-label="Why this matters" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Before we start</p><h2>Why this matters</h2><div class="hook"><p class="q">Your program can be bigger than the RAM it runs in, and you never notice.</p><p>Virtual memory keeps only the pages a process is using in memory and fetches the rest on demand.</p><p>When memory is full, the OS must choose a page to throw out. Choose badly and the disk thrashes; this chapter compares the choices on the same reference string.</p></div>

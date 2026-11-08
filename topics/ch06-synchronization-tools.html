@@ -59,7 +59,6 @@
 <h1>Synchronization Tools</h1>
 <p class="lead">Race conditions, the critical-section problem and its three requirements, interrupt-based and software solutions, Peterson’s solution, test_and_set and compare_and_swap, atomic variables, mutex locks, semaphores and monitors with condition variables.</p>
 <div class="row"><a class="btn pri" href="#s=2">Start</a><a class="btn" href="../index.html">All chapters</a></div>
-<p class="hint"><kbd>←</kbd> <kbd>→</kbd> move between slides · <kbd>F</kbd> full screen · <kbd>M</kbd> slide list</p>
 </div></section>
 <section class="slide " data-title="Why this matters" aria-label="Why this matters" tabindex="-1"><div class="slide-inner">
 <p class="kicker">Before we start</p><h2>Why this matters</h2><div class="hook"><p class="q">Two processes add one to the same counter. Sometimes the counter goes up by one, not two.</p><p>When cooperating processes share data, the order of their instructions matters — and preemption can interleave them at the worst moment.</p><p>This chapter defines what a correct solution must guarantee and builds the tools for it, from Peterson’s algorithm to semaphores and monitors.</p></div>
