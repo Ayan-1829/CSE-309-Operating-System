@@ -195,7 +195,7 @@ DEMOS['sched-anim'] = (root) => {
     const cur = runningAt(t), ready = t < T ? readyAt(t) : [], fin = procs.filter((p) => r.res[p.id].ct <= t), future = procs.filter((p) => p.at > t);
     const segs = r.segs.filter((g) => g.s < t).map((g) => Object.assign({}, g, { e: Math.min(g.e, t) }));
     const chipOf = (p, extra) => chip(p.id + (extra || ''), ids.indexOf(p.id));
-    clear(view).append(
+    morph(view, 
       h('div', { class: 'os-sa' },
         h('div', { class: 'os-sa-col' }, h('small', null, 'not arrived yet'), h('div', { class: 'os-q' }, future.length ? future.map((p) => h('span', { class: 'os-chip pcx' }, `${p.id} @${p.at}`)) : h('i', { class: 'muted small' }, 'none'))),
         h('div', { class: 'os-sa-col' }, h('small', null, 'ready queue  →'), h('div', { class: 'os-q os-rq' }, ready.length ? ready.map((p) => chipOf(p, ` (${p.bt - r.segs.filter((g) => g.id === p.id && g.e <= t).reduce((s, g) => s + g.e - g.s, 0)})`)) : h('i', { class: 'muted small' }, 'empty'))),
@@ -277,7 +277,7 @@ DEMOS['pc-sem'] = (root) => {
   function draw() {
     const pane = (w) => h('div', { class: 'os-pane' + (s.blocked[w] ? ' blocked' : '') }, h('div', { class: 'os-pane-h' }, (w ? 'Consumer' : 'Producer') + (s.blocked[w] ? ' · waiting' : '')),
       h('ol', { class: 'os-code' }, (w ? Cn : P).map((c, j) => h('li', { class: j === s.pc[w] ? 'cur' : '' }, h('code', null, c)))), btn(`Step ${w ? 'consumer' : 'producer'}`, () => step(w), 'pri'));
-    clear(view).append(h('div', { class: 'cols' }, pane(0), pane(1)),
+    morph(view, h('div', { class: 'cols' }, pane(0), pane(1)),
       h('div', { class: 'row' }, ['empty', 'full', 'mutex'].map((k) => h('div', { class: 'kv' + (s[k] === 0 ? ' warn' : '') }, h('small', null, k), h('b', null, String(s[k])))),
         h('div', { class: 'os-buf' }, s.buf.map((v, i) => h('div', { class: 'os-slot' + (v != null ? ' on' : '') }, h('span', null, v == null ? '' : String(v)), h('small', null, (i === s.inp ? 'in ' : '') + (i === s.outp ? 'out' : '')))))));
   }
@@ -313,7 +313,7 @@ DEMOS['deadlock-run'] = (root) => {
     ['first', 'second'].forEach((m) => { if (s.owner[m] != null) spec.asg.push([m, s.owner[m] ? 'T2' : 'T1', 0]); });
     [0, 1].forEach((t) => { if (s.wait[t]) spec.req.push([t ? 'T2' : 'T1', s.wait[t]]); });
     if (dead) spec.hl = ['T1first', 'firstT1', 'T1second', 'secondT1', 'T2first', 'firstT2', 'T2second', 'secondT2', 'T1', 'T2'];
-    clear(view).append(h('div', { class: 'cols' }, h('div', null, h('div', { class: 'cols' }, pane(0), pane(1))), h('div', { class: 'fig-box' }, ragSvg(spec, 'Who holds and who waits for each mutex'))));
+    morph(view, h('div', { class: 'cols' }, h('div', null, h('div', { class: 'cols' }, pane(0), pane(1))), h('div', { class: 'fig-box' }, ragSvg(spec, 'Who holds and who waits for each mutex'))));
     clear(verdict).append(dead ? h('div', { class: 'verdict bad' }, 'Deadlock: each thread holds one mutex and waits for the other. The cycle in the graph will never break.')
       : s.pc[0] >= 5 && s.pc[1] >= 5 ? h('div', { class: 'verdict ok' }, 'Both threads finished.') : h('p', { class: 'small muted' }, 'Arrows from a mutex to a thread: it holds it. From a thread to a mutex: it waits for it.'));
   }

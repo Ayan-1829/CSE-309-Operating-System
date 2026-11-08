@@ -55,6 +55,25 @@ function mk(ns, tag, attrs, kids) {
 const h = (tag, attrs, ...kids) => mk(false, tag, attrs, kids);
 const sv = (tag, attrs, ...kids) => mk(true, tag, attrs, kids);
 const clear = (el) => { while (el.firstChild) el.removeChild(el.firstChild); return el; };
+/* morph(el, ...kids): show the new children by updating the nodes already there (same tags in the same
+   places keep their element, only attributes and text change), so stepping code does not flash or jump */
+function morph(parent, ...kids) {
+  const next = kids.flat(Infinity).filter((c) => c != null && c !== false).map((c) => (c.nodeType ? c : document.createTextNode(String(c))));
+  const old = Array.from(parent.childNodes);
+  next.forEach((n, i) => {
+    const o = old[i];
+    if (!o) { parent.append(n); return; }
+    // a button whose label changes may also have a different action, so it is replaced, not reused
+    if (o.nodeType !== n.nodeType || (o.nodeType === 1 && o.tagName !== n.tagName) || (o.nodeType !== 1 && o.nodeType !== 3) ||
+        (o.tagName === 'BUTTON' && o.textContent !== n.textContent)) { parent.replaceChild(n, o); return; }
+    if (o.nodeType === 3) { if (o.data !== n.data) o.data = n.data; return; }
+    for (const a of Array.from(o.attributes)) if (!n.hasAttribute(a.name)) o.removeAttribute(a.name);
+    for (const a of Array.from(n.attributes)) if (o.getAttribute(a.name) !== a.value) o.setAttribute(a.name, a.value);
+    morph(o, Array.from(n.childNodes));
+  });
+  for (let i = old.length - 1; i >= next.length; i--) parent.removeChild(old[i]);
+  return parent;
+}
 
 const App = {
   cleanups: [],

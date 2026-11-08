@@ -262,7 +262,7 @@ DEMOS['race-pid'] = (root) => {
     const pane = (i) => h('div', { class: 'os-pane' }, h('div', { class: 'os-pane-h' }, `P${i} calls fork( )` + (s.kid[i] != null ? ` · child pid ${s.kid[i]}` : '')),
       h('ol', { class: 'os-code' }, CODE.map((c, j) => h('li', { class: j < s.pc[i] ? 'done' : j === s.pc[i] ? 'cur' : '' }, h('code', null, c)))),
       h('div', { class: 'small' }, 'register: ', h('b', null, s.reg[i] == null ? '—' : String(s.reg[i]))), btn(`Run next line of P${i}`, () => step(i), s.pc[i] < 3 ? 'pri' : ''));
-    clear(view).append(h('div', { class: 'cols' }, pane(0), pane(1)), h('div', { class: 'row' }, h('div', { class: 'kv' }, h('small', null, 'shared kernel variable next_available_pid'), h('b', null, String(s.v)))),
+    morph(view, h('div', { class: 'cols' }, pane(0), pane(1)), h('div', { class: 'row' }, h('div', { class: 'kv' }, h('small', null, 'shared kernel variable next_available_pid'), h('b', null, String(s.v)))),
       s.kid[0] != null && s.kid[1] != null ? h('div', { class: 'verdict ' + (clash ? 'bad' : 'ok') }, clash ? `Race condition: both children got pid ${s.kid[0]}!` : `Correct: the children got different pids (${s.kid[0]} and ${s.kid[1]}).`) : '');
   }
   root.append(demoBox('Race on next_available_pid', 'Two processes call fork() at the same time. Each fork reads, updates and uses the shared counter. Choose the interleaving.',
@@ -303,7 +303,7 @@ DEMOS['peterson'] = (root) => {
       h('div', { class: 'os-pane-h' }, `Process P${i}  (i = ${i}, j = ${1 - i})` + (s.pc[i] === A.cs ? ' · in critical section' : s.spins[i] ? ' · spinning' : '')),
       h('ol', { class: 'os-code', start: 1 }, A.lines.map((c, j) => h('li', { class: j === s.pc[i] ? 'cur' : '' }, h('code', null, c)))),
       h('div', { class: 'row tight' }, btn(`Step P${i}`, () => step(i), 'pri'), tsw('wants to enter again', s.wants[i], (v) => { s.wants[i] = !!v; }).el));
-    clear(view).append(h('div', { class: 'cols' }, pane(0), pane(1)),
+    morph(view, h('div', { class: 'cols' }, pane(0), pane(1)),
       h('div', { class: 'row' }, alg.get() === 'pet' ? h('div', { class: 'kv' }, h('small', null, 'flag[0], flag[1]'), h('b', null, `${s.flag[0]}, ${s.flag[1]}`)) : null, h('div', { class: 'kv' }, h('small', null, 'turn'), h('b', null, String(s.turn)))));
     if (s.viol) clear(verdict).append(h('div', { class: 'verdict bad' }, 'Both processes are in their critical sections: mutual exclusion violated!'));
   }
@@ -338,7 +338,7 @@ DEMOS['semaphore'] = (root) => {
     draw();
   }
   function draw() {
-    clear(view).append(h('div', { class: 'row' }, h('div', { class: 'kv' + (S < 0 ? ' warn' : '') }, h('small', null, 'semaphore value S'), h('b', null, String(S))),
+    morph(view, h('div', { class: 'row' }, h('div', { class: 'kv' + (S < 0 ? ' warn' : '') }, h('small', null, 'semaphore value S'), h('b', null, String(S))),
       h('div', { class: 'kv' }, h('small', null, mode.get() === 'q' ? 'waiting queue' : 'busy-waiting'), h('b', null, q.length ? q.map((i) => 'P' + (i + 1)).join(', ') : '—'))),
       h('div', { class: 'row' }, range(N).map((i) => h('div', { class: 'os-th ' + ({ idle: '', in: 'run', blocked: 'blocked', spin: 'wait' }[st[i]]) },
         h('b', null, 'P' + (i + 1)), h('small', null, { idle: 'not using it', in: 'using the resource', blocked: 'blocked (sleeping)', spin: 'spinning on S' }[st[i]]),
